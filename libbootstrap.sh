@@ -93,7 +93,7 @@ function ConfigureCoreUtilities {
 function ConfigureProprietaryGraphics {
     echo "TASK: ConfigureProprietaryGraphics"
 
-    # Check for NVIDIA hardware using lspci
+    # Check for NVIDIA hardware using lspci, exit if not found
     nvidiaTest=$(lspci | grep NVIDIA | awk -F: '{print $NF}')
     if [ "$nvidiaTest" == "" ]; then
         return 0
@@ -112,5 +112,6 @@ function InstallOhMyZsh {
         sudo -u $username sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &>/dev/null
         echo "...Successfully installed Oh My Zsh"
     fi
+
     return 0
 }
