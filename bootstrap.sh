@@ -21,5 +21,6 @@ printf "\n"
 
 InstallCoreUtilities
 ConfigureCoreUtilities
+ConfigureProprietaryGraphics
 
 printf "\n"
