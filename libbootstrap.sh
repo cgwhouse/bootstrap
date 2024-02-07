@@ -105,6 +105,12 @@ function ConfigureProprietaryGraphics {
 
     # Check for kernel headers, install if necessary
     kernelHeadersCheck=$(dpkg-query -W linux-headers-amd64 | awk -F: '{print $NF}')
+    if [[ $kernelHeadersCheck == *"no packages found"* ]]; then
+        echo "headers not installed"
+    else
+        echo "headers installed"
+    fi
+
     echo "$kernelHeadersCheck"
 
     return 0
