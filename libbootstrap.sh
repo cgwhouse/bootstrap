@@ -14,6 +14,7 @@ function InstallPackageWithApt {
 
     # If apt update hasn't run yet, do that now
     if [ $aptUpdated = false ]; then
+        echo "...Running apt update"
         sudo apt update &>/dev/null
         aptUpdated=true
     fi
@@ -94,12 +95,17 @@ function ConfigureProprietaryGraphics {
     echo "TASK: ConfigureProprietaryGraphics"
 
     # Check for NVIDIA hardware using lspci, exit if not found
-    nvidiaTest=$(lspci | grep NVIDIA | awk -F: '{print $NF}')
-    if [ "$nvidiaTest" == "" ]; then
-        return 0
+    nvidiaHardwareCheck=$(lspci | grep NVIDIA | awk -F: '{print $NF}')
+    if [ "$nvidiaHardwareCheck" == "" ]; then
+        #return 0
+        echo "no nvidia, but debug still going"
     fi
 
     echo "NVIDIA detected!"
+
+    # Check for kernel headers, install if necessary
+    kernelHeadersCheck=$(dpkg-query -W linux-headers-amd64 | awk -F: '{print $NF}')
+    echo "$kernelHeadersCheck"
 
     return 0
 }
