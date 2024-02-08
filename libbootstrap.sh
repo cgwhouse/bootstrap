@@ -21,10 +21,19 @@ function CheckForPackageAndInstallIfMissing {
     fi
 
     echo "...Installing $1"
-
     sudo apt install -y "$1" &>/dev/null
-
     echo "...Successfully installed $1"
+
+    return 0
+}
+
+function CreateReposDirectory {
+    echo "TASK: CreateReposDirectory"
+
+    if [ ! -d /home/$username/repos ]; then
+        mkdir /home/$username/repos &>/dev/null
+        echo "...Created repos directory"
+    fi
 
     return 0
 }
@@ -32,7 +41,7 @@ function CheckForPackageAndInstallIfMissing {
 function InstallCoreUtilities {
     echo "TASK: InstallCoreUtilities"
 
-    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop")
+    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "network-manager-gnome" "neofetch")
 
     for package in "${packages[@]}"; do
         CheckForPackageAndInstallIfMissing "$package"
@@ -75,7 +84,7 @@ function ConfigureCoreUtilities {
 }
 
 function InstallProprietaryGraphics {
-    echo "TASK: ConfigureProprietaryGraphics"
+    echo "TASK: InstallProprietaryGraphics"
 
     # If this is a server bootstrap, exit
     if [ $server == true ]; then
@@ -151,6 +160,67 @@ function InstallDesktopEnvironment {
     fi
 
     return 0
+}
+
+function InstallFonts {
+    echo "TASK: Install Fonts"
+
+    # MSFT
+    CheckForPackageAndInstallIfMissing ttf-mscorefonts-installer
+
+    # Fira Code + Nerd Font
+    CheckForPackageAndInstallIfMissing fonts-firacode
+
+    firaCodeNerdFontCheck="/home/$username/.local/share/fonts/FiraCodeNerdFont-Regular.ttf"
+    if [ ! -f $firaCodeNerdFontCheck ]; then
+        echo "...Installing FiraCode Nerd Font"
+        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip -o fira.zip &>/dev/null
+        unar -d fira.zip &>/dev/null
+        cp fira/*.ttf /home/$username/.local/share/fonts &>/dev/null
+        rm -r fira &>/dev/null
+        rm fira.zip &>/dev/null
+        echo "...FiraCode Nerd Font installed"
+    fi
+
+    # Ubuntu + Nerd Font + UbuntuMono Nerd Font
+    CheckForPackageAndInstallIfMissing fonts-ubuntu
+
+    ubuntuNerdFontCheck="/home/$username/.local/share/fonts/UbuntuNerdFont-Regular.ttf"
+    if [ ! -f $ubuntuNerdFontCheck ]; then
+        echo "...Installing Ubuntu Nerd Font"
+        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Ubuntu.zip -o ubuntu.zip &>/dev/null
+        unar -d ubuntu.zip &>/dev/null
+        cp ubuntu/*.ttf /home/$username/.local/share/fonts &>/dev/null
+        rm -r ubuntu &>/dev/null
+        rm ubuntu.zip &>/dev/null
+        echo "...Ubuntu Nerd Font installed"
+    fi
+
+    ubuntuMonoNerdFontCheck="/home/$username/.local/share/fonts/UbuntuMonoNerdFont-Regular.ttf"
+    if [ ! -f $ubuntuMonoNerdFontCheck ]; then
+        echo "...Installing UbuntuMono Nerd Font"
+        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/UbuntuMono.zip -o ubuntumono.zip &>/dev/null
+        unar -d ubuntumono.zip &>/dev/null
+        cp ubuntumono/*.ttf /home/$username/.local/share/fonts &>/dev/null
+        rm -r ubuntumono &>/dev/null
+        rm ubuntumono.zip &>/dev/null
+        echo "...UbuntuMono Nerd Font installed"
+    fi
+
+    # Noto Emoji
+    CheckForPackageAndInstallIfMissing fonts-noto-color-emoji
+}
+
+function InstallPipewire {
+    echo "TASK: InstallPipewire"
+
+    # If this is a server bootstrap, exit
+    if [ $server == true ]; then
+        return 0
+    fi
+
+    CheckForPackageAndInstallIfMissing pipewire-audio
+    CheckForPackageAndInstallIfMissing pavucontrol
 }
 
 function InstallOhMyZsh {

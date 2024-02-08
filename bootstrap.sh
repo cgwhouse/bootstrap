@@ -19,6 +19,10 @@ fi
 
 printf "\n"
 
+if ! CreateReposDirectory; then
+    exit 1
+fi
+
 if ! InstallCoreUtilities; then
     exit 1
 fi
@@ -32,6 +36,14 @@ if ! InstallProprietaryGraphics; then
 fi
 
 if ! InstallDesktopEnvironment; then
+    exit 1
+fi
+
+if ! InstallFonts; then
+    exit 1
+fi
+
+if ! InstallPipewire; then
     exit 1
 fi
 
