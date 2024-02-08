@@ -31,7 +31,7 @@ function CreateReposDirectory {
     echo "TASK: CreateReposDirectory"
 
     if [ ! -d /home/$username/repos ]; then
-        mkdir /home/$username/repos &>/dev/null
+        sudo -u $username mkdir /home/$username/repos &>/dev/null
         echo "...Created repos directory"
     fi
 
@@ -41,7 +41,7 @@ function CreateReposDirectory {
 function InstallCoreUtilities {
     echo "TASK: InstallCoreUtilities"
 
-    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "network-manager-gnome" "neofetch")
+    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "neofetch")
 
     for package in "${packages[@]}"; do
         CheckForPackageAndInstallIfMissing "$package"
@@ -152,7 +152,7 @@ function InstallDesktopEnvironment {
     # Install now
     CheckForPackageAndInstallIfMissing ulauncher
 
-    # On Sid this sometimes still doesn't work and need to install a python dependency
+    # On Sid this sometimes doesn't work and need to manually install dependency
     # Check and error if this happened
     if dpkg-query -W ulauncher &>/dev/null; then
         echo "ERROR: ulauncher could not be installed, install manually and rerun script"
@@ -164,6 +164,11 @@ function InstallDesktopEnvironment {
 
 function InstallFonts {
     echo "TASK: Install Fonts"
+
+    # If this is a server bootstrap, exit
+    if [ $server == true ]; then
+        return 0
+    fi
 
     # MSFT
     CheckForPackageAndInstallIfMissing ttf-mscorefonts-installer
