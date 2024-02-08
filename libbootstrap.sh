@@ -115,6 +115,41 @@ function InstallDesktopEnvironment {
     CheckForPackageAndInstallIfMissing mate-desktop-environment
     CheckForPackageAndInstallIfMissing mate-desktop-environment-extras
 
+    # Dock
+    CheckForPackageAndInstallIfMissing plank
+
+    # App Launcher (requires extra setup)
+
+    # Exit if already installed
+    if dpkg-query -W ulauncher &>/dev/null; then
+        return 0
+    fi
+
+    # Setup keyring using gnupg and export
+    CheckForPackageAndInstallIfMissing gnupg
+    sudo -u $username gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176 &>/dev/null
+    sudo -u $username gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
+
+    # Add source with exported keyring to sources
+    echo "deb [signed-by=/usr/share/keyrings/ulauncher-archive-keyring.gpg] \
+          http://ppa.launchpad.net/agornostal/ulauncher/ubuntu jammy main" |
+        sudo tee /etc/apt/sources.list.d/ulauncher-jammy.list &>/dev/null
+
+    # Do a manual apt update here so we can get the new source and install package
+    # Ensure flag is true if not already
+    sudo apt update &>/dev/null
+    aptUpdated=true
+
+    # Install now
+    CheckForPackageAndInstallIfMissing ulauncher
+
+    # On Sid this sometimes still doesn't work and need to install a python dependency
+    # Check and error if this happened
+    if dpkg-query -W ulauncher &>/dev/null; then
+        echo "ERROR: ulauncher could not be installed, install manually and rerun script"
+        return 1
+    fi
+
     return 0
 }
 
