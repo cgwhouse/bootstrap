@@ -1,7 +1,12 @@
 #!/bin/bash
 
 # Environment variables
-source ./.env
+source ./.env &>/dev/null
+
+if [ -z "$server" ] || [ -z "$username" ]; then
+    printf "\nERROR: .env file is missing\n\n"
+    exit 1
+fi
 
 # Globals
 aptUpdated=false
@@ -9,7 +14,12 @@ aptUpdated=false
 function CheckForPackageAndInstallIfMissing {
     # Check for package using dpkg-query
     # If it exits without an error, package was found and we can exit
-    if dpkg-query -W "$1" &>/dev/null; then
+    # For some reason this check does not work with unar, use hash instead
+    if [ "$1" == "unar" ]; then
+        if (hash "$1" 2>/dev/null); then
+            return 0
+        fi
+    elif dpkg-query -W "$1" &>/dev/null; then
         return 0
     fi
 
@@ -154,7 +164,7 @@ function InstallDesktopEnvironment {
 
     # On Sid this sometimes doesn't work and need to manually install dependency
     # Check and error if this happened
-    if dpkg-query -W ulauncher &>/dev/null; then
+    if ! dpkg-query -W ulauncher &>/dev/null; then
         echo "ERROR: ulauncher could not be installed, install manually and rerun script"
         return 1
     fi
@@ -168,6 +178,11 @@ function InstallFonts {
     # If this is a server bootstrap, exit
     if [ $server == true ]; then
         return 0
+    fi
+
+    if [ ! -d "/home/$username/.local/share/fonts" ]; then
+        sudo -u $username mkdir /home/$username/.local/share/fonts
+        echo "...Fonts directory created"
     fi
 
     # MSFT

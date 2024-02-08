@@ -7,3 +7,4 @@
 5. Clone bootstrap repo
 6. `sudo chmod +x bootstrap/bootstrap.sh`
 7. `sudo bootstrap/bootstrap.sh`
+
