@@ -1,16 +1,17 @@
 #!/bin/bash
 
-function PrintUsageAndExit {
-    printf "\nUsage:\n\n"
-    printf "sudo ./bootstrap.sh\n\n"
-    return 1
-}
+# Environment variables
+source ./.env
 
 # Globals
-username=cristian
 aptUpdated=false
 
-function InstallPackageWithApt {
+function CheckForPackageAndInstallIfMissing {
+    # Check for package using dpkg-query
+    # If it exits without an error, package was found and we can exit
+    if dpkg-query -W "$1" &>/dev/null; then
+        return 0
+    fi
 
     # If apt update hasn't run yet, do that now
     if [ $aptUpdated = false ]; then
@@ -28,29 +29,13 @@ function InstallPackageWithApt {
     return 0
 }
 
-function CheckWithCommandAndInstallIfMissing {
-    # The command that should be used to determine if program exists
-    commandToCheck=$1
-
-    # Special case for neovim
-    if [ "$1" == "neovim" ]; then
-        commandToCheck="nvim"
-    fi
-
-    if ! (hash "$commandToCheck" 2>/dev/null); then
-        InstallPackageWithApt "$1"
-    fi
-
-    return 0
-}
-
 function InstallCoreUtilities {
     echo "TASK: InstallCoreUtilities"
 
-    packages=("git" "neovim" "zsh" "curl" "wget" "tmux" "htop")
+    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop")
 
     for package in "${packages[@]}"; do
-        CheckWithCommandAndInstallIfMissing "$package"
+        CheckForPackageAndInstallIfMissing "$package"
     done
 
     return 0
@@ -86,32 +71,31 @@ function ConfigureCoreUtilities {
         return 1
     fi
 
-    # Oh My Zsh
-
     return 0
 }
 
-function ConfigureProprietaryGraphics {
+function InstallProprietaryGraphics {
     echo "TASK: ConfigureProprietaryGraphics"
+
+    # If this is a server bootstrap, exit
+    if [ $server == true ]; then
+        return 0
+    fi
 
     # Check for NVIDIA hardware using lspci, exit if not found
     nvidiaHardwareCheck=$(lspci | grep NVIDIA | awk -F: '{print $NF}')
     if [ "$nvidiaHardwareCheck" == "" ]; then
-        #return 0
-        echo "no nvidia, but debug still going"
+        return 0
     fi
 
-    echo "NVIDIA detected!"
+    # Kernel headers
+    CheckForPackageAndInstallIfMissing linux-headers-amd64
 
-    # Check for kernel headers, install if necessary
-    kernelHeadersCheck=$(dpkg-query -W linux-headers-amd64 | awk -F: '{print $NF}')
-    if [[ $kernelHeadersCheck == *"no packages found"* ]]; then
-        echo "headers not installed"
-    else
-        echo "headers installed"
-    fi
+    # non-free firmware
+    CheckForPackageAndInstallIfMissing firmware-misc-nonfree
 
-    echo "$kernelHeadersCheck"
+    # Main driver
+    CheckForPackageAndInstallIfMissing nvidia-driver
 
     return 0
 }
@@ -120,8 +104,9 @@ function InstallOhMyZsh {
     echo "TASK: InstallOhMyZsh"
 
     if [ ! -d "/home/$username/.oh-my-zsh" ]; then
-        echo "...Installing Oh My Zsh. It's recommended to log out and log back in after this"
+        echo "...Installing Oh My Zsh"
         sudo -u $username sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &>/dev/null
+        # TODO maybe not needed since it drops you into zsh anyway
         echo "...Successfully installed Oh My Zsh"
     fi
 
