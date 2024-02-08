@@ -31,6 +31,10 @@ if ! InstallProprietaryGraphics; then
     exit 1
 fi
 
+if ! InstallDesktopEnvironment; then
+    exit 1
+fi
+
 # Should always be last, because install script drops you into a zsh at the end
 if ! InstallOhMyZsh; then
     exit 1

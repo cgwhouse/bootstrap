@@ -100,6 +100,24 @@ function InstallProprietaryGraphics {
     return 0
 }
 
+function InstallDesktopEnvironment {
+    echo "TASK: InstallDesktopEnvironment"
+
+    # If this is a server bootstrap, exit
+    if [ $server == true ]; then
+        return 0
+    fi
+
+    # Display manager
+    CheckForPackageAndInstallIfMissing lightdm
+
+    # Standard MATE + extras
+    CheckForPackageAndInstallIfMissing mate-desktop-environment
+    CheckForPackageAndInstallIfMissing mate-desktop-environment-extras
+
+    return 0
+}
+
 function InstallOhMyZsh {
     echo "TASK: InstallOhMyZsh"
 
