@@ -9,11 +9,16 @@ function CheckForPackageAndInstallIfMissing {
     # Check for package using dpkg-query
     # If it exits without an error, package was found and we can exit
     # For some reason this check does not work with unar, use hash instead
-    if [ "$1" == "unar" ]; then
-        if (hash "$1" 2>/dev/null); then
-            return 0
-        fi
-    elif dpkg-query -W "$1" &>/dev/null; then
+    #if [ "$1" == "unar" ]; then
+    #    if (hash "$1" 2>/dev/null); then
+    #        return 0
+    #    fi
+    #elif dpkg-query -W "$1" &>/dev/null; then
+    #    return 0
+    #fi
+
+    packageCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    if [ "$packageCheck" != "" ]; then
         return 0
     fi
 
