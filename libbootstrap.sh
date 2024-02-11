@@ -3,12 +3,6 @@
 # Environment variables
 source ./.env &>/dev/null
 
-if [ -z "$server" ] || [ -z "$username" ]; then
-    printf "\nERROR: .env file is missing\n\n"
-    exit 1
-fi
-
-# Globals
 aptUpdated=false
 
 function CheckForPackageAndInstallIfMissing {
@@ -96,11 +90,6 @@ function ConfigureCoreUtilities {
 function InstallProprietaryGraphics {
     echo "TASK: InstallProprietaryGraphics"
 
-    # If this is a server bootstrap, exit
-    if [ $server == true ]; then
-        return 0
-    fi
-
     # Check for NVIDIA hardware using lspci, exit if not found
     nvidiaHardwareCheck=$(lspci | grep NVIDIA | awk -F: '{print $NF}')
     if [ "$nvidiaHardwareCheck" == "" ]; then
@@ -121,11 +110,6 @@ function InstallProprietaryGraphics {
 
 function InstallDesktopEnvironment {
     echo "TASK: InstallDesktopEnvironment"
-
-    # If this is a server bootstrap, exit
-    if [ $server == true ]; then
-        return 0
-    fi
 
     # Display manager
     CheckForPackageAndInstallIfMissing lightdm
@@ -174,11 +158,6 @@ function InstallDesktopEnvironment {
 
 function InstallFonts {
     echo "TASK: Install Fonts"
-
-    # If this is a server bootstrap, exit
-    if [ $server == true ]; then
-        return 0
-    fi
 
     if [ ! -d "/home/$username/.local/share/fonts" ]; then
         sudo -u $username mkdir /home/$username/.local/share/fonts
@@ -233,11 +212,6 @@ function InstallFonts {
 
 function InstallPipewire {
     echo "TASK: InstallPipewire"
-
-    # If this is a server bootstrap, exit
-    if [ $server == true ]; then
-        return 0
-    fi
 
     CheckForPackageAndInstallIfMissing pipewire-audio
     CheckForPackageAndInstallIfMissing pavucontrol
