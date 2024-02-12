@@ -76,6 +76,10 @@ if ! InstallDotNetCore; then
     exit 1
 fi
 
+if ! InstallWebBrowsers; then
+    exit 1
+fi
+
 if ! InstallOhMyZsh; then
     exit 1
 fi

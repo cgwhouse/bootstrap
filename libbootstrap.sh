@@ -7,8 +7,8 @@ aptUpdated=false
 
 function CheckForPackageAndInstallIfMissing {
     # Check for package using apt list
-    packageCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
-    if [ "$packageCheck" != "" ]; then
+    chromiumCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    if [ "$chromiumCheck" != "" ]; then
         return 0
     fi
 
@@ -261,6 +261,20 @@ function InstallDotNetCore {
 
 function InstallWebBrowsers {
     echo "TASK: InstallWebBrowsers"
+
+    CheckForPackageAndInstallIfMissing firefox
+
+    # Ungoogled Chromium
+    chromiumCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
+    if [ "$chromiumCheck" == "" ]; then
+        echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list
+        curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
+
+        sudo apt update &>/dev/null
+        aptUpdated=true
+
+        CheckForPackageAndInstallIfMissing ungoogled-chromium
+    fi
 
     return 0
 }
