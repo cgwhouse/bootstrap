@@ -6,17 +6,7 @@ source ./.env &>/dev/null
 aptUpdated=false
 
 function CheckForPackageAndInstallIfMissing {
-    # Check for package using dpkg-query
-    # If it exits without an error, package was found and we can exit
-    # For some reason this check does not work with unar, use hash instead
-    #if [ "$1" == "unar" ]; then
-    #    if (hash "$1" 2>/dev/null); then
-    #        return 0
-    #    fi
-    #elif dpkg-query -W "$1" &>/dev/null; then
-    #    return 0
-    #fi
-
+    # Check for package using apt list
     packageCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
     if [ "$packageCheck" != "" ]; then
         return 0
@@ -220,6 +210,42 @@ function InstallPipewire {
 
     CheckForPackageAndInstallIfMissing pipewire-audio
     CheckForPackageAndInstallIfMissing pavucontrol
+}
+
+function InstallAdditionalSoftware {
+    echo "TASK: InstallAdditionalSoftware"
+
+    # NetworkManager
+    CheckForPackageAndInstallIfMissing network-manager-gnome
+    CheckForPackageAndInstallIfMissing network-manager-openvpn-gnome
+
+    # TODO emacs + doom dependencies, vs code
+
+    # TODO spotify
+
+    # Remote stuff
+    CheckForPackageAndInstallIfMissing sshpass
+    # TODO digital ocean
+
+    # Media
+    CheckForPackageAndInstallIfMissing vlc
+    CheckForPackageAndInstallIfMissing transmission-gtk
+    CheckForPackageAndInstallIfMissing obs-studio
+
+    # Misc utils
+    CheckForPackageAndInstallIfMissing gparted
+    CheckForPackageAndInstallIfMissing copyq
+    CheckForPackageAndInstallIfMissing awscli
+
+    # Game related things
+    CheckForPackageAndInstallIfMissing aisleriot
+    CheckForPackageAndInstallIfMissing gnome-mines
+    CheckForPackageAndInstallIfMissing mgba-qt
+    CheckForPackageAndInstallIfMissing lutris
+    CheckForPackageAndInstallIfMissing dolphin-emu
+
+
+    return 0
 }
 
 function InstallOhMyZsh {

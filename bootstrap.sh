@@ -64,6 +64,10 @@ if ! InstallPipewire; then
     exit 1
 fi
 
+if ! InstallAdditionalSoftware; then
+    exit 1
+fi
+
 if ! InstallOhMyZsh; then
     exit 1
 fi

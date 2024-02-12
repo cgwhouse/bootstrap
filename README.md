@@ -8,3 +8,5 @@
 6. `sudo chmod +x bootstrap/bootstrap.sh`
 7. `sudo bootstrap/bootstrap.sh`
 
+## TODO
+
