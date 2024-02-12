@@ -25,7 +25,7 @@ function CheckForPackageAndInstallIfMissing {
     # Ensure package was installed, return error if not
     installCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
     if [ "$installCheck" == "" ]; then
-        echo "ERROR: Could not install $1"
+        echo "ERROR: Failed to install $1"
         return 1
     fi
 
