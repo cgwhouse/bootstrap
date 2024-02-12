@@ -219,7 +219,10 @@ function InstallAdditionalSoftware {
     CheckForPackageAndInstallIfMissing network-manager-gnome
     CheckForPackageAndInstallIfMissing network-manager-openvpn-gnome
 
-    # TODO emacs + doom dependencies, vs code
+    # TODO vs code
+    CheckForPackageAndInstallIfMissing emacs-gtk
+    CheckForPackageAndInstallIfMissing ripgrep
+    CheckForPackageAndInstallIfMissing fd-find
 
     # TODO spotify
 
@@ -244,6 +247,14 @@ function InstallAdditionalSoftware {
     CheckForPackageAndInstallIfMissing lutris
     CheckForPackageAndInstallIfMissing dolphin-emu
 
+    return 0
+}
+
+function InstallDotNetCore {
+    echo "TASK: InstallDotNetCore"
+
+    CheckForPackageAndInstallIfMissing dotnet-sdk-7.0
+    CheckForPackageAndInstallIfMissing dotnet-sdk-8.0
 
     return 0
 }

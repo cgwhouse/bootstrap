@@ -38,6 +38,10 @@ if ! ConfigureCoreUtilities; then
     exit 1
 fi
 
+if ! InstallDotNetCore; then
+    exit 1
+fi
+
 if [ $server == true ]; then
 
     # Should always be last, because install script drops you into a zsh at the end
@@ -65,6 +69,10 @@ if ! InstallPipewire; then
 fi
 
 if ! InstallAdditionalSoftware; then
+    exit 1
+fi
+
+if ! InstallDotNetCore; then
     exit 1
 fi
 
