@@ -259,14 +259,18 @@ function InstallDotNetCore {
     return 0
 }
 
+function InstallWebBrowsers {
+    echo "TASK: InstallWebBrowsers"
+
+    return 0
+}
+
 function InstallOhMyZsh {
     echo "TASK: InstallOhMyZsh"
 
     if [ ! -d "/home/$username/.oh-my-zsh" ]; then
         echo "...Installing Oh My Zsh"
         sudo -u $username sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &>/dev/null
-        # TODO maybe not needed since it drops you into zsh anyway
-        echo "...Successfully installed Oh My Zsh"
     fi
 
     return 0
