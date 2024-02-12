@@ -7,8 +7,8 @@ aptUpdated=false
 
 function CheckForPackageAndInstallIfMissing {
     # Check for package using apt list
-    chromiumCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
-    if [ "$chromiumCheck" != "" ]; then
+    dotnetCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    if [ "$dotnetCheck" != "" ]; then
         return 0
     fi
 
@@ -253,8 +253,18 @@ function InstallAdditionalSoftware {
 function InstallDotNetCore {
     echo "TASK: InstallDotNetCore"
 
-    CheckForPackageAndInstallIfMissing dotnet-sdk-7.0
-    CheckForPackageAndInstallIfMissing dotnet-sdk-8.0
+    dotnetCheck=$(sudo apt list dotnet-sdk-8.0 2>/dev/null | grep installed)
+    if [ "$dotnetCheck" == "" ]; then
+        wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb &>/dev/null
+        sudo dpkg -i packages-microsoft-prod.deb &>/dev/null
+        rm packages-microsoft-prod.deb &>/dev/null
+
+        sudo apt update &>/dev/null
+        aptUpdated=true
+
+        CheckForPackageAndInstallIfMissing dotnet-sdk-7.0
+        CheckForPackageAndInstallIfMissing dotnet-sdk-8.0
+    fi
 
     return 0
 }
@@ -265,9 +275,9 @@ function InstallWebBrowsers {
     CheckForPackageAndInstallIfMissing firefox
 
     # Ungoogled Chromium
-    chromiumCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
-    if [ "$chromiumCheck" == "" ]; then
-        echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list
+    dotnetCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
+    if [ "$dotnetCheck" == "" ]; then
+        echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list &>/dev/null
         curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
 
         sudo apt update &>/dev/null
