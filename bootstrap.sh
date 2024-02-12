@@ -25,7 +25,6 @@ fi
 
 printf "\n"
 
-# Start with server workload
 if ! CreateReposDirectory; then
     exit 1
 fi
@@ -42,13 +41,11 @@ if ! InstallDotNetCore; then
     exit 1
 fi
 
+# Exit with minimal workload if server bootstrap
 if [ $server == true ]; then
-
-    # Should always be last, because install script drops you into a zsh at the end
     if ! InstallOhMyZsh; then
         exit 1
     fi
-
     exit 0
 fi
 

@@ -7,8 +7,8 @@ aptUpdated=false
 
 function CheckForPackageAndInstallIfMissing {
     # Check for package using apt list
-    dotnetCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
-    if [ "$dotnetCheck" != "" ]; then
+    packageCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    if [ "$packageCheck" != "" ]; then
         return 0
     fi
 
@@ -21,6 +21,14 @@ function CheckForPackageAndInstallIfMissing {
 
     echo "...Installing $1"
     sudo apt install -y "$1" &>/dev/null
+
+    # Ensure package was installed, return error if not
+    installCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    if [ "$installCheck" == "" ]; then
+        echo "ERROR: Could not install $1"
+        return 1
+    fi
+
     echo "...Successfully installed $1"
 
     return 0
