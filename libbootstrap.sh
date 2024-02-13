@@ -237,10 +237,11 @@ function InstallAdditionalSoftware {
     CheckForPackageAndInstallIfMissing ripgrep
     CheckForPackageAndInstallIfMissing fd-find
 
-    # Media
+    # Media + Office
     CheckForPackageAndInstallIfMissing vlc
     CheckForPackageAndInstallIfMissing transmission-gtk
     CheckForPackageAndInstallIfMissing obs-studio
+    CheckForPackageAndInstallIfMissing libreoffice
 
     # Misc utils
     CheckForPackageAndInstallIfMissing gparted
