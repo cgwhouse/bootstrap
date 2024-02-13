@@ -120,6 +120,7 @@ function InstallDesktopEnvironment {
     # Standard MATE + extras
     CheckForPackageAndInstallIfMissing mate-desktop-environment
     CheckForPackageAndInstallIfMissing mate-desktop-environment-extras
+    CheckForPackageAndInstallIfMissing xscreensaver
 
     # Dock
     CheckForPackageAndInstallIfMissing plank
