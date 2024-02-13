@@ -211,6 +211,8 @@ function InstallFonts {
 
     # Noto Emoji
     CheckForPackageAndInstallIfMissing fonts-noto-color-emoji
+
+    return 0
 }
 
 function InstallPipewire {
@@ -218,6 +220,8 @@ function InstallPipewire {
 
     CheckForPackageAndInstallIfMissing pipewire-audio
     CheckForPackageAndInstallIfMissing pavucontrol
+
+    return 0
 }
 
 function InstallAdditionalSoftware {
@@ -227,16 +231,11 @@ function InstallAdditionalSoftware {
     CheckForPackageAndInstallIfMissing network-manager-gnome
     CheckForPackageAndInstallIfMissing network-manager-openvpn-gnome
 
-    # TODO vs code
+    # Emacs + Doom dependencies
     CheckForPackageAndInstallIfMissing emacs-gtk
+    CheckForPackageAndInstallIfMissing elpa-ligature
     CheckForPackageAndInstallIfMissing ripgrep
     CheckForPackageAndInstallIfMissing fd-find
-
-    # TODO spotify
-
-    # Remote stuff
-    CheckForPackageAndInstallIfMissing sshpass
-    # TODO digital ocean
 
     # Media
     CheckForPackageAndInstallIfMissing vlc
@@ -247,6 +246,7 @@ function InstallAdditionalSoftware {
     CheckForPackageAndInstallIfMissing gparted
     CheckForPackageAndInstallIfMissing copyq
     CheckForPackageAndInstallIfMissing awscli
+    CheckForPackageAndInstallIfMissing sshpass
 
     # Game related things
     CheckForPackageAndInstallIfMissing aisleriot
@@ -283,8 +283,8 @@ function InstallWebBrowsers {
     CheckForPackageAndInstallIfMissing firefox
 
     # Ungoogled Chromium
-    dotnetCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
-    if [ "$dotnetCheck" == "" ]; then
+    chromiumCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
+    if [ "$chromiumCheck" == "" ]; then
         echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list &>/dev/null
         curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
 
