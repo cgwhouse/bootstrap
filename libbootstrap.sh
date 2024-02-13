@@ -248,6 +248,7 @@ function InstallAdditionalSoftware {
     CheckForPackageAndInstallIfMissing copyq
     CheckForPackageAndInstallIfMissing awscli
     CheckForPackageAndInstallIfMissing sshpass
+    CheckForPackageAndInstallIfMissing qflipper
 
     # Game related things
     CheckForPackageAndInstallIfMissing aisleriot
