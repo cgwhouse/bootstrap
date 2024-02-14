@@ -234,6 +234,25 @@ function InstallAdditionalSoftware {
     CheckForPackageAndInstallIfMissing ripgrep
     CheckForPackageAndInstallIfMissing fd-find
 
+    # Tiling WM utils
+    CheckForPackageAndInstallIfMissing picom
+    CheckForPackageAndInstallIfMissing lxappearance
+    CheckForPackageAndInstallIfMissing lxsession
+    CheckForPackageAndInstallIfMissing nitrogen
+    CheckForPackageAndInstallIfMissing volumeicon-alsa
+    CheckForPackageAndInstallIfMissing arandr
+
+    # qtile
+    CheckForPackageAndInstallIfMissing python-is-python3
+    CheckForPackageAndInstallIfMissing python3-pip
+    CheckForPackageAndInstallIfMissing pipx
+    CheckForPackageAndInstallIfMissing xserver-xorg
+    CheckForPackageAndInstallIfMissing xinit
+    CheckForPackageAndInstallIfMissing libpangocairo-1.0-0
+    CheckForPackageAndInstallIfMissing python3-xcffib
+    CheckForPackageAndInstallIfMissing python3-cairocffi
+    CheckForPackageAndInstallIfMissing python3-dbus-next
+
     # Media + Office
     CheckForPackageAndInstallIfMissing vlc
     CheckForPackageAndInstallIfMissing transmission-gtk
