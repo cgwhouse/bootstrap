@@ -209,6 +209,14 @@ function InstallPipewire {
     CheckForPackageAndInstallIfMissing pavucontrol
 }
 
+function InstallFlatpak {
+    echo "TASK: InstallFlatpak"
+
+    CheckForPackageAndInstallIfMissing flatpak
+    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
+    echo "...Flathub repository added"
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
