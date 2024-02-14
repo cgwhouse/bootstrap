@@ -30,8 +30,6 @@ function CheckForPackageAndInstallIfMissing {
     fi
 
     echo "...Successfully installed $1"
-
-    return 0
 }
 
 function CreateReposDirectory {
@@ -41,8 +39,6 @@ function CreateReposDirectory {
         sudo -u $username mkdir /home/$username/repos &>/dev/null
         echo "...Created repos directory"
     fi
-
-    return 0
 }
 
 function InstallCoreUtilities {
@@ -53,8 +49,6 @@ function InstallCoreUtilities {
     for package in "${packages[@]}"; do
         CheckForPackageAndInstallIfMissing "$package"
     done
-
-    return 0
 }
 
 function ConfigureCoreUtilities {
@@ -86,8 +80,6 @@ function ConfigureCoreUtilities {
         echo "ERROR: Oh My Tmux must be configured, rerun script after configuring"
         return 1
     fi
-
-    return 0
 }
 
 function InstallProprietaryGraphics {
@@ -107,8 +99,6 @@ function InstallProprietaryGraphics {
 
     # Main driver
     CheckForPackageAndInstallIfMissing nvidia-driver
-
-    return 0
 }
 
 function InstallDesktopEnvironment {
@@ -156,8 +146,6 @@ function InstallDesktopEnvironment {
         echo "ERROR: ulauncher could not be installed, install manually and rerun script"
         return 1
     fi
-
-    return 0
 }
 
 function InstallFonts {
@@ -212,8 +200,6 @@ function InstallFonts {
 
     # Noto Emoji
     CheckForPackageAndInstallIfMissing fonts-noto-color-emoji
-
-    return 0
 }
 
 function InstallPipewire {
@@ -221,8 +207,6 @@ function InstallPipewire {
 
     CheckForPackageAndInstallIfMissing pipewire-audio
     CheckForPackageAndInstallIfMissing pavucontrol
-
-    return 0
 }
 
 function InstallAdditionalSoftware {
@@ -257,8 +241,6 @@ function InstallAdditionalSoftware {
     CheckForPackageAndInstallIfMissing mgba-qt
     CheckForPackageAndInstallIfMissing lutris
     CheckForPackageAndInstallIfMissing dolphin-emu
-
-    return 0
 }
 
 function InstallDotNetCore {
@@ -266,7 +248,7 @@ function InstallDotNetCore {
 
     dotnetCheck=$(sudo apt list dotnet-sdk-8.0 2>/dev/null | grep installed)
     if [ "$dotnetCheck" == "" ]; then
-        wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb &>/dev/null
+        wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
         sudo dpkg -i packages-microsoft-prod.deb &>/dev/null
         rm packages-microsoft-prod.deb &>/dev/null
 
@@ -276,8 +258,6 @@ function InstallDotNetCore {
         CheckForPackageAndInstallIfMissing dotnet-sdk-7.0
         CheckForPackageAndInstallIfMissing dotnet-sdk-8.0
     fi
-
-    return 0
 }
 
 function InstallWebBrowsers {
@@ -303,13 +283,12 @@ function InstallWebBrowsers {
         CheckForPackageAndInstallIfMissing apt-transport-https
         CheckForPackageAndInstallIfMissing ca-certificates
 
-        distro="bookworm"
         wget -qO- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
 
         sudo tee /etc/apt/sources.list.d/librewolf.sources <<EOF >/dev/null
 Types: deb
 URIs: https://deb.librewolf.net
-Suites: $distro
+Suites: bookworm
 Components: main
 Architectures: amd64
 Signed-By: /usr/share/keyrings/librewolf.gpg
@@ -320,17 +299,13 @@ EOF
 
         CheckForPackageAndInstallIfMissing librewolf
     fi
-
-    return 0
 }
 
 function InstallOhMyZsh {
     echo "TASK: InstallOhMyZsh"
 
     if [ ! -d "/home/$username/.oh-my-zsh" ]; then
-        echo "...Installing Oh My Zsh"
+        echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
         sudo -u $username sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &>/dev/null
     fi
-
-    return 0
 }
