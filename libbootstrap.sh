@@ -304,7 +304,7 @@ function InstallWebBrowsers {
         CheckForPackageAndInstallIfMissing ca-certificates
 
         distro="bookworm"
-        wget -O- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
+        wget -qO- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
 
         sudo tee /etc/apt/sources.list.d/librewolf.sources <<EOF >/dev/null
 Types: deb
