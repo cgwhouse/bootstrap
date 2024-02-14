@@ -300,20 +300,15 @@ function InstallWebBrowsers {
     # LibreWolf
     librewolfCheck=$(sudo apt list librewolf 2>/dev/null | grep installed)
     if [ "$librewolfCheck" == "" ]; then
-        CheckForPackageAndInstallIfMissing lsb-release
-        CheckForPackageAndInstallIfMissing apt-transport-https
-        CheckForPackageAndInstallIfMissing ca-certificates
+        ! [ -d /etc/apt/keyrings ] && sudo mkdir -p /etc/apt/keyrings && sudo chmod 755 /etc/apt/keyrings &>/dev/null
 
-        distro="bookworm"
-        wget -O- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg
+        wget -O- https://download.opensuse.org/repositories/home:/bgstack15:/aftermozilla/Debian_Unstable/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/home_bgstack15_aftermozilla.gpg &>/dev/null
 
-        sudo tee /etc/apt/sources.list.d/librewolf.sources <<EOF >/dev/null
+        sudo tee /etc/apt/sources.list.d/home_bgstack15_aftermozilla.sources <<EOF >/dev/null
 Types: deb
-URIs: https://deb.librewolf.net
-Suites: $distro
-Components: main
-Architectures: amd64
-Signed-By: /usr/share/keyrings/librewolf.gpg
+URIs: https://download.opensuse.org/repositories/home:/bgstack15:/aftermozilla/Debian_Unstable/
+Suites: /
+Signed-By: /etc/apt/keyrings/home_bgstack15_aftermozilla.gpg
 EOF
 
         sudo apt update &>/dev/null
