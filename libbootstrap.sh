@@ -297,6 +297,31 @@ function InstallWebBrowsers {
         CheckForPackageAndInstallIfMissing ungoogled-chromium
     fi
 
+    # LibreWolf
+    librewolfCheck=$(sudo apt list librewolf 2>/dev/null | grep installed)
+    if [ "$librewolfCheck" == "" ]; then
+        CheckForPackageAndInstallIfMissing lsb-release
+        CheckForPackageAndInstallIfMissing apt-transport-https
+        CheckForPackageAndInstallIfMissing ca-certificates
+
+        distro="bookworm"
+        wget -O- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg
+
+        sudo tee /etc/apt/sources.list.d/librewolf.sources <<EOF >/dev/null
+Types: deb
+URIs: https://deb.librewolf.net
+Suites: $distro
+Components: main
+Architectures: amd64
+Signed-By: /usr/share/keyrings/librewolf.gpg
+EOF
+
+        sudo apt update &>/dev/null
+        aptUpdated=true
+
+        CheckForPackageAndInstallIfMissing librewolf
+    fi
+
     return 0
 }
 
