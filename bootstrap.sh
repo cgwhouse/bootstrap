@@ -73,10 +73,6 @@ if ! InstallDebGet; then
     exit 1
 fi
 
-if ! InstallAdditionalSoftware; then
-    exit 1
-fi
-
 if ! InstallDotNetCore; then
     exit 1
 fi
@@ -90,6 +86,10 @@ if ! InstallSpotify; then
 fi
 
 if ! InstallDoctl; then
+    exit 1
+fi
+
+if ! InstallAdditionalSoftware; then
     exit 1
 fi
 

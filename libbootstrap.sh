@@ -139,13 +139,6 @@ function InstallDesktopEnvironment {
 
     # Install now
     CheckForPackageAndInstallIfMissing ulauncher
-
-    # On Sid this sometimes doesn't work and need to manually install dependency
-    # Check and error if this happened
-    if ! dpkg-query -W ulauncher &>/dev/null; then
-        echo "ERROR: ulauncher could not be installed, install manually and rerun script"
-        return 1
-    fi
 }
 
 function InstallFonts {
@@ -231,65 +224,6 @@ function InstallDebGet {
         curl -sL https://raw.githubusercontent.com/wimpysworld/deb-get/main/deb-get | sudo -E bash -s install deb-get &>/dev/null
         echo "...deb-get installed"
     fi
-
-    #flathubCheck=$(flatpak remotes | grep flathub)
-    #if [ "$flathubCheck" == "" ]; then
-    #    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
-    #    echo "...Flathub repository added"
-    #fi
-}
-
-function InstallAdditionalSoftware {
-    echo "TASK: InstallAdditionalSoftware"
-
-    # NetworkManager
-    CheckForPackageAndInstallIfMissing network-manager-gnome
-    CheckForPackageAndInstallIfMissing network-manager-openvpn-gnome
-
-    # Emacs + Doom dependencies
-    CheckForPackageAndInstallIfMissing emacs-gtk
-    CheckForPackageAndInstallIfMissing elpa-ligature
-    CheckForPackageAndInstallIfMissing ripgrep
-    CheckForPackageAndInstallIfMissing fd-find
-
-    # Tiling WM utils
-    CheckForPackageAndInstallIfMissing picom
-    CheckForPackageAndInstallIfMissing lxappearance
-    CheckForPackageAndInstallIfMissing lxsession
-    CheckForPackageAndInstallIfMissing nitrogen
-    CheckForPackageAndInstallIfMissing volumeicon-alsa
-    CheckForPackageAndInstallIfMissing arandr
-
-    # qtile
-    CheckForPackageAndInstallIfMissing python-is-python3
-    CheckForPackageAndInstallIfMissing python3-pip
-    CheckForPackageAndInstallIfMissing pipx
-    CheckForPackageAndInstallIfMissing xserver-xorg
-    CheckForPackageAndInstallIfMissing xinit
-    CheckForPackageAndInstallIfMissing libpangocairo-1.0-0
-    CheckForPackageAndInstallIfMissing python3-xcffib
-    CheckForPackageAndInstallIfMissing python3-cairocffi
-    CheckForPackageAndInstallIfMissing python3-dbus-next
-
-    # Media + Office
-    CheckForPackageAndInstallIfMissing vlc
-    CheckForPackageAndInstallIfMissing transmission-gtk
-    CheckForPackageAndInstallIfMissing obs-studio
-    CheckForPackageAndInstallIfMissing libreoffice
-
-    # Misc utils
-    CheckForPackageAndInstallIfMissing gparted
-    CheckForPackageAndInstallIfMissing copyq
-    CheckForPackageAndInstallIfMissing awscli
-    CheckForPackageAndInstallIfMissing sshpass
-    CheckForPackageAndInstallIfMissing qflipper
-
-    # Game related things
-    CheckForPackageAndInstallIfMissing aisleriot
-    CheckForPackageAndInstallIfMissing gnome-mines
-    CheckForPackageAndInstallIfMissing mgba-qt
-    CheckForPackageAndInstallIfMissing lutris
-    CheckForPackageAndInstallIfMissing dolphin-emu
 }
 
 function InstallDotNetCore {
@@ -368,14 +302,70 @@ function InstallSpotify {
 function InstallDoctl {
     echo "TASK: InstallDoctl"
 
+    currentVersion="1.104.0"
+
     if ! (hash doctl 2>/dev/null); then
-        echo "doctl not installed"
-    #sudo apt update
-    #sudo apt install -y "$1"
-    #echo "...Successfully installed $1"
+        #echo "...doctl not installed, installing"
+        wget -q https://github.com/digitalocean/doctl/releases/download/latest/doctl-$currentVersion-linux-amd64.tar.gz
+        tar xf doctl-$currentVersion-linux-amd64.tar.gz &>/dev/null
+        sudo mv doctl /usr/local/bin
+        echo "...doctl installed"
     else
-        echo "doctl installed"
+        echo "doctl is installed"
     fi
+}
+
+function InstallAdditionalSoftware {
+    echo "TASK: InstallAdditionalSoftware"
+
+    # NetworkManager
+    CheckForPackageAndInstallIfMissing network-manager-gnome
+    CheckForPackageAndInstallIfMissing network-manager-openvpn-gnome
+
+    # Emacs + Doom dependencies
+    CheckForPackageAndInstallIfMissing emacs-gtk
+    CheckForPackageAndInstallIfMissing elpa-ligature
+    CheckForPackageAndInstallIfMissing ripgrep
+    CheckForPackageAndInstallIfMissing fd-find
+
+    # Tiling WM utils
+    CheckForPackageAndInstallIfMissing picom
+    CheckForPackageAndInstallIfMissing lxappearance
+    CheckForPackageAndInstallIfMissing lxsession
+    CheckForPackageAndInstallIfMissing nitrogen
+    CheckForPackageAndInstallIfMissing volumeicon-alsa
+    CheckForPackageAndInstallIfMissing arandr
+
+    # qtile
+    CheckForPackageAndInstallIfMissing python-is-python3
+    CheckForPackageAndInstallIfMissing python3-pip
+    CheckForPackageAndInstallIfMissing pipx
+    CheckForPackageAndInstallIfMissing xserver-xorg
+    CheckForPackageAndInstallIfMissing xinit
+    CheckForPackageAndInstallIfMissing libpangocairo-1.0-0
+    CheckForPackageAndInstallIfMissing python3-xcffib
+    CheckForPackageAndInstallIfMissing python3-cairocffi
+    CheckForPackageAndInstallIfMissing python3-dbus-next
+
+    # Media + Office
+    CheckForPackageAndInstallIfMissing vlc
+    CheckForPackageAndInstallIfMissing transmission-gtk
+    CheckForPackageAndInstallIfMissing obs-studio
+    CheckForPackageAndInstallIfMissing libreoffice
+
+    # Misc utils
+    CheckForPackageAndInstallIfMissing gparted
+    CheckForPackageAndInstallIfMissing copyq
+    CheckForPackageAndInstallIfMissing awscli
+    CheckForPackageAndInstallIfMissing sshpass
+    CheckForPackageAndInstallIfMissing qflipper
+
+    # Game related things
+    CheckForPackageAndInstallIfMissing aisleriot
+    CheckForPackageAndInstallIfMissing gnome-mines
+    CheckForPackageAndInstallIfMissing mgba-qt
+    CheckForPackageAndInstallIfMissing lutris
+    CheckForPackageAndInstallIfMissing dolphin-emu
 }
 
 function InstallOhMyZsh {
