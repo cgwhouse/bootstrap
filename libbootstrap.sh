@@ -350,6 +350,21 @@ EOF
     fi
 }
 
+function InstallSpotify {
+    echo "TASK: Install Spotify"
+
+    spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
+    if [ "$spotifyCheck" == "" ]; then
+        curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
+        echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
+
+        sudo apt update &>/dev/null
+        aptUpdated=true
+
+        CheckForPackageAndInstallIfMissing spotify-client
+    fi
+}
+
 function InstallOhMyZsh {
     echo "TASK: InstallOhMyZsh"
 
