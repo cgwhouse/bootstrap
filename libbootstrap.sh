@@ -342,10 +342,10 @@ function InstallSlack {
 
     slackCheck=$(sudo apt list slack-desktop 2>/dev/null | grep installed)
     if [ "$slackCheck" == "" ]; then
-        echo "test downloading slack"
         wget -q https://downloads.slack-edge.com/releases/linux/$currentVersion/prod/x64/$filename
-        echo "test slack done"
-        return 0
+        sudo dpkg -i $filename &>/dev/null
+        rm $filename
+        echo "...Slack installed"
         #echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
 
         #sudo apt update &>/dev/null
