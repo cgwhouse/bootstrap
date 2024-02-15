@@ -44,7 +44,7 @@ function CreateReposDirectory {
 function InstallCoreUtilities {
     echo "TASK: InstallCoreUtilities"
 
-    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "neofetch" "aptitude")
+    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "neofetch" "aptitude" "apt-transport-https")
 
     for package in "${packages[@]}"; do
         CheckForPackageAndInstallIfMissing "$package"
@@ -243,6 +243,27 @@ function InstallDotNetCore {
     fi
 }
 
+function InstallVisualStudioCode {
+    echo "TASK: InstallVisualStudioCode"
+
+    vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
+    if [ "$vscodeCheck" == "" ]; then
+        CheckForPackageAndInstallIfMissing gpg
+
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
+        sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
+
+        echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" >/etc/apt/sources.list.d/vscode.list
+
+        rm -f packages.microsoft.gpg
+
+        sudo apt update &>/dev/null
+        aptUpdated=true
+
+        CheckForPackageAndInstallIfMissing code
+    fi
+}
+
 function InstallWebBrowsers {
     echo "TASK: InstallWebBrowsers"
 
@@ -263,7 +284,6 @@ function InstallWebBrowsers {
     # LibreWolf
     librewolfCheck=$(sudo apt list librewolf 2>/dev/null | grep installed)
     if [ "$librewolfCheck" == "" ]; then
-        CheckForPackageAndInstallIfMissing apt-transport-https
         CheckForPackageAndInstallIfMissing ca-certificates
 
         wget -qO- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
