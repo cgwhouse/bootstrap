@@ -306,7 +306,7 @@ function InstallDoctl {
 
     if ! (hash doctl 2>/dev/null); then
         #echo "...doctl not installed, installing"
-        wget -q https://github.com/digitalocean/doctl/releases/download/latest/doctl-$currentVersion-linux-amd64.tar.gz
+        wget -q https://github.com/digitalocean/doctl/releases/latest/download/doctl-$currentVersion-linux-amd64.tar.gz
         tar xf doctl-$currentVersion-linux-amd64.tar.gz &>/dev/null
         sudo mv doctl /usr/local/bin
         echo "...doctl installed"
