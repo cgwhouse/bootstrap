@@ -90,6 +90,10 @@ if ! InstallDoctl; then
     exit 1
 fi
 
+if ! InstallSlack; then
+    exit 1
+fi
+
 if ! InstallAdditionalSoftware; then
     exit 1
 fi
