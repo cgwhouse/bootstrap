@@ -303,15 +303,14 @@ function InstallDoctl {
     echo "TASK: InstallDoctl"
 
     currentVersion="1.104.0"
+    filename="doctl-$currentVersion-linux-amd64.tar.gz"
 
     if ! (hash doctl 2>/dev/null); then
         #echo "...doctl not installed, installing"
-        wget -q https://github.com/digitalocean/doctl/releases/latest/download/doctl-$currentVersion-linux-amd64.tar.gz
-        tar xf doctl-$currentVersion-linux-amd64.tar.gz &>/dev/null
+        wget -q https://github.com/digitalocean/doctl/releases/latest/download/$filename
+        tar xf $filename &>/dev/null
         sudo mv doctl /usr/local/bin
         echo "...doctl installed"
-    else
-        echo "doctl is installed"
     fi
 }
 
