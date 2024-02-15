@@ -44,7 +44,7 @@ function CreateReposDirectory {
 function InstallCoreUtilities {
     echo "TASK: InstallCoreUtilities"
 
-    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "neofetch")
+    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "neofetch" "aptitude")
 
     for package in "${packages[@]}"; do
         CheckForPackageAndInstallIfMissing "$package"
