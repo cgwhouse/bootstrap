@@ -365,6 +365,19 @@ function InstallSpotify {
     fi
 }
 
+function InstallDoctl {
+    echo "TASK: InstallDoctl"
+
+    if ! (hash doctl 2>/dev/null); then
+        echo "doctl not installed"
+    #sudo apt update
+    #sudo apt install -y "$1"
+    #echo "...Successfully installed $1"
+    else
+        echo "doctl installed"
+    fi
+}
+
 function InstallOhMyZsh {
     echo "TASK: InstallOhMyZsh"
 

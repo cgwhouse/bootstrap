@@ -89,6 +89,10 @@ if ! InstallSpotify; then
     exit 1
 fi
 
+if ! InstallDoctl; then
+    exit 1
+fi
+
 if ! InstallOhMyZsh; then
     exit 1
 fi
