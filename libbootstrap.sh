@@ -346,12 +346,6 @@ function InstallSlack {
         sudo dpkg -i $filename &>/dev/null
         rm $filename
         echo "...Slack installed"
-        #echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
-
-        #sudo apt update &>/dev/null
-        #aptUpdated=true
-
-        #CheckForPackageAndInstallIfMissing spotify-client
     fi
 }
 
