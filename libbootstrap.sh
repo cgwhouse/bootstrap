@@ -149,7 +149,7 @@ function InstallDesktopEnvironment {
 }
 
 function InstallFonts {
-    echo "TASK: Install Fonts"
+    echo "TASK: InstallFonts"
 
     if [ ! -d "/home/$username/.local/share/fonts" ]; then
         sudo -u $username mkdir /home/$username/.local/share/fonts
@@ -351,7 +351,7 @@ EOF
 }
 
 function InstallSpotify {
-    echo "TASK: Install Spotify"
+    echo "TASK: InstallSpotify"
 
     spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
     if [ "$spotifyCheck" == "" ]; then
