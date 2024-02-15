@@ -221,6 +221,24 @@ function InstallFlatpak {
     fi
 }
 
+function InstallDebGet {
+    echo "TASK: InstallDebGet"
+
+    CheckForPackageAndInstallIfMissing lsb-release
+
+    debGetCheck=$(sudo apt list deb-get 2>/dev/null | grep installed)
+    if [ "$debGetCheck" == "" ]; then
+        curl -sL https://raw.githubusercontent.com/wimpysworld/deb-get/main/deb-get | sudo -E bash -s install deb-get &>/dev/null
+        echo "...deb-get installed"
+    fi
+
+    #flathubCheck=$(flatpak remotes | grep flathub)
+    #if [ "$flathubCheck" == "" ]; then
+    #    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
+    #    echo "...Flathub repository added"
+    #fi
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 

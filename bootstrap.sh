@@ -69,6 +69,10 @@ if ! InstallFlatpak; then
     exit 1
 fi
 
+if ! InstallDebGet; then
+    exit 1
+fi
+
 if ! InstallAdditionalSoftware; then
     exit 1
 fi
