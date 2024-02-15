@@ -46,6 +46,7 @@ if [ $server == true ]; then
     if ! InstallOhMyZsh; then
         exit 1
     fi
+
     exit 0
 fi
 
@@ -70,10 +71,6 @@ if ! InstallFlatpak; then
 fi
 
 if ! InstallDebGet; then
-    exit 1
-fi
-
-if ! InstallDotNetCore; then
     exit 1
 fi
 
