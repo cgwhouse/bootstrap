@@ -256,6 +256,15 @@ function InstallDotNetCore {
     fi
 }
 
+function InstallNvm {
+    echo "TASK: InstallNvm"
+
+    if [ ! -d /home/$username/.nvm ]; then
+        wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash &>/dev/null
+        echo "...nvm installed"
+    fi
+}
+
 function InstallVisualStudioCode {
     echo "TASK: InstallVisualStudioCode"
 
@@ -494,12 +503,12 @@ function DownloadTheming {
 
     # Wallpapers
     if [ ! -d /home/$username/Pictures/wallpapers/catppuccin ]; then
-       mkdir /home/$username/Pictures/wallpapers/catppuccin
-       mkdir /home/$username/repos/theming/catppuccin-wallpapers
-       git clone https://github.com/Gingeh/wallpapers.git /home/$username/repos/theming/catppuccin-wallpapers &>/dev/null
-       cp -r /home/$username/repos/theming/catppuccin-wallpapers/*/*.png /home/$username/Pictures/wallpapers/catppuccin &>/dev/null
-       cp -r /home/$username/repos/theming/catppuccin-wallpapers/*/*.jpg /home/$username/Pictures/wallpapers/catppuccin &>/dev/null
-       echo "...Catppuccin wallpaper pack installed"
+        mkdir /home/$username/Pictures/wallpapers/catppuccin
+        mkdir /home/$username/repos/theming/catppuccin-wallpapers
+        git clone https://github.com/Gingeh/wallpapers.git /home/$username/repos/theming/catppuccin-wallpapers &>/dev/null
+        cp -r /home/$username/repos/theming/catppuccin-wallpapers/*/*.png /home/$username/Pictures/wallpapers/catppuccin &>/dev/null
+        cp -r /home/$username/repos/theming/catppuccin-wallpapers/*/*.jpg /home/$username/Pictures/wallpapers/catppuccin &>/dev/null
+        echo "...Catppuccin wallpaper pack installed"
     fi
 
     # Tmux
