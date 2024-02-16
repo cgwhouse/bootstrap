@@ -390,7 +390,7 @@ function InstallVirtManager {
     fi
 
     # Set autostart on virtual network
-    virshNetworkCheck=$(sudo virsh net-list --autostart | grep default)
+    virshNetworkCheck=$(sudo virsh net-list --all --autostart | grep default)
     if [ "$virshNetworkCheck" == "" ]; then
         sudo virsh net-autostart default &>/dev/null
         echo "...Virtual network set to autostart"
