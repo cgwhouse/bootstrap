@@ -453,11 +453,14 @@ function DownloadTheming {
     fi
 
     # TODO
-    # ulauncher
     # plank
     # grub
     # wallpapers
-    # tmux command output
+
+    # Tmux
+    if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" /home/$username/.tmux.conf.local; then
+        echo "NOTE: Set tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'catppuccin/tmux'"
+    fi
 }
 
 function InstallAdditionalSoftware {
