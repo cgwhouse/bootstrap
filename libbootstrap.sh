@@ -91,7 +91,7 @@ function ConfigureCoreUtilities {
     # Ensure Tmux is fully configured, exit if not
     # Check for commented out mouse mode as the check, the default config has this
     if grep -Fxq "#set -g mouse on" /home/$username/.tmux.conf.local; then
-        echo "WARNING: Oh My Tmux still needs to be configured"
+        echo "...WARNING: Oh My Tmux still needs to be configured"
     fi
 }
 
@@ -489,7 +489,7 @@ function DownloadTheming {
 
     grubThemeCheck=$(grep "/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt" </etc/default/grub)
     if [ "$grubThemeCheck" == "" ]; then
-        echo "NOTE: Set grub theme by adding GRUB_THEME=\"/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt\" to /etc/default/grub, then running update-grub"
+        echo "...NOTE: Set grub theme by adding GRUB_THEME=\"/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt\" to /etc/default/grub, then running update-grub"
     fi
 
     # TODO
