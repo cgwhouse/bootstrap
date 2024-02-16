@@ -407,6 +407,23 @@ function InstallVirtManager {
 function DownloadTheming {
     echo "TASK: DownloadTheming"
 
+    # GTK
+    InstallPackageIfMissing gnome-themes-extra
+
+    if [ ! -d /home/$username/.themes ]; then
+        sudo -u $username mkdir /home/$username/.themes &>/dev/null
+        echo "...Created .themes directory"
+    fi
+
+    if [ ! -d /home/$username/.themes/Catppuccin-Mocha-Standard-Green-Dark ]; then
+        wget -q https://github.com/catppuccin/gtk/releases/latest/download/Catppuccin-Mocha-Standard-Green-Dark.zip
+        unar -d Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
+        mv Catppuccin-Mocha-Standard-Green-Dark/Catppuccin-Mocha-Standard-Green-Dark /home/$username/.themes &>/dev/null
+        rm -rf Catppuccin-Mocha-Standard-Green-Dark &>/dev/null
+        rm -f Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
+        echo "...Installed Catppuccin GTK theme"
+    fi
+
     # TODO
     # gtk
     # ulauncher

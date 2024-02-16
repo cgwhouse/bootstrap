@@ -98,6 +98,10 @@ if ! InstallVirtManager; then
     exit 1
 fi
 
+if ! DownloadTheming; then
+    exit 1
+fi
+
 if ! InstallAdditionalSoftware; then
     exit 1
 fi
