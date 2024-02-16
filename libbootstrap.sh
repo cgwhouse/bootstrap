@@ -36,17 +36,17 @@ function CreateDirectories {
     echo "TASK: CreateDirectories"
 
     if [ ! -d /home/$username/repos ]; then
-        sudo -u $username mkdir /home/$username/repos &>/dev/null
+        mkdir /home/$username/repos &>/dev/null
         echo "...Created repos directory"
     fi
 
     if [ ! -d /home/$username/repos/theming ]; then
-        sudo -u $username mkdir /home/$username/repos/theming &>/dev/null
+        mkdir /home/$username/repos/theming &>/dev/null
         echo "...Created theming directory"
     fi
 
     if [ ! -d /home/$username/Pictures/wallpapers ]; then
-        sudo -u $username mkdir /home/$username/Pictures/wallpapers &>/dev/null
+        mkdir /home/$username/Pictures/wallpapers &>/dev/null
         echo "...Created wallpapers directory"
     fi
 }
@@ -77,9 +77,9 @@ function ConfigureCoreUtilities {
     if [ ! -d $ohMyTmuxPath ]; then
         echo "...Installing Oh My Tmux"
 
-        sudo -u $username git clone https://github.com/gpakosz/.tmux.git $ohMyTmuxPath &>/dev/null
-        sudo -u $username ln -s -f $ohMyTmuxPath/.tmux.conf /home/$username/.tmux.conf &>/dev/null
-        sudo -u $username cp $ohMyTmuxPath/.tmux.conf.local /home/$username/ &>/dev/null
+        git clone https://github.com/gpakosz/.tmux.git $ohMyTmuxPath &>/dev/null
+        ln -s -f $ohMyTmuxPath/.tmux.conf /home/$username/.tmux.conf &>/dev/null
+        cp $ohMyTmuxPath/.tmux.conf.local /home/$username/ &>/dev/null
 
         echo "...Successfully installed Oh My Tmux"
     fi
@@ -133,8 +133,8 @@ function InstallDesktopEnvironment {
 
     # Setup keyring using gnupg and export
     InstallPackageIfMissing gnupg
-    sudo -u $username gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176 &>/dev/null
-    sudo -u $username gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
+    gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176 &>/dev/null
+    gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
 
     # Add source with exported keyring to sources
     echo "deb [signed-by=/usr/share/keyrings/ulauncher-archive-keyring.gpg] \
@@ -154,7 +154,7 @@ function InstallFonts {
     echo "TASK: InstallFonts"
 
     if [ ! -d "/home/$username/.local/share/fonts" ]; then
-        sudo -u $username mkdir /home/$username/.local/share/fonts
+        mkdir /home/$username/.local/share/fonts
         echo "...Fonts directory created"
     fi
 
@@ -421,7 +421,7 @@ function DownloadTheming {
     InstallPackageIfMissing gnome-themes-extra
 
     if [ ! -d /home/$username/.themes ]; then
-        sudo -u $username mkdir /home/$username/.themes &>/dev/null
+        mkdir /home/$username/.themes &>/dev/null
         echo "...Created .themes directory"
     fi
 
@@ -435,20 +435,20 @@ function DownloadTheming {
     fi
 
     if [ ! -d /home/$username/.local/share/icons ]; then
-        sudo -u $username mkdir /home/$username/.local/share/icons &>/dev/null
+        mkdir /home/$username/.local/share/icons &>/dev/null
         echo "...Created icons directory"
     fi
 
     if [ ! -d /home/$username/.local/share/icons/Tela-circle-dark ]; then
         mkdir /home/$username/repos/theming/Tela-circle-dark
         git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git /home/$username/repos/theming/Tela-circle-dark &>/dev/null
-        sudo -u $username /home/$username/repos/theming/Tela-circle-dark/install.sh -a -c -d /home/$username/.local/share/icons &>/dev/null
+        /home/$username/repos/theming/Tela-circle-dark/install.sh -a -c -d /home/$username/.local/share/icons &>/dev/null
         echo "...Installed Tela-circle icon themes"
     fi
 
     # Ulauncher
     if [ ! -d /home/$username/.config/ulauncher/user-themes/Catppuccin-Mocha-Green ]; then
-        sudo -u $username python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
+        python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
         echo "...Installed Ulauncher Catppuccin themes"
     fi
 
@@ -518,6 +518,6 @@ function InstallOhMyZsh {
 
     if [ ! -d "/home/$username/.oh-my-zsh" ]; then
         echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
-        sudo -u $username sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &>/dev/null
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &>/dev/null
     fi
 }

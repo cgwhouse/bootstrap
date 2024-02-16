@@ -3,10 +3,10 @@
 source ./libbootstrap.sh
 
 # Ensure root
-if [ "$EUID" -ne 0 ]; then
-    printf "\nRoot is required\n\n"
-    exit 1
-fi
+#if [ "$EUID" -ne 0 ]; then
+#    printf "\nRoot is required\n\n"
+#    exit 1
+#fi
 
 # Validate no script arguments
 if [ $# -gt 0 ]; then
