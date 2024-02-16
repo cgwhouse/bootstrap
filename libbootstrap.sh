@@ -233,8 +233,7 @@ function InstallFlatpak {
 
     flathubCheck=$(flatpak remotes | grep flathub)
     if [ "$flathubCheck" == "" ]; then
-        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
-        echo "...Flathub repository added"
+        echo "...WARNING: Flathub repository must be added: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
     fi
 }
 
