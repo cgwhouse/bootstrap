@@ -437,7 +437,7 @@ function DownloadTheming {
     if [ ! -d /home/$username/.local/share/icons/Tela-circle-dark ]; then
         mkdir /home/$username/repos/theming/Tela-circle-dark
         git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git /home/$username/repos/theming/Tela-circle-dark &>/dev/null
-        sudo -u $username /home/$username/repos/theming/Tela-circle-dark/install.sh -a -c &>/dev/null
+        sudo -u $username /home/$username/repos/theming/Tela-circle-dark/install.sh -a -c -d /home/$username/.local/share/icons &>/dev/null
         echo "...Installed Tela-circle-dark icon theme"
     fi
 
