@@ -531,9 +531,10 @@ function DownloadTheming {
 function InstallAndroidStudio {
     echo "TASK: InstallAndroidStudio"
 
-    if [ ! -d "$HOME"/android-studio ]; then
-        wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2023.1.1.28/android-studio-2023.1.1.28-linux.tar.gz
-    fi
+    #if [ ! -d "$HOME"/android-studio ]; then
+        #wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2023.1.1.28/android-studio-2023.1.1.28-linux.tar.gz
+        tar -xvzf /path/to/archive/android-studio-2021.1.1.23-linux.tar.gz &>/dev/null
+    #fi
 }
 
 function InstallAdditionalSoftware {
