@@ -8,6 +8,7 @@ aptUpdated=false
 # Versions of a couple things that are manual
 doctlVersion="1.104.0"
 slackVersion="4.36.140"
+androidStudioVersion="2023.1.1.28"
 
 function InstallPackageIfMissing {
     # Check for package using apt list
@@ -91,10 +92,10 @@ function ConfigureCoreUtilities {
     echo "TASK: ConfigureCoreUtilities"
 
     # Ensure zsh is default shell for user
-    userShell=$(getent passwd $username | awk -F: '{print $NF}')
+    userShell=$(getent passwd "$USER" | awk -F: '{print $NF}')
     if [ "$userShell" != "/usr/bin/zsh" ]; then
         echo "...Changing default shell to zsh"
-        sudo usermod --shell /usr/bin/zsh $username &>/dev/null
+        sudo usermod --shell /usr/bin/zsh "$USER" &>/dev/null
         echo "...Default shell changed to zsh"
     fi
 
@@ -448,9 +449,9 @@ function InstallVirtManager {
     fi
 
     # Add regular user to libvirt group
-    groupCheck=$(groups $username | grep libvirt)
+    groupCheck=$(groups "$USER" | grep libvirt)
     if [ "$groupCheck" == "" ]; then
-        sudo usermod -aG libvirt $username &>/dev/null
+        sudo usermod -aG libvirt "$USER" &>/dev/null
         echo "...User added to libvirt group"
     fi
 }
@@ -550,9 +551,9 @@ function InstallAndroidStudio {
 
     if [ ! -d "$HOME"/android-studio ]; then
         echo "...Download Android Studio"
-        wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2023.1.1.28/android-studio-2023.1.1.28-linux.tar.gz
+        wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/$androidStudioVersion/android-studio-$androidStudioVersion-linux.tar.gz
         echo "...Unpacking Android Studio"
-        tar -xvzf android-studio-2023.1.1.28-linux.tar.gz &>/dev/null
+        tar -xvzf android-studio-$androidStudioVersion-linux.tar.gz &>/dev/null
         mv android-studio "$HOME"
         echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
     fi

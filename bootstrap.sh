@@ -10,7 +10,7 @@ if [ $# -gt 0 ]; then
 fi
 
 # Ensure .env
-if [ -z "$server" ] || [ -z "$username" ]; then
+if [ -z "$server" ]; then
     printf "\nERROR: .env file is missing\n\n"
     exit 1
 fi
