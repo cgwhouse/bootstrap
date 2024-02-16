@@ -100,6 +100,10 @@ if ! DownloadTheming; then
     exit 1
 fi
 
+if ! InstallAndroidStudio; then
+    exit 1
+fi
+
 if ! InstallAdditionalSoftware; then
     exit 1
 fi
