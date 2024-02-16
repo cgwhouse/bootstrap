@@ -452,8 +452,25 @@ function DownloadTheming {
         echo "...Installed Ulauncher Catppuccin themes"
     fi
 
+    # Plank
+    if [ ! -d /home/$username/.local/share/plank ]; then
+        mkdir /home/$username/.local/share/plank
+        echo "...Created plank directory"
+    fi
+
+    if [ ! -d /home/$username/.local/share/plank/themes ]; then
+        mkdir /home/$username/.local/share/plank/themes
+        echo "...Created plank themes directory"
+    fi
+
+    if [ ! -d /home/$username/.local/share/plank/themes/Catppuccin-mocha ]; then
+        mkdir /home/$username/repos/theming/catppuccin-plank
+        git clone https://github.com/catppuccin/plank.git /home/$username/repos/theming/catppuccin-plank &>/dev/null
+        cp -r /home/$username/repos/theming/catppuccin-plank/src/Catppuccin-mocha /home/$username/.local/share/plank/themes &>/dev/null
+        echo "...Installed Catppuccin plank theme"
+    fi
+
     # TODO
-    # plank
     # grub
     # wallpapers
 
