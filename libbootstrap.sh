@@ -5,6 +5,10 @@ source ./.env &>/dev/null
 
 aptUpdated=false
 
+# Versions of a couple things that are manual
+doctlVersion="1.104.0"
+slackVersion="4.36.140"
+
 function InstallPackageIfMissing {
     # Check for package using apt list
     packageCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
@@ -331,11 +335,9 @@ function InstallSpotify {
 function InstallDoctl {
     echo "TASK: InstallDoctl"
 
-    currentVersion="1.104.0"
-    filename="doctl-$currentVersion-linux-amd64.tar.gz"
+    filename="doctl-$doctlVersion-linux-amd64.tar.gz"
 
     if ! (hash doctl 2>/dev/null); then
-        #echo "...doctl not installed, installing"
         wget -q https://github.com/digitalocean/doctl/releases/latest/download/$filename
         tar xf $filename &>/dev/null
         sudo mv doctl /usr/local/bin
@@ -347,12 +349,11 @@ function InstallDoctl {
 function InstallSlack {
     echo "TASK: InstallSlack"
 
-    currentVersion="4.36.140"
-    filename="slack-desktop-$currentVersion-amd64.deb"
+    filename="slack-desktop-$slackVersion-amd64.deb"
 
     slackCheck=$(sudo apt list slack-desktop 2>/dev/null | grep installed)
     if [ "$slackCheck" == "" ]; then
-        wget -q https://downloads.slack-edge.com/releases/linux/$currentVersion/prod/x64/$filename
+        wget -q https://downloads.slack-edge.com/releases/linux/$slackVersion/prod/x64/$filename
         sudo dpkg -i $filename &>/dev/null
         rm $filename
         echo "...Slack installed"
@@ -471,6 +472,24 @@ function DownloadTheming {
         git clone https://github.com/catppuccin/plank.git /home/$username/repos/theming/catppuccin-plank &>/dev/null
         cp -r /home/$username/repos/theming/catppuccin-plank/src/Catppuccin-mocha /home/$username/.local/share/plank/themes &>/dev/null
         echo "...Installed Catppuccin plank theme"
+    fi
+
+    # Grub
+    if [ ! -d /usr/share/grub/themes ]; then
+        sudo mkdir /usr/share/grub/themes
+        echo "...Created grub themes directory"
+    fi
+
+    if [ ! -d /usr/share/grub/themes/catppuccin-mocha-grub-theme ]; then
+        mkdir /home/$username/repos/theming/catppuccin-grub
+        git clone https://github.com/catppuccin/grub.git /home/$username/repos/theming/catppuccin-grub &>/dev/null
+        sudo cp -r /home/$username/repos/theming/catppuccin-grub/src/catppuccin-mocha-grub-theme /usr/share/grub/themes &>/dev/null
+        echo "...Installed Catppuccin grub theme to themes directory"
+    fi
+
+    grubThemeCheck=$(grep "/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt" </etc/default/grub)
+    if [ "$grubThemeCheck" == "" ]; then
+        echo "NOTE: Set grub theme by adding GRUB_THEME=\"/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt\" to /etc/default/grub, then running update-grub"
     fi
 
     # TODO
