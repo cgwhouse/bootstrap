@@ -492,9 +492,15 @@ function DownloadTheming {
         echo "...NOTE: Set grub theme by adding GRUB_THEME=\"/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt\" to /etc/default/grub, then running update-grub"
     fi
 
-    # TODO
-    # grub
-    # wallpapers
+    # Wallpapers
+    if [ ! -d /home/$username/Pictures/wallpapers/catppuccin ]; then
+       mkdir /home/$username/Pictures/wallpapers/catppuccin
+       mkdir /home/$username/repos/theming/catppuccin-wallpapers
+       git clone https://github.com/Gingeh/wallpapers.git /home/$username/repos/theming/catppuccin-wallpapers &>/dev/null
+       cp -r /home/$username/repos/theming/catppuccin-wallpapers/*/*.png /home/$username/Pictures/wallpapers/catppuccin &>/dev/null
+       cp -r /home/$username/repos/theming/catppuccin-wallpapers/*/*.jpg /home/$username/Pictures/wallpapers/catppuccin &>/dev/null
+       echo "...Catppuccin wallpaper pack installed"
+    fi
 
     # Tmux
     if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" /home/$username/.tmux.conf.local; then
