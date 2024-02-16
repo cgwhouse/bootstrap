@@ -25,7 +25,7 @@ fi
 
 printf "\n"
 
-if ! CreateReposDirectory; then
+if ! CreateDirectories; then
     exit 1
 fi
 
