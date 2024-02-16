@@ -5,7 +5,7 @@ source ./libbootstrap.sh
 # Validate no script arguments
 if [ $# -gt 0 ]; then
     printf "\nUsage:\n\n"
-    printf "sudo ./bootstrap.sh\n\n"
+    printf "./bootstrap.sh\n\n"
     exit 1
 fi
 
