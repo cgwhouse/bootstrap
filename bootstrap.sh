@@ -35,6 +35,10 @@ if ! InstallDotNetCore; then
     exit 1
 fi
 
+if ! InstallNvm; then
+    exit 1
+fi
+
 # Exit with minimal workload if server bootstrap
 if [ $server == true ]; then
     if ! InstallOhMyZsh; then
