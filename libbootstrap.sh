@@ -387,8 +387,11 @@ function InstallVirtManager {
     InstallPackageIfMissing tuned
 
     # Ensure libvirtd and tuned services are enabled
+    # This service will not stay running if in a VM, so only do this part if no VM detected
+    vmCheck=$(grep hypervisor </proc/cpuinfo)
+
     libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
-    if [ "$libvirtdCheck" == "inactive" ]; then
+    if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
         sudo systemctl enable --now libvirtd.service &>/dev/null
         echo "...libvirtd service enabled"
     fi
