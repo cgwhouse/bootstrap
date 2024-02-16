@@ -94,6 +94,10 @@ if ! InstallSlack; then
     exit 1
 fi
 
+if ! InstallVirtManager; then
+    exit 1
+fi
+
 if ! InstallAdditionalSoftware; then
     exit 1
 fi

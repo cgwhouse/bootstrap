@@ -5,7 +5,7 @@ source ./.env &>/dev/null
 
 aptUpdated=false
 
-function CheckForPackageAndInstallIfMissing {
+function InstallPackageIfMissing {
     # Check for package using apt list
     packageCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
     if [ "$packageCheck" != "" ]; then
@@ -47,7 +47,7 @@ function InstallCoreUtilities {
     packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "neofetch" "aptitude" "apt-transport-https")
 
     for package in "${packages[@]}"; do
-        CheckForPackageAndInstallIfMissing "$package"
+        InstallPackageIfMissing "$package"
     done
 }
 
@@ -77,8 +77,7 @@ function ConfigureCoreUtilities {
     # Ensure Tmux is fully configured, exit if not
     # Check for commented out mouse mode as the check, the default config has this
     if grep -Fxq "#set -g mouse on" /home/$username/.tmux.conf.local; then
-        echo "ERROR: Oh My Tmux must be configured, rerun script after configuring"
-        return 1
+        echo "WARNING: Oh My Tmux still needs to be configured"
     fi
 }
 
@@ -92,28 +91,28 @@ function InstallProprietaryGraphics {
     fi
 
     # Kernel headers
-    CheckForPackageAndInstallIfMissing linux-headers-amd64
+    InstallPackageIfMissing linux-headers-amd64
 
     # non-free firmware
-    CheckForPackageAndInstallIfMissing firmware-misc-nonfree
+    InstallPackageIfMissing firmware-misc-nonfree
 
     # Main driver
-    CheckForPackageAndInstallIfMissing nvidia-driver
+    InstallPackageIfMissing nvidia-driver
 }
 
 function InstallDesktopEnvironment {
     echo "TASK: InstallDesktopEnvironment"
 
     # Display manager
-    CheckForPackageAndInstallIfMissing lightdm
+    InstallPackageIfMissing lightdm
 
     # Standard MATE + extras
-    CheckForPackageAndInstallIfMissing mate-desktop-environment
-    CheckForPackageAndInstallIfMissing mate-desktop-environment-extras
-    CheckForPackageAndInstallIfMissing xscreensaver
+    InstallPackageIfMissing mate-desktop-environment
+    InstallPackageIfMissing mate-desktop-environment-extras
+    InstallPackageIfMissing xscreensaver
 
     # Dock
-    CheckForPackageAndInstallIfMissing plank
+    InstallPackageIfMissing plank
 
     # App Launcher (requires extra setup)
 
@@ -123,7 +122,7 @@ function InstallDesktopEnvironment {
     fi
 
     # Setup keyring using gnupg and export
-    CheckForPackageAndInstallIfMissing gnupg
+    InstallPackageIfMissing gnupg
     sudo -u $username gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176 &>/dev/null
     sudo -u $username gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
 
@@ -138,7 +137,7 @@ function InstallDesktopEnvironment {
     aptUpdated=true
 
     # Install now
-    CheckForPackageAndInstallIfMissing ulauncher
+    InstallPackageIfMissing ulauncher
 }
 
 function InstallFonts {
@@ -150,10 +149,10 @@ function InstallFonts {
     fi
 
     # MSFT
-    CheckForPackageAndInstallIfMissing ttf-mscorefonts-installer
+    InstallPackageIfMissing ttf-mscorefonts-installer
 
     # Fira Code + Nerd Font
-    CheckForPackageAndInstallIfMissing fonts-firacode
+    InstallPackageIfMissing fonts-firacode
 
     firaCodeNerdFontCheck="/home/$username/.local/share/fonts/FiraCodeNerdFont-Regular.ttf"
     if [ ! -f $firaCodeNerdFontCheck ]; then
@@ -167,7 +166,7 @@ function InstallFonts {
     fi
 
     # Ubuntu + Nerd Font + UbuntuMono Nerd Font
-    CheckForPackageAndInstallIfMissing fonts-ubuntu
+    InstallPackageIfMissing fonts-ubuntu
 
     ubuntuNerdFontCheck="/home/$username/.local/share/fonts/UbuntuNerdFont-Regular.ttf"
     if [ ! -f $ubuntuNerdFontCheck ]; then
@@ -192,20 +191,20 @@ function InstallFonts {
     fi
 
     # Noto Emoji
-    CheckForPackageAndInstallIfMissing fonts-noto-color-emoji
+    InstallPackageIfMissing fonts-noto-color-emoji
 }
 
 function InstallPipewire {
     echo "TASK: InstallPipewire"
 
-    CheckForPackageAndInstallIfMissing pipewire-audio
-    CheckForPackageAndInstallIfMissing pavucontrol
+    InstallPackageIfMissing pipewire-audio
+    InstallPackageIfMissing pavucontrol
 }
 
 function InstallFlatpak {
     echo "TASK: InstallFlatpak"
 
-    CheckForPackageAndInstallIfMissing flatpak
+    InstallPackageIfMissing flatpak
 
     flathubCheck=$(flatpak remotes | grep flathub)
     if [ "$flathubCheck" == "" ]; then
@@ -217,7 +216,7 @@ function InstallFlatpak {
 function InstallDebGet {
     echo "TASK: InstallDebGet"
 
-    CheckForPackageAndInstallIfMissing lsb-release
+    InstallPackageIfMissing lsb-release
 
     debGetCheck=$(sudo apt list deb-get 2>/dev/null | grep installed)
     if [ "$debGetCheck" == "" ]; then
@@ -238,8 +237,8 @@ function InstallDotNetCore {
         sudo apt update &>/dev/null
         aptUpdated=true
 
-        CheckForPackageAndInstallIfMissing dotnet-sdk-7.0
-        CheckForPackageAndInstallIfMissing dotnet-sdk-8.0
+        InstallPackageIfMissing dotnet-sdk-7.0
+        InstallPackageIfMissing dotnet-sdk-8.0
     fi
 }
 
@@ -248,7 +247,7 @@ function InstallVisualStudioCode {
 
     vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
     if [ "$vscodeCheck" == "" ]; then
-        CheckForPackageAndInstallIfMissing gpg
+        InstallPackageIfMissing gpg
 
         wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
         sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
@@ -260,14 +259,14 @@ function InstallVisualStudioCode {
         sudo apt update &>/dev/null
         aptUpdated=true
 
-        CheckForPackageAndInstallIfMissing code
+        InstallPackageIfMissing code
     fi
 }
 
 function InstallWebBrowsers {
     echo "TASK: InstallWebBrowsers"
 
-    CheckForPackageAndInstallIfMissing firefox
+    InstallPackageIfMissing firefox
 
     # Ungoogled Chromium
     chromiumCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
@@ -278,13 +277,13 @@ function InstallWebBrowsers {
         sudo apt update &>/dev/null
         aptUpdated=true
 
-        CheckForPackageAndInstallIfMissing ungoogled-chromium
+        InstallPackageIfMissing ungoogled-chromium
     fi
 
     # LibreWolf
     librewolfCheck=$(sudo apt list librewolf 2>/dev/null | grep installed)
     if [ "$librewolfCheck" == "" ]; then
-        CheckForPackageAndInstallIfMissing ca-certificates
+        InstallPackageIfMissing ca-certificates
 
         wget -qO- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
 
@@ -300,7 +299,7 @@ EOF
         sudo apt update &>/dev/null
         aptUpdated=true
 
-        CheckForPackageAndInstallIfMissing librewolf
+        InstallPackageIfMissing librewolf
     fi
 }
 
@@ -315,7 +314,7 @@ function InstallSpotify {
         sudo apt update &>/dev/null
         aptUpdated=true
 
-        CheckForPackageAndInstallIfMissing spotify-client
+        InstallPackageIfMissing spotify-client
     fi
 }
 
@@ -330,6 +329,7 @@ function InstallDoctl {
         wget -q https://github.com/digitalocean/doctl/releases/latest/download/$filename
         tar xf $filename &>/dev/null
         sudo mv doctl /usr/local/bin
+        rm -f $filename
         echo "...doctl installed"
     fi
 }
@@ -349,57 +349,124 @@ function InstallSlack {
     fi
 }
 
+function InstallVirtManager {
+    echo "TASK: InstallVirtManager"
+
+    # Compatibility checks
+    lscpuCheck=$(lscpu | grep VT-x)
+    if [ "$lscpuCheck" == "" ]; then
+        return 0
+    fi
+
+    uname=$(uname -r)
+    zgrepCheck=$(zgrep CONFIG_KVM /boot/config-"$uname" | grep "CONFIG_KVM_GUEST=y")
+    if [ "$zgrepCheck" == "" ]; then
+        return 0
+    fi
+
+    InstallPackageIfMissing qemu-system-x86
+    InstallPackageIfMissing libvirt-daemon-system
+    InstallPackageIfMissing virtinst
+    InstallPackageIfMissing virt-manager
+    InstallPackageIfMissing virt-viewer
+    InstallPackageIfMissing ovmf
+    InstallPackageIfMissing swtpm
+    InstallPackageIfMissing qemu-utils
+    InstallPackageIfMissing guestfs-tools
+    InstallPackageIfMissing libosinfo-bin
+    InstallPackageIfMissing tuned
+
+    # Ensure libvirtd and tuned services are enabled
+    libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
+    if [ "$libvirtdCheck" == "inactive" ]; then
+        sudo systemctl enable libvirtd.service &>/dev/null
+        echo "...libvirtd service enabled"
+    fi
+
+    tunedCheck=$(sudo systemctl is-active tuned.service)
+    if [ "$tunedCheck" == "inactive" ]; then
+        sudo systemctl enable tuned.service &>/dev/null
+        echo "...tuned service enabled"
+    fi
+
+    # Set autostart on virtual network
+    virshNetworkCheck=$(sudo virsh net-list --autostart | grep default)
+    if [ "$virshNetworkCheck" == "" ]; then
+        sudo virsh net-autostart default &>/dev/null
+        echo "...Virtual network set to autostart"
+    fi
+
+    # Add regular user to libvirt group
+    groupCheck=$(groups $username | grep libvirt)
+    if [ "$groupCheck" == "" ]; then
+        sudo usermod -aG libvirt $username &>/dev/null
+        echo "...User added to libvirt group"
+    fi
+}
+
+function DownloadTheming {
+    echo "TASK: DownloadTheming"
+
+    # TODO
+    # gtk
+    # ulauncher
+    # plank
+    # grub
+    # wallpapers
+    # tmux command output
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
     # NetworkManager
-    CheckForPackageAndInstallIfMissing network-manager-gnome
-    CheckForPackageAndInstallIfMissing network-manager-openvpn-gnome
+    InstallPackageIfMissing network-manager-gnome
+    InstallPackageIfMissing network-manager-openvpn-gnome
 
     # Emacs + Doom dependencies
-    CheckForPackageAndInstallIfMissing emacs-gtk
-    CheckForPackageAndInstallIfMissing elpa-ligature
-    CheckForPackageAndInstallIfMissing ripgrep
-    CheckForPackageAndInstallIfMissing fd-find
+    InstallPackageIfMissing emacs-gtk
+    InstallPackageIfMissing elpa-ligature
+    InstallPackageIfMissing ripgrep
+    InstallPackageIfMissing fd-find
 
     # Tiling WM utils
-    CheckForPackageAndInstallIfMissing picom
-    CheckForPackageAndInstallIfMissing lxappearance
-    CheckForPackageAndInstallIfMissing lxsession
-    CheckForPackageAndInstallIfMissing nitrogen
-    CheckForPackageAndInstallIfMissing volumeicon-alsa
-    CheckForPackageAndInstallIfMissing arandr
+    InstallPackageIfMissing picom
+    InstallPackageIfMissing lxappearance
+    InstallPackageIfMissing lxsession
+    InstallPackageIfMissing nitrogen
+    InstallPackageIfMissing volumeicon-alsa
+    InstallPackageIfMissing arandr
 
     # qtile
-    CheckForPackageAndInstallIfMissing python-is-python3
-    CheckForPackageAndInstallIfMissing python3-pip
-    CheckForPackageAndInstallIfMissing pipx
-    CheckForPackageAndInstallIfMissing xserver-xorg
-    CheckForPackageAndInstallIfMissing xinit
-    CheckForPackageAndInstallIfMissing libpangocairo-1.0-0
-    CheckForPackageAndInstallIfMissing python3-xcffib
-    CheckForPackageAndInstallIfMissing python3-cairocffi
-    CheckForPackageAndInstallIfMissing python3-dbus-next
+    InstallPackageIfMissing python-is-python3
+    InstallPackageIfMissing python3-pip
+    InstallPackageIfMissing pipx
+    InstallPackageIfMissing xserver-xorg
+    InstallPackageIfMissing xinit
+    InstallPackageIfMissing libpangocairo-1.0-0
+    InstallPackageIfMissing python3-xcffib
+    InstallPackageIfMissing python3-cairocffi
+    InstallPackageIfMissing python3-dbus-next
 
     # Media + Office
-    CheckForPackageAndInstallIfMissing vlc
-    CheckForPackageAndInstallIfMissing transmission-gtk
-    CheckForPackageAndInstallIfMissing obs-studio
-    CheckForPackageAndInstallIfMissing libreoffice
+    InstallPackageIfMissing vlc
+    InstallPackageIfMissing transmission-gtk
+    InstallPackageIfMissing obs-studio
+    InstallPackageIfMissing libreoffice
 
     # Misc utils
-    CheckForPackageAndInstallIfMissing gparted
-    CheckForPackageAndInstallIfMissing copyq
-    CheckForPackageAndInstallIfMissing awscli
-    CheckForPackageAndInstallIfMissing sshpass
-    CheckForPackageAndInstallIfMissing qflipper
+    InstallPackageIfMissing gparted
+    InstallPackageIfMissing copyq
+    InstallPackageIfMissing awscli
+    InstallPackageIfMissing sshpass
+    InstallPackageIfMissing qflipper
 
     # Game related things
-    CheckForPackageAndInstallIfMissing aisleriot
-    CheckForPackageAndInstallIfMissing gnome-mines
-    CheckForPackageAndInstallIfMissing mgba-qt
-    CheckForPackageAndInstallIfMissing lutris
-    CheckForPackageAndInstallIfMissing dolphin-emu
+    InstallPackageIfMissing aisleriot
+    InstallPackageIfMissing gnome-mines
+    InstallPackageIfMissing mgba-qt
+    InstallPackageIfMissing lutris
+    InstallPackageIfMissing dolphin-emu
 }
 
 function InstallOhMyZsh {
