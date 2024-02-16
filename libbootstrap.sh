@@ -49,6 +49,11 @@ function CreateDirectories {
         echo "...Created theming directory"
     fi
 
+    if [ ! -d /home/$username/Pictures ]; then
+        mkdir /home/$username/Pictures &>/dev/null
+        echo "...Created Pictures directory"
+    fi
+
     if [ ! -d /home/$username/Pictures/wallpapers ]; then
         mkdir /home/$username/Pictures/wallpapers &>/dev/null
         echo "...Created wallpapers directory"
