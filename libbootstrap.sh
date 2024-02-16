@@ -68,6 +68,12 @@ function InstallCoreUtilities {
     for package in "${packages[@]}"; do
         InstallPackageIfMissing "$package"
     done
+
+    # If this is a VM, install spice guest agent
+    vmCheck=$(grep hypervisor </proc/cpuinfo)
+    if [ "$vmCheck" != "" ]; then
+        InstallPackageIfMissing spice-vdagent
+    fi
 }
 
 function ConfigureCoreUtilities {
@@ -400,6 +406,7 @@ function InstallVirtManager {
     InstallPackageIfMissing guestfs-tools
     InstallPackageIfMissing libosinfo-bin
     InstallPackageIfMissing tuned
+    InstallPackageIfMissing spice-client-gtk
 
     # Ensure libvirtd and tuned services are enabled
     # This service will not stay running if in a VM, so only do this part if no VM detected
@@ -580,6 +587,6 @@ function InstallOhMyZsh {
 
     if [ ! -d "/home/$username/.oh-my-zsh" ]; then
         echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" &>/dev/null
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     fi
 }
