@@ -389,13 +389,13 @@ function InstallVirtManager {
     # Ensure libvirtd and tuned services are enabled
     libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
     if [ "$libvirtdCheck" == "inactive" ]; then
-        sudo systemctl enable libvirtd.service &>/dev/null
+        sudo systemctl enable --now libvirtd.service &>/dev/null
         echo "...libvirtd service enabled"
     fi
 
     tunedCheck=$(sudo systemctl is-active tuned.service)
     if [ "$tunedCheck" == "inactive" ]; then
-        sudo systemctl enable tuned.service &>/dev/null
+        sudo systemctl enable --now tuned.service &>/dev/null
         echo "...tuned service enabled"
     fi
 
@@ -434,11 +434,22 @@ function DownloadTheming {
         echo "...Installed Catppuccin GTK theme"
     fi
 
+    if [ ! -d /home/$username/.local/share/icons ]; then
+        sudo -u $username mkdir /home/$username/.local/share/icons &>/dev/null
+        echo "...Created icons directory"
+    fi
+
     if [ ! -d /home/$username/.local/share/icons/Tela-circle-dark ]; then
         mkdir /home/$username/repos/theming/Tela-circle-dark
         git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git /home/$username/repos/theming/Tela-circle-dark &>/dev/null
         sudo -u $username /home/$username/repos/theming/Tela-circle-dark/install.sh -a -c -d /home/$username/.local/share/icons &>/dev/null
-        echo "...Installed Tela-circle-dark icon theme"
+        echo "...Installed Tela-circle icon themes"
+    fi
+
+    # Ulauncher
+    if [ ! -d /home/$username/.config/ulauncher/user-themes/Catppuccin-Mocha-Green ]; then
+        python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
+        echo "...Installed Ulauncher Catppuccin themes"
     fi
 
     # TODO
