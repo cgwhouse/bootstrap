@@ -448,7 +448,7 @@ function DownloadTheming {
 
     # Ulauncher
     if [ ! -d /home/$username/.config/ulauncher/user-themes/Catppuccin-Mocha-Green ]; then
-        python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
+        sudo -u $username python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
         echo "...Installed Ulauncher Catppuccin themes"
     fi
 
