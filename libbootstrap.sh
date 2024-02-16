@@ -533,7 +533,9 @@ function InstallAndroidStudio {
 
     #if [ ! -d "$HOME"/android-studio ]; then
         #wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2023.1.1.28/android-studio-2023.1.1.28-linux.tar.gz
-        tar -xvzf android-studio-2023.1.1.28-linux.tar.gz &>/dev/null
+        #tar -xvzf android-studio-2023.1.1.28-linux.tar.gz &>/dev/null
+        mv android-studio "$HOME"
+        echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
     #fi
 }
 
