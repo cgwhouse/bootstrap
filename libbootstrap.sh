@@ -39,23 +39,23 @@ function InstallPackageIfMissing {
 function CreateDirectories {
     echo "TASK: CreateDirectories"
 
-    if [ ! -d /home/$username/repos ]; then
-        mkdir /home/$username/repos &>/dev/null
+    if [ ! -d "$HOME"/repos ]; then
+        mkdir "$HOME"/repos &>/dev/null
         echo "...Created repos directory"
     fi
 
-    if [ ! -d /home/$username/repos/theming ]; then
-        mkdir /home/$username/repos/theming &>/dev/null
+    if [ ! -d "$HOME"/repos/theming ]; then
+        mkdir "$HOME"/repos/theming &>/dev/null
         echo "...Created theming directory"
     fi
 
-    if [ ! -d /home/$username/Pictures ]; then
-        mkdir /home/$username/Pictures &>/dev/null
+    if [ ! -d "$HOME"/Pictures ]; then
+        mkdir "$HOME"/Pictures &>/dev/null
         echo "...Created Pictures directory"
     fi
 
-    if [ ! -d /home/$username/Pictures/wallpapers ]; then
-        mkdir /home/$username/Pictures/wallpapers &>/dev/null
+    if [ ! -d "$HOME"/Pictures/wallpapers ]; then
+        mkdir "$HOME"/Pictures/wallpapers &>/dev/null
         echo "...Created wallpapers directory"
     fi
 }
@@ -63,7 +63,18 @@ function CreateDirectories {
 function InstallCoreUtilities {
     echo "TASK: InstallCoreUtilities"
 
-    packages=("neovim" "zsh" "curl" "wget" "tmux" "htop" "unar" "neofetch" "aptitude" "apt-transport-https")
+    packages=(
+        "neovim"
+        "zsh"
+        "curl"
+        "wget"
+        "tmux"
+        "htop"
+        "unar"
+        "neofetch"
+        "aptitude"
+        "apt-transport-https"
+    )
 
     for package in "${packages[@]}"; do
         InstallPackageIfMissing "$package"
@@ -88,20 +99,20 @@ function ConfigureCoreUtilities {
     fi
 
     # Oh My Tmux
-    ohMyTmuxPath="/home/$username/.tmux"
-    if [ ! -d $ohMyTmuxPath ]; then
+    ohMyTmuxPath="$HOME/.tmux"
+    if [ ! -d "$ohMyTmuxPath" ]; then
         echo "...Installing Oh My Tmux"
 
-        git clone https://github.com/gpakosz/.tmux.git $ohMyTmuxPath &>/dev/null
-        ln -s -f $ohMyTmuxPath/.tmux.conf /home/$username/.tmux.conf &>/dev/null
-        cp $ohMyTmuxPath/.tmux.conf.local /home/$username/ &>/dev/null
+        git clone https://github.com/gpakosz/.tmux.git "$ohMyTmuxPath" &>/dev/null
+        ln -s -f "$ohMyTmuxPath"/.tmux.conf "$HOME"/.tmux.conf &>/dev/null
+        cp "$ohMyTmuxPath"/.tmux.conf.local "$HOME"/ &>/dev/null
 
         echo "...Successfully installed Oh My Tmux"
     fi
 
     # Ensure Tmux is fully configured, exit if not
     # Check for commented out mouse mode as the check, the default config has this
-    if grep -Fxq "#set -g mouse on" /home/$username/.tmux.conf.local; then
+    if grep -Fxq "#set -g mouse on" "$HOME"/.tmux.conf.local; then
         echo "...WARNING: Oh My Tmux still needs to be configured"
     fi
 }
@@ -168,8 +179,8 @@ function InstallDesktopEnvironment {
 function InstallFonts {
     echo "TASK: InstallFonts"
 
-    if [ ! -d "/home/$username/.local/share/fonts" ]; then
-        mkdir /home/$username/.local/share/fonts
+    if [ ! -d "$HOME/.local/share/fonts" ]; then
+        mkdir "$HOME"/.local/share/fonts
         echo "...Fonts directory created"
     fi
 
@@ -179,12 +190,12 @@ function InstallFonts {
     # Fira Code + Nerd Font
     InstallPackageIfMissing fonts-firacode
 
-    firaCodeNerdFontCheck="/home/$username/.local/share/fonts/FiraCodeNerdFont-Regular.ttf"
-    if [ ! -f $firaCodeNerdFontCheck ]; then
+    firaCodeNerdFontCheck="$HOME/.local/share/fonts/FiraCodeNerdFont-Regular.ttf"
+    if [ ! -f "$firaCodeNerdFontCheck" ]; then
         echo "...Installing FiraCode Nerd Font"
         curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip -o fira.zip &>/dev/null
         unar -d fira.zip &>/dev/null
-        cp fira/*.ttf /home/$username/.local/share/fonts &>/dev/null
+        cp fira/*.ttf "$HOME"/.local/share/fonts &>/dev/null
         rm -r fira &>/dev/null
         rm fira.zip &>/dev/null
         echo "...FiraCode Nerd Font installed"
@@ -193,23 +204,23 @@ function InstallFonts {
     # Ubuntu + Nerd Font + UbuntuMono Nerd Font
     InstallPackageIfMissing fonts-ubuntu
 
-    ubuntuNerdFontCheck="/home/$username/.local/share/fonts/UbuntuNerdFont-Regular.ttf"
-    if [ ! -f $ubuntuNerdFontCheck ]; then
+    ubuntuNerdFontCheck="$HOME/.local/share/fonts/UbuntuNerdFont-Regular.ttf"
+    if [ ! -f "$ubuntuNerdFontCheck" ]; then
         echo "...Installing Ubuntu Nerd Font"
         curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Ubuntu.zip -o ubuntu.zip &>/dev/null
         unar -d ubuntu.zip &>/dev/null
-        cp ubuntu/*.ttf /home/$username/.local/share/fonts &>/dev/null
+        cp ubuntu/*.ttf "$HOME"/.local/share/fonts &>/dev/null
         rm -r ubuntu &>/dev/null
         rm ubuntu.zip &>/dev/null
         echo "...Ubuntu Nerd Font installed"
     fi
 
-    ubuntuMonoNerdFontCheck="/home/$username/.local/share/fonts/UbuntuMonoNerdFont-Regular.ttf"
-    if [ ! -f $ubuntuMonoNerdFontCheck ]; then
+    ubuntuMonoNerdFontCheck="$HOME/.local/share/fonts/UbuntuMonoNerdFont-Regular.ttf"
+    if [ ! -f "$ubuntuMonoNerdFontCheck" ]; then
         echo "...Installing UbuntuMono Nerd Font"
         curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/UbuntuMono.zip -o ubuntumono.zip &>/dev/null
         unar -d ubuntumono.zip &>/dev/null
-        cp ubuntumono/*.ttf /home/$username/.local/share/fonts &>/dev/null
+        cp ubuntumono/*.ttf "$HOME"/.local/share/fonts &>/dev/null
         rm -r ubuntumono &>/dev/null
         rm ubuntumono.zip &>/dev/null
         echo "...UbuntuMono Nerd Font installed"
@@ -269,7 +280,7 @@ function InstallDotNetCore {
 function InstallNvm {
     echo "TASK: InstallNvm"
 
-    if [ ! -d /home/$username/.nvm ]; then
+    if [ ! -d "$HOME"/.nvm ]; then
         wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash &>/dev/null
         echo "...nvm installed"
     fi
@@ -394,18 +405,24 @@ function InstallVirtManager {
         return 0
     fi
 
-    InstallPackageIfMissing qemu-system-x86
-    InstallPackageIfMissing libvirt-daemon-system
-    InstallPackageIfMissing virtinst
-    InstallPackageIfMissing virt-manager
-    InstallPackageIfMissing virt-viewer
-    InstallPackageIfMissing ovmf
-    InstallPackageIfMissing swtpm
-    InstallPackageIfMissing qemu-utils
-    InstallPackageIfMissing guestfs-tools
-    InstallPackageIfMissing libosinfo-bin
-    InstallPackageIfMissing tuned
-    InstallPackageIfMissing spice-client-gtk
+    packages=(
+        "qemu-system-x86"
+        "libvirt-daemon-system"
+        "virtinst"
+        "virt-manager"
+        "virt-viewer"
+        "ovmf"
+        "swtpm"
+        "qemu-utils"
+        "guestfs-tools"
+        "libosinfo-bin"
+        "tuned"
+        "spice-client-gtk"
+    )
+
+    for package in "${packages[@]}"; do
+        InstallPackageIfMissing "$package"
+    done
 
     # Ensure libvirtd and tuned services are enabled
     # This service will not stay running if in a VM, so only do this part if no VM detected
@@ -444,53 +461,53 @@ function DownloadTheming {
     # GTK + icons
     InstallPackageIfMissing gnome-themes-extra
 
-    if [ ! -d /home/$username/.themes ]; then
-        mkdir /home/$username/.themes &>/dev/null
+    if [ ! -d "$HOME"/.themes ]; then
+        mkdir "$HOME"/.themes &>/dev/null
         echo "...Created .themes directory"
     fi
 
-    if [ ! -d /home/$username/.themes/Catppuccin-Mocha-Standard-Green-Dark ]; then
+    if [ ! -d "$HOME"/.themes/Catppuccin-Mocha-Standard-Green-Dark ]; then
         wget -q https://github.com/catppuccin/gtk/releases/latest/download/Catppuccin-Mocha-Standard-Green-Dark.zip
         unar -d Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
-        mv Catppuccin-Mocha-Standard-Green-Dark/Catppuccin-Mocha-Standard-Green-Dark /home/$username/.themes &>/dev/null
+        mv Catppuccin-Mocha-Standard-Green-Dark/Catppuccin-Mocha-Standard-Green-Dark "$HOME"/.themes &>/dev/null
         rm -rf Catppuccin-Mocha-Standard-Green-Dark &>/dev/null
         rm -f Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
         echo "...Installed Catppuccin GTK theme"
     fi
 
-    if [ ! -d /home/$username/.local/share/icons ]; then
-        mkdir /home/$username/.local/share/icons &>/dev/null
+    if [ ! -d "$HOME"/.local/share/icons ]; then
+        mkdir "$HOME"/.local/share/icons &>/dev/null
         echo "...Created icons directory"
     fi
 
-    if [ ! -d /home/$username/.local/share/icons/Tela-circle-dark ]; then
-        mkdir /home/$username/repos/theming/Tela-circle-dark
-        git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git /home/$username/repos/theming/Tela-circle-dark &>/dev/null
-        /home/$username/repos/theming/Tela-circle-dark/install.sh -a -c -d /home/$username/.local/share/icons &>/dev/null
+    if [ ! -d "$HOME"/.local/share/icons/Tela-circle-dark ]; then
+        mkdir "$HOME"/repos/theming/Tela-circle-dark
+        git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git "$HOME"/repos/theming/Tela-circle-dark &>/dev/null
+        "$HOME"/repos/theming/Tela-circle-dark/install.sh -a -c -d "$HOME"/.local/share/icons &>/dev/null
         echo "...Installed Tela-circle icon themes"
     fi
 
     # Ulauncher
-    if [ ! -d /home/$username/.config/ulauncher/user-themes/Catppuccin-Mocha-Green ]; then
+    if [ ! -d "$HOME"/.config/ulauncher/user-themes/Catppuccin-Mocha-Green ]; then
         python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
         echo "...Installed Ulauncher Catppuccin themes"
     fi
 
     # Plank
-    if [ ! -d /home/$username/.local/share/plank ]; then
-        mkdir /home/$username/.local/share/plank
+    if [ ! -d "$HOME"/.local/share/plank ]; then
+        mkdir "$HOME"/.local/share/plank
         echo "...Created plank directory"
     fi
 
-    if [ ! -d /home/$username/.local/share/plank/themes ]; then
-        mkdir /home/$username/.local/share/plank/themes
+    if [ ! -d "$HOME"/.local/share/plank/themes ]; then
+        mkdir "$HOME"/.local/share/plank/themes
         echo "...Created plank themes directory"
     fi
 
-    if [ ! -d /home/$username/.local/share/plank/themes/Catppuccin-mocha ]; then
-        mkdir /home/$username/repos/theming/catppuccin-plank
-        git clone https://github.com/catppuccin/plank.git /home/$username/repos/theming/catppuccin-plank &>/dev/null
-        cp -r /home/$username/repos/theming/catppuccin-plank/src/Catppuccin-mocha /home/$username/.local/share/plank/themes &>/dev/null
+    if [ ! -d "$HOME"/.local/share/plank/themes/Catppuccin-mocha ]; then
+        mkdir "$HOME"/repos/theming/catppuccin-plank
+        git clone https://github.com/catppuccin/plank.git "$HOME"/repos/theming/catppuccin-plank &>/dev/null
+        cp -r "$HOME"/repos/theming/catppuccin-plank/src/Catppuccin-mocha "$HOME"/.local/share/plank/themes &>/dev/null
         echo "...Installed Catppuccin plank theme"
     fi
 
@@ -501,9 +518,9 @@ function DownloadTheming {
     fi
 
     if [ ! -d /usr/share/grub/themes/catppuccin-mocha-grub-theme ]; then
-        mkdir /home/$username/repos/theming/catppuccin-grub
-        git clone https://github.com/catppuccin/grub.git /home/$username/repos/theming/catppuccin-grub &>/dev/null
-        sudo cp -r /home/$username/repos/theming/catppuccin-grub/src/catppuccin-mocha-grub-theme /usr/share/grub/themes &>/dev/null
+        mkdir "$HOME"/repos/theming/catppuccin-grub
+        git clone https://github.com/catppuccin/grub.git "$HOME"/repos/theming/catppuccin-grub &>/dev/null
+        sudo cp -r "$HOME"/repos/theming/catppuccin-grub/src/catppuccin-mocha-grub-theme /usr/share/grub/themes &>/dev/null
         echo "...Installed Catppuccin grub theme to themes directory"
     fi
 
@@ -513,17 +530,17 @@ function DownloadTheming {
     fi
 
     # Wallpapers
-    if [ ! -d /home/$username/Pictures/wallpapers/catppuccin ]; then
-        mkdir /home/$username/Pictures/wallpapers/catppuccin
-        mkdir /home/$username/repos/theming/catppuccin-wallpapers
-        git clone https://github.com/Gingeh/wallpapers.git /home/$username/repos/theming/catppuccin-wallpapers &>/dev/null
-        cp -r /home/$username/repos/theming/catppuccin-wallpapers/*/*.png /home/$username/Pictures/wallpapers/catppuccin &>/dev/null
-        cp -r /home/$username/repos/theming/catppuccin-wallpapers/*/*.jpg /home/$username/Pictures/wallpapers/catppuccin &>/dev/null
+    if [ ! -d "$HOME"/Pictures/wallpapers/catppuccin ]; then
+        mkdir "$HOME"/Pictures/wallpapers/catppuccin
+        mkdir "$HOME"/repos/theming/catppuccin-wallpapers
+        git clone https://github.com/Gingeh/wallpapers.git "$HOME"/repos/theming/catppuccin-wallpapers &>/dev/null
+        cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.png "$HOME"/Pictures/wallpapers/catppuccin &>/dev/null
+        cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.jpg "$HOME"/Pictures/wallpapers/catppuccin &>/dev/null
         echo "...Catppuccin wallpaper pack installed"
     fi
 
     # Tmux
-    if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" /home/$username/.tmux.conf.local; then
+    if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" "$HOME"/.tmux.conf.local; then
         echo "NOTE: Set tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'catppuccin/tmux'"
     fi
 }
@@ -544,61 +561,61 @@ function InstallAndroidStudio {
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
-    # NetworkManager
-    InstallPackageIfMissing network-manager-gnome
-    InstallPackageIfMissing network-manager-openvpn-gnome
+    packages=(
+        # NetworkManager
+        "network-manager-gnome"
+        "network-manager-openvpn-gnome"
+        # Doom Emacs
+        "emacs-gtk"
+        "elpa-ligature"
+        "ripgrep"
+        "fd-find"
+        # Tiling window manager
+        "picom"
+        "lxappearance"
+        "lxsession"
+        "nitrogen"
+        "volumeicon-alsa"
+        "arandr"
+        # qtile specific
+        "python-is-python3"
+        "python3-pip"
+        "pipx"
+        "xserver-xorg"
+        "xinit"
+        "libpangocairo-1.0-0"
+        "python3-xcffib"
+        "python3-cairocffi"
+        "python3-dbus-next"
+        # Media + Office
+        "vlc"
+        "transmission-gtk"
+        "obs-studio"
+        "libreoffice"
+        # Games
+        "aisleriot"
+        "gnome-mines"
+        "mgba-qt"
+        "lutris"
+        "dolphin-emu"
+        # Misc
+        "gparted"
+        "copyq"
+        "awscli"
+        "sshpass"
+        "qflipper"
+        "openjdk-21-jdk"
+    )
 
-    # Emacs + Doom dependencies
-    InstallPackageIfMissing emacs-gtk
-    InstallPackageIfMissing elpa-ligature
-    InstallPackageIfMissing ripgrep
-    InstallPackageIfMissing fd-find
-
-    # Tiling WM utils
-    InstallPackageIfMissing picom
-    InstallPackageIfMissing lxappearance
-    InstallPackageIfMissing lxsession
-    InstallPackageIfMissing nitrogen
-    InstallPackageIfMissing volumeicon-alsa
-    InstallPackageIfMissing arandr
-
-    # qtile
-    InstallPackageIfMissing python-is-python3
-    InstallPackageIfMissing python3-pip
-    InstallPackageIfMissing pipx
-    InstallPackageIfMissing xserver-xorg
-    InstallPackageIfMissing xinit
-    InstallPackageIfMissing libpangocairo-1.0-0
-    InstallPackageIfMissing python3-xcffib
-    InstallPackageIfMissing python3-cairocffi
-    InstallPackageIfMissing python3-dbus-next
-
-    # Media + Office
-    InstallPackageIfMissing vlc
-    InstallPackageIfMissing transmission-gtk
-    InstallPackageIfMissing obs-studio
-    InstallPackageIfMissing libreoffice
-
-    # Misc
-    InstallPackageIfMissing gparted
-    InstallPackageIfMissing copyq
-    InstallPackageIfMissing awscli
-    InstallPackageIfMissing sshpass
-    InstallPackageIfMissing qflipper
-    InstallPackageIfMissing openjdk-21-jdk
-
-    # Game related things
-    InstallPackageIfMissing aisleriot
-    InstallPackageIfMissing gnome-mines
-    InstallPackageIfMissing mgba-qt
-    InstallPackageIfMissing lutris
-    InstallPackageIfMissing dolphin-emu
+    for package in "${packages[@]}"; do
+        InstallPackageIfMissing "$package"
+    done
 }
 
 function InstallOhMyZsh {
     echo "TASK: InstallOhMyZsh"
 
-    if [ ! -d "/home/$username/.oh-my-zsh" ]; then
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
         echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     fi
