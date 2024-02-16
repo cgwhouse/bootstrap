@@ -32,12 +32,22 @@ function InstallPackageIfMissing {
     echo "...Successfully installed $1"
 }
 
-function CreateReposDirectory {
-    echo "TASK: CreateReposDirectory"
+function CreateDirectories {
+    echo "TASK: CreateDirectories"
 
     if [ ! -d /home/$username/repos ]; then
         sudo -u $username mkdir /home/$username/repos &>/dev/null
         echo "...Created repos directory"
+    fi
+
+    if [ ! -d /home/$username/repos/theming ]; then
+        sudo -u $username mkdir /home/$username/repos/theming &>/dev/null
+        echo "...Created theming directory"
+    fi
+
+    if [ ! -d /home/$username/Pictures/wallpapers ]; then
+        sudo -u $username mkdir /home/$username/Pictures/wallpapers &>/dev/null
+        echo "...Created wallpapers directory"
     fi
 }
 
@@ -407,7 +417,7 @@ function InstallVirtManager {
 function DownloadTheming {
     echo "TASK: DownloadTheming"
 
-    # GTK
+    # GTK + icons
     InstallPackageIfMissing gnome-themes-extra
 
     if [ ! -d /home/$username/.themes ]; then
@@ -424,8 +434,14 @@ function DownloadTheming {
         echo "...Installed Catppuccin GTK theme"
     fi
 
+    if [ ! -d /home/$username/.local/share/icons/Tela-circle-dark ]; then
+        mkdir /home/$username/repos/theming/Tela-circle-dark
+        git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git /home/$username/repos/theming/Tela-circle-dark &>/dev/null
+        /home/$username/repos/theming/Tela-circle-dark/install.sh -a -c &>/dev/null
+        echo "...Installed Tela-circle-dark icon theme"
+    fi
+
     # TODO
-    # gtk
     # ulauncher
     # plank
     # grub
