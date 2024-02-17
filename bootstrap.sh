@@ -2,22 +2,54 @@
 
 source ./libbootstrap.sh
 
-# Validate no script arguments
-if [ $# -gt 0 ]; then
-    printf "\nUsage:\n\n"
-    printf "./bootstrap.sh\n\n"
-    exit 1
-fi
-
+# Update this if doing a minimal bootstrap (no GUI)
+server=false
 # Ensure .env
-if [ -z "$server" ]; then
-    printf "\nERROR: .env file is missing\n\n"
+#if [ -z "$server" ]; then
+#    printf "\nERROR: .env file is missing\n\n"
+#    exit 1
+#fi
+
+# Validate script arguments
+if [ $# -gt 1 ]; then
+    printf "\nUsage:\n\n"
+    printf "# Runs all tasks\n"
+    printf "./bootstrap.sh\n\n"
+    printf "# Runs specified task only\n"
+    printf "./bootstrap.sh TASK_NAME\n\n"
     exit 1
 fi
-
-# Run tasks, exit if a task errors
 
 printf "\n"
+
+if [ $# -eq 1 ]; then
+    case $1 in
+        "CreateDirectories")
+            CreateDirectories
+            ;;
+        "InstallCoreUtilities")
+            InstallCoreUtilities
+            ;;
+        "ConfigureCoreUtilities")
+            ConfigureCoreUtilities
+            ;;
+        "InstallDotNetCore")
+            InstallDotNetCore
+            ;;
+        "InstallNvm")
+            InstallNvm
+            ;;
+        "InstallOhMyZsh")
+            InstallOhMyZsh
+            ;;
+        *)
+            "ERROR: Unknown task"
+            exit 1
+            ;;
+    esac
+fi
+
+# Full run, exit if a task errors
 
 if ! CreateDirectories; then
     exit 1
@@ -56,15 +88,11 @@ if ! InstallDesktopEnvironment; then
     exit 1
 fi
 
-if ! InstallFonts; then
-    exit 1
-fi
-
 if ! InstallPipewire; then
     exit 1
 fi
 
-if ! InstallFlatpak; then
+if ! InstallFonts; then
     exit 1
 fi
 
@@ -72,11 +100,15 @@ if ! InstallDebGet; then
     exit 1
 fi
 
-if ! InstallVisualStudioCode; then
+if ! InstallFlatpak; then
     exit 1
 fi
 
 if ! InstallWebBrowsers; then
+    exit 1
+fi
+
+if ! InstallVisualStudioCode; then
     exit 1
 fi
 

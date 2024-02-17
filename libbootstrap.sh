@@ -118,6 +118,41 @@ function ConfigureCoreUtilities {
     fi
 }
 
+function InstallDotNetCore {
+    echo "TASK: InstallDotNetCore"
+
+    dotnetCheck=$(sudo apt list dotnet-sdk-8.0 2>/dev/null | grep installed)
+    if [ "$dotnetCheck" == "" ]; then
+        wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb &>/dev/null
+        rm packages-microsoft-prod.deb &>/dev/null
+
+        sudo apt update &>/dev/null
+        aptUpdated=true
+
+        InstallPackageIfMissing dotnet-sdk-7.0
+        InstallPackageIfMissing dotnet-sdk-8.0
+    fi
+}
+
+function InstallNvm {
+    echo "TASK: InstallNvm"
+
+    if [ ! -d "$HOME"/.nvm ]; then
+        wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash &>/dev/null
+        echo "...nvm installed"
+    fi
+}
+
+function InstallOhMyZsh {
+    echo "TASK: InstallOhMyZsh"
+
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+}
+
 function InstallProprietaryGraphics {
     echo "TASK: InstallProprietaryGraphics"
 
@@ -177,6 +212,13 @@ function InstallDesktopEnvironment {
     InstallPackageIfMissing ulauncher
 }
 
+function InstallPipewire {
+    echo "TASK: InstallPipewire"
+
+    InstallPackageIfMissing pipewire-audio
+    InstallPackageIfMissing pavucontrol
+}
+
 function InstallFonts {
     echo "TASK: InstallFonts"
 
@@ -231,24 +273,6 @@ function InstallFonts {
     InstallPackageIfMissing fonts-noto-color-emoji
 }
 
-function InstallPipewire {
-    echo "TASK: InstallPipewire"
-
-    InstallPackageIfMissing pipewire-audio
-    InstallPackageIfMissing pavucontrol
-}
-
-function InstallFlatpak {
-    echo "TASK: InstallFlatpak"
-
-    InstallPackageIfMissing flatpak
-
-    flathubCheck=$(flatpak remotes | grep flathub)
-    if [ "$flathubCheck" == "" ]; then
-        echo "...WARNING: Flathub repository must be added: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
-    fi
-}
-
 function InstallDebGet {
     echo "TASK: InstallDebGet"
 
@@ -261,50 +285,14 @@ function InstallDebGet {
     fi
 }
 
-function InstallDotNetCore {
-    echo "TASK: InstallDotNetCore"
+function InstallFlatpak {
+    echo "TASK: InstallFlatpak"
 
-    dotnetCheck=$(sudo apt list dotnet-sdk-8.0 2>/dev/null | grep installed)
-    if [ "$dotnetCheck" == "" ]; then
-        wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-        sudo dpkg -i packages-microsoft-prod.deb &>/dev/null
-        rm packages-microsoft-prod.deb &>/dev/null
+    InstallPackageIfMissing flatpak
 
-        sudo apt update &>/dev/null
-        aptUpdated=true
-
-        InstallPackageIfMissing dotnet-sdk-7.0
-        InstallPackageIfMissing dotnet-sdk-8.0
-    fi
-}
-
-function InstallNvm {
-    echo "TASK: InstallNvm"
-
-    if [ ! -d "$HOME"/.nvm ]; then
-        wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash &>/dev/null
-        echo "...nvm installed"
-    fi
-}
-
-function InstallVisualStudioCode {
-    echo "TASK: InstallVisualStudioCode"
-
-    vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
-    if [ "$vscodeCheck" == "" ]; then
-        InstallPackageIfMissing gpg
-
-        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
-        sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
-
-        sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
-
-        rm -f packages.microsoft.gpg
-
-        sudo apt update &>/dev/null
-        aptUpdated=true
-
-        InstallPackageIfMissing code
+    flathubCheck=$(flatpak remotes | grep flathub)
+    if [ "$flathubCheck" == "" ]; then
+        echo "...WARNING: Flathub repository must be added: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
     fi
 }
 
@@ -360,6 +348,27 @@ function InstallSpotify {
         aptUpdated=true
 
         InstallPackageIfMissing spotify-client
+    fi
+}
+
+function InstallVisualStudioCode {
+    echo "TASK: InstallVisualStudioCode"
+
+    vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
+    if [ "$vscodeCheck" == "" ]; then
+        InstallPackageIfMissing gpg
+
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
+        sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
+
+        sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
+
+        rm -f packages.microsoft.gpg
+
+        sudo apt update &>/dev/null
+        aptUpdated=true
+
+        InstallPackageIfMissing code
     fi
 }
 
@@ -611,13 +620,4 @@ function InstallAdditionalSoftware {
     for package in "${packages[@]}"; do
         InstallPackageIfMissing "$package"
     done
-}
-
-function InstallOhMyZsh {
-    echo "TASK: InstallOhMyZsh"
-
-    if [ ! -d "$HOME/.oh-my-zsh" ]; then
-        echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    fi
 }
