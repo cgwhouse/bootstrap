@@ -59,6 +59,11 @@ function CreateDirectories {
         mkdir "$HOME"/Pictures/wallpapers &>/dev/null
         echo "...Created wallpapers directory"
     fi
+
+    if [ ! -d "$HOME"/.cache ]; then
+        mkdir "$HOME"/.cache &>/dev/null
+        echo "...Created .cache directory"
+    fi
 }
 
 function InstallCoreUtilities {
