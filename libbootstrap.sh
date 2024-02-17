@@ -564,6 +564,7 @@ function InstallAndroidStudio {
         echo "...Unpacking Android Studio"
         tar -xvzf android-studio-$androidStudioVersion-linux.tar.gz &>/dev/null
         mv android-studio "$HOME"
+        rm -f android-studio-$androidStudioVersion-linux.tar.gz
         echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
     fi
 }
