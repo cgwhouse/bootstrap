@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Environment variables
-source ./.env &>/dev/null
+#source ./.env &>/dev/null
 
 aptUpdated=false
 

@@ -88,11 +88,12 @@ if [ $# -eq 1 ]; then
             InstallAdditionalSoftware
             ;;
         *)
-            "ERROR: Unknown task"
+            printf "ERROR: Unknown task\n\n"
             exit 1
             ;;
     esac
 
+    printf "\n"
     exit 0
 fi
 
