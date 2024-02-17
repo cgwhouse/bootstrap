@@ -388,9 +388,10 @@ function InstallFlatpak {
 
     InstallPackageIfMissing flatpak
 
-    flathubCheck=$(flatpak remotes | grep flathub)
+    flathubCheck=$(sudo flatpak remotes | grep flathub)
     if [ "$flathubCheck" == "" ]; then
-        echo "...WARNING: Flathub repository must be added: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
+        sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
+        echo "...Flathub repository added"
     fi
 }
 
@@ -567,8 +568,8 @@ function InstallAndroidStudio {
     echo "TASK: InstallAndroidStudio"
 
     if [ ! -d "$HOME"/android-studio ]; then
-        echo "...Download Android Studio"
-        wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/$androidStudioVersion/android-studio-$androidStudioVersion-linux.tar.gz
+        echo "...Downloading Android Studio"
+        wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/$androidStudioVersion/android-studio-$androidStudioVersion-linux.tar.gz
         echo "...Unpacking Android Studio"
         tar -xvzf android-studio-$androidStudioVersion-linux.tar.gz &>/dev/null
         mv android-studio "$HOME"
