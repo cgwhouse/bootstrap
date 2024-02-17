@@ -42,11 +42,58 @@ if [ $# -eq 1 ]; then
         "InstallOhMyZsh")
             InstallOhMyZsh
             ;;
+        "InstallProprietaryGraphics")
+            InstallProprietaryGraphics
+            ;;
+        "InstallDesktopEnvironment")
+            InstallDesktopEnvironment
+            ;;
+        "InstallPipewire")
+            InstallPipewire
+            ;;
+        "InstallFonts")
+            InstallFonts
+            ;;
+        "DownloadTheming")
+            DownloadTheming
+            ;;
+        "InstallDebGet")
+            InstallDebGet
+            ;;
+        "InstallFlatpak")
+            InstallFlatpak
+            ;;
+        "InstallWebBrowsers")
+            InstallWebBrowsers
+            ;;
+        "InstallSpotify")
+            InstallSpotify
+            ;;
+        "InstallVisualStudioCode")
+            InstallVisualStudioCode
+            ;;
+        "InstallDoctl")
+            InstallDoctl
+            ;;
+        "InstallSlack")
+            InstallSlack
+            ;;
+        "InstallVirtManager")
+            InstallVirtManager
+            ;;
+        "InstallAndroidStudio")
+            InstallAndroidStudio
+            ;;
+        "InstallAdditionalSoftware")
+            InstallAdditionalSoftware
+            ;;
         *)
             "ERROR: Unknown task"
             exit 1
             ;;
     esac
+
+    exit 0
 fi
 
 # Full run, exit if a task errors
@@ -96,6 +143,10 @@ if ! InstallFonts; then
     exit 1
 fi
 
+if ! DownloadTheming; then
+    exit 1
+fi
+
 if ! InstallDebGet; then
     exit 1
 fi
@@ -108,11 +159,11 @@ if ! InstallWebBrowsers; then
     exit 1
 fi
 
-if ! InstallVisualStudioCode; then
+if ! InstallSpotify; then
     exit 1
 fi
 
-if ! InstallSpotify; then
+if ! InstallVisualStudioCode; then
     exit 1
 fi
 
@@ -125,10 +176,6 @@ if ! InstallSlack; then
 fi
 
 if ! InstallVirtManager; then
-    exit 1
-fi
-
-if ! DownloadTheming; then
     exit 1
 fi
 

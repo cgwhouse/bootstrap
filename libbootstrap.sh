@@ -273,6 +273,96 @@ function InstallFonts {
     InstallPackageIfMissing fonts-noto-color-emoji
 }
 
+function DownloadTheming {
+    echo "TASK: DownloadTheming"
+
+    # GTK + icons
+    InstallPackageIfMissing gnome-themes-extra
+
+    if [ ! -d "$HOME"/.themes ]; then
+        mkdir "$HOME"/.themes &>/dev/null
+        echo "...Created .themes directory"
+    fi
+
+    if [ ! -d "$HOME"/.themes/Catppuccin-Mocha-Standard-Green-Dark ]; then
+        wget -q https://github.com/catppuccin/gtk/releases/latest/download/Catppuccin-Mocha-Standard-Green-Dark.zip
+        unar -d Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
+        mv Catppuccin-Mocha-Standard-Green-Dark/Catppuccin-Mocha-Standard-Green-Dark "$HOME"/.themes &>/dev/null
+        rm -rf Catppuccin-Mocha-Standard-Green-Dark &>/dev/null
+        rm -f Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
+        echo "...Installed Catppuccin GTK theme"
+    fi
+
+    if [ ! -d "$HOME"/.local/share/icons ]; then
+        mkdir "$HOME"/.local/share/icons &>/dev/null
+        echo "...Created icons directory"
+    fi
+
+    if [ ! -d "$HOME"/.local/share/icons/Tela-circle-dark ]; then
+        mkdir "$HOME"/repos/theming/Tela-circle-dark
+        git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git "$HOME"/repos/theming/Tela-circle-dark &>/dev/null
+        "$HOME"/repos/theming/Tela-circle-dark/install.sh -a -c -d "$HOME"/.local/share/icons &>/dev/null
+        echo "...Installed Tela-circle icon themes"
+    fi
+
+    # Ulauncher
+    if [ ! -d "$HOME"/.config/ulauncher/user-themes/Catppuccin-Mocha-Green ]; then
+        python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
+        echo "...Installed Ulauncher Catppuccin themes"
+    fi
+
+    # Plank
+    if [ ! -d "$HOME"/.local/share/plank ]; then
+        mkdir "$HOME"/.local/share/plank
+        echo "...Created plank directory"
+    fi
+
+    if [ ! -d "$HOME"/.local/share/plank/themes ]; then
+        mkdir "$HOME"/.local/share/plank/themes
+        echo "...Created plank themes directory"
+    fi
+
+    if [ ! -d "$HOME"/.local/share/plank/themes/Catppuccin-mocha ]; then
+        mkdir "$HOME"/repos/theming/catppuccin-plank
+        git clone https://github.com/catppuccin/plank.git "$HOME"/repos/theming/catppuccin-plank &>/dev/null
+        cp -r "$HOME"/repos/theming/catppuccin-plank/src/Catppuccin-mocha "$HOME"/.local/share/plank/themes &>/dev/null
+        echo "...Installed Catppuccin plank theme"
+    fi
+
+    # Grub
+    if [ ! -d /usr/share/grub/themes ]; then
+        sudo mkdir /usr/share/grub/themes
+        echo "...Created grub themes directory"
+    fi
+
+    if [ ! -d /usr/share/grub/themes/catppuccin-mocha-grub-theme ]; then
+        mkdir "$HOME"/repos/theming/catppuccin-grub
+        git clone https://github.com/catppuccin/grub.git "$HOME"/repos/theming/catppuccin-grub &>/dev/null
+        sudo cp -r "$HOME"/repos/theming/catppuccin-grub/src/catppuccin-mocha-grub-theme /usr/share/grub/themes &>/dev/null
+        echo "...Installed Catppuccin grub theme to themes directory"
+    fi
+
+    grubThemeCheck=$(grep "/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt" </etc/default/grub)
+    if [ "$grubThemeCheck" == "" ]; then
+        echo "...NOTE: Set grub theme by adding GRUB_THEME=\"/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt\" to /etc/default/grub, then running update-grub"
+    fi
+
+    # Wallpapers
+    if [ ! -d "$HOME"/Pictures/wallpapers/catppuccin ]; then
+        mkdir "$HOME"/Pictures/wallpapers/catppuccin
+        mkdir "$HOME"/repos/theming/catppuccin-wallpapers
+        git clone https://github.com/Gingeh/wallpapers.git "$HOME"/repos/theming/catppuccin-wallpapers &>/dev/null
+        cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.png "$HOME"/Pictures/wallpapers/catppuccin &>/dev/null
+        cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.jpg "$HOME"/Pictures/wallpapers/catppuccin &>/dev/null
+        echo "...Catppuccin wallpaper pack installed"
+    fi
+
+    # Tmux
+    if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" "$HOME"/.tmux.conf.local; then
+        echo "NOTE: Set tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'catppuccin/tmux'"
+    fi
+}
+
 function InstallDebGet {
     echo "TASK: InstallDebGet"
 
@@ -462,96 +552,6 @@ function InstallVirtManager {
     if [ "$groupCheck" == "" ]; then
         sudo usermod -aG libvirt "$USER" &>/dev/null
         echo "...User added to libvirt group"
-    fi
-}
-
-function DownloadTheming {
-    echo "TASK: DownloadTheming"
-
-    # GTK + icons
-    InstallPackageIfMissing gnome-themes-extra
-
-    if [ ! -d "$HOME"/.themes ]; then
-        mkdir "$HOME"/.themes &>/dev/null
-        echo "...Created .themes directory"
-    fi
-
-    if [ ! -d "$HOME"/.themes/Catppuccin-Mocha-Standard-Green-Dark ]; then
-        wget -q https://github.com/catppuccin/gtk/releases/latest/download/Catppuccin-Mocha-Standard-Green-Dark.zip
-        unar -d Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
-        mv Catppuccin-Mocha-Standard-Green-Dark/Catppuccin-Mocha-Standard-Green-Dark "$HOME"/.themes &>/dev/null
-        rm -rf Catppuccin-Mocha-Standard-Green-Dark &>/dev/null
-        rm -f Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
-        echo "...Installed Catppuccin GTK theme"
-    fi
-
-    if [ ! -d "$HOME"/.local/share/icons ]; then
-        mkdir "$HOME"/.local/share/icons &>/dev/null
-        echo "...Created icons directory"
-    fi
-
-    if [ ! -d "$HOME"/.local/share/icons/Tela-circle-dark ]; then
-        mkdir "$HOME"/repos/theming/Tela-circle-dark
-        git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git "$HOME"/repos/theming/Tela-circle-dark &>/dev/null
-        "$HOME"/repos/theming/Tela-circle-dark/install.sh -a -c -d "$HOME"/.local/share/icons &>/dev/null
-        echo "...Installed Tela-circle icon themes"
-    fi
-
-    # Ulauncher
-    if [ ! -d "$HOME"/.config/ulauncher/user-themes/Catppuccin-Mocha-Green ]; then
-        python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
-        echo "...Installed Ulauncher Catppuccin themes"
-    fi
-
-    # Plank
-    if [ ! -d "$HOME"/.local/share/plank ]; then
-        mkdir "$HOME"/.local/share/plank
-        echo "...Created plank directory"
-    fi
-
-    if [ ! -d "$HOME"/.local/share/plank/themes ]; then
-        mkdir "$HOME"/.local/share/plank/themes
-        echo "...Created plank themes directory"
-    fi
-
-    if [ ! -d "$HOME"/.local/share/plank/themes/Catppuccin-mocha ]; then
-        mkdir "$HOME"/repos/theming/catppuccin-plank
-        git clone https://github.com/catppuccin/plank.git "$HOME"/repos/theming/catppuccin-plank &>/dev/null
-        cp -r "$HOME"/repos/theming/catppuccin-plank/src/Catppuccin-mocha "$HOME"/.local/share/plank/themes &>/dev/null
-        echo "...Installed Catppuccin plank theme"
-    fi
-
-    # Grub
-    if [ ! -d /usr/share/grub/themes ]; then
-        sudo mkdir /usr/share/grub/themes
-        echo "...Created grub themes directory"
-    fi
-
-    if [ ! -d /usr/share/grub/themes/catppuccin-mocha-grub-theme ]; then
-        mkdir "$HOME"/repos/theming/catppuccin-grub
-        git clone https://github.com/catppuccin/grub.git "$HOME"/repos/theming/catppuccin-grub &>/dev/null
-        sudo cp -r "$HOME"/repos/theming/catppuccin-grub/src/catppuccin-mocha-grub-theme /usr/share/grub/themes &>/dev/null
-        echo "...Installed Catppuccin grub theme to themes directory"
-    fi
-
-    grubThemeCheck=$(grep "/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt" </etc/default/grub)
-    if [ "$grubThemeCheck" == "" ]; then
-        echo "...NOTE: Set grub theme by adding GRUB_THEME=\"/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt\" to /etc/default/grub, then running update-grub"
-    fi
-
-    # Wallpapers
-    if [ ! -d "$HOME"/Pictures/wallpapers/catppuccin ]; then
-        mkdir "$HOME"/Pictures/wallpapers/catppuccin
-        mkdir "$HOME"/repos/theming/catppuccin-wallpapers
-        git clone https://github.com/Gingeh/wallpapers.git "$HOME"/repos/theming/catppuccin-wallpapers &>/dev/null
-        cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.png "$HOME"/Pictures/wallpapers/catppuccin &>/dev/null
-        cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.jpg "$HOME"/Pictures/wallpapers/catppuccin &>/dev/null
-        echo "...Catppuccin wallpaper pack installed"
-    fi
-
-    # Tmux
-    if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" "$HOME"/.tmux.conf.local; then
-        echo "NOTE: Set tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'catppuccin/tmux'"
     fi
 }
 
