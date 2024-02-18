@@ -4,11 +4,6 @@ source ./libbootstrap.sh
 
 # Update this if doing a minimal bootstrap (no GUI)
 server=false
-# Ensure .env
-#if [ -z "$server" ]; then
-#    printf "\nERROR: .env file is missing\n\n"
-#    exit 1
-#fi
 
 # Validate script arguments
 if [ $# -gt 1 ]; then

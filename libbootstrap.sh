@@ -1,11 +1,8 @@
 #!/bin/bash
 
-# Environment variables
-#source ./.env &>/dev/null
-
 aptUpdated=false
 
-# Versions of a couple things that are manual
+# Versions of manual stuff
 doctlVersion="1.104.0"
 slackVersion="4.36.140"
 androidStudioVersion="2023.1.1.28"
