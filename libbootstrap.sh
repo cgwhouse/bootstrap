@@ -61,6 +61,14 @@ function CreateDirectories {
         mkdir "$HOME"/.cache &>/dev/null
         echo "...Created .cache directory"
     fi
+
+    if [ ! -d "$HOME/.local" ]; then
+        mkdir "$HOME"/.local
+    fi
+
+    if [ ! -d "$HOME/.local/share" ]; then
+        mkdir "$HOME"/.local/share
+    fi
 }
 
 function InstallCoreUtilities {
@@ -223,14 +231,6 @@ function InstallPipewire {
 
 function InstallFonts {
     echo "TASK: InstallFonts"
-
-    if [ ! -d "$HOME/.local" ]; then
-        mkdir "$HOME"/.local
-    fi
-
-    if [ ! -d "$HOME/.local/share" ]; then
-        mkdir "$HOME"/.local/share
-    fi
 
     if [ ! -d "$HOME/.local/share/fonts" ]; then
         mkdir "$HOME"/.local/share/fonts
