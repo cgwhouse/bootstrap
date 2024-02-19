@@ -64,10 +64,17 @@ function CreateDirectories {
 
     if [ ! -d "$HOME/.local" ]; then
         mkdir "$HOME"/.local
+        echo "...Created .local directory"
     fi
 
     if [ ! -d "$HOME/.local/share" ]; then
         mkdir "$HOME"/.local/share
+        echo "...Created local share directory"
+    fi
+
+    if [ ! -d "$HOME/.local/bin" ]; then
+        mkdir "$HOME"/.local/bin
+        echo "...Created local bin directory"
     fi
 }
 
@@ -493,7 +500,7 @@ function InstallDoctl {
 
     filename="doctl-$doctlVersion-linux-amd64.tar.gz"
 
-    wget -q https://github.com/digitalocean/doctl/releases/latest/download/$filename
+    wget -q https://github.com/digitalocean/doctl/releases/download/v$doctlVersion/$filename
     tar xf $filename &>/dev/null
     sudo mv doctl /usr/local/bin
     rm -f $filename
