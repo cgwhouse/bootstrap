@@ -1,12 +1,10 @@
 # bootstrap
 
-1. Switch sources to Sid
-2. `sudo apt update && sudo apt full-upgrade -y && sudo apt autopurge -y && sudo apt-get autoclean -y`
+1. Update apt sources (optional)
+2. Full update of system using apt
 3. Reboot
-4. `sudo apt install git`
+4. Install git
 5. Clone bootstrap repo
-6. `sudo chmod +x bootstrap/bootstrap.sh`
-7. `sudo bootstrap/bootstrap.sh`
-
-## TODO
+6. Edit server flag (optional)
+7. Run bootstrap.sh
 
