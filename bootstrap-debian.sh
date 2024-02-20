@@ -37,6 +37,9 @@ if [ $# -eq 1 ]; then
         "InstallOhMyZsh")
             InstallOhMyZsh
             ;;
+        "EnableMultiarch")
+            EnableMultiarch
+            ;;
         "InstallProprietaryGraphics")
             InstallProprietaryGraphics
             ;;
@@ -121,6 +124,10 @@ if [ $server == true ]; then
     fi
 
     exit 0
+fi
+
+if ! EnableMultiarch; then
+    exit 1
 fi
 
 if ! InstallProprietaryGraphics; then

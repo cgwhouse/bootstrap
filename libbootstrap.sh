@@ -8,8 +8,19 @@ slackVersion="4.36.140"
 androidStudioVersion="2023.1.1.28"
 
 function InstallPackageIfMissing {
+    packageToCheck=$1
+    grepStr="installed"
+
+    # Handle 32-bit
+    if [[ "$packageToCheck" == *":i386"* ]]; then
+        # Strip i386 from the package name that was provided
+        packageToCheck="${packageToCheck/:i386/""}"
+        # Update the string used by grep to check if installed
+        grepStr="i386 \[installed\]"
+    fi
+
     # Check for package using apt list
-    packageCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    packageCheck=$(sudo apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
     if [ "$packageCheck" != "" ]; then
         return 0
     fi
@@ -25,7 +36,7 @@ function InstallPackageIfMissing {
     sudo apt install -y "$1" &>/dev/null
 
     # Ensure package was installed, return error if not
-    installCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    installCheck=$(sudo apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
     if [ "$installCheck" == "" ]; then
         echo "ERROR: Failed to install $1"
         return 1
@@ -60,6 +71,21 @@ function CreateDirectories {
     if [ ! -d "$HOME"/.cache ]; then
         mkdir "$HOME"/.cache &>/dev/null
         echo "...Created .cache directory"
+    fi
+
+    if [ ! -d "$HOME/.local" ]; then
+        mkdir "$HOME"/.local
+        echo "...Created .local directory"
+    fi
+
+    if [ ! -d "$HOME/.local/share" ]; then
+        mkdir "$HOME"/.local/share
+        echo "...Created local share directory"
+    fi
+
+    if [ ! -d "$HOME/.local/bin" ]; then
+        mkdir "$HOME"/.local/bin
+        echo "...Created local bin directory"
     fi
 }
 
@@ -124,17 +150,19 @@ function InstallDotNetCore {
     echo "TASK: InstallDotNetCore"
 
     dotnetCheck=$(sudo apt list dotnet-sdk-8.0 2>/dev/null | grep installed)
-    if [ "$dotnetCheck" == "" ]; then
-        wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-        sudo dpkg -i packages-microsoft-prod.deb &>/dev/null
-        rm packages-microsoft-prod.deb &>/dev/null
-
-        sudo apt update &>/dev/null
-        aptUpdated=true
-
-        InstallPackageIfMissing dotnet-sdk-7.0
-        InstallPackageIfMissing dotnet-sdk-8.0
+    if [ "$dotnetCheck" != "" ]; then
+        return 0
     fi
+
+    wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb &>/dev/null
+    rm packages-microsoft-prod.deb &>/dev/null
+
+    sudo apt update &>/dev/null
+    aptUpdated=true
+
+    InstallPackageIfMissing dotnet-sdk-7.0
+    InstallPackageIfMissing dotnet-sdk-8.0
 }
 
 function InstallNvm {
@@ -155,6 +183,20 @@ function InstallOhMyZsh {
     fi
 }
 
+function EnableMultiarch {
+    echo "TASK: EnabledMultiarch"
+
+    multiarchCheck=$(dpkg --print-foreign-architectures | grep i386)
+    if [ "$multiarchCheck" != "" ]; then
+        return 0
+    fi
+
+    sudo dpkg --add-architecture i386 &>/dev/null
+    echo "...Added i386 architecture"
+    sudo apt update &>/dev/null
+    echo "...Updated apt sources"
+}
+
 function InstallProprietaryGraphics {
     echo "TASK: InstallProprietaryGraphics"
 
@@ -172,6 +214,9 @@ function InstallProprietaryGraphics {
 
     # Main driver
     InstallPackageIfMissing nvidia-driver
+
+    # 32-bit libs
+    InstallPackageIfMissing nvidia-driver-libs:i386
 }
 
 function InstallDesktopEnvironment {
@@ -191,7 +236,8 @@ function InstallDesktopEnvironment {
     # App Launcher (requires extra setup)
 
     # Exit if already installed
-    if dpkg-query -W ulauncher &>/dev/null; then
+    ulauncherCheck=$(apt list ulauncher 2>/dev/null | grep installed)
+    if [ "$ulauncherCheck" != "" ]; then
         return 0
     fi
 
@@ -223,14 +269,6 @@ function InstallPipewire {
 
 function InstallFonts {
     echo "TASK: InstallFonts"
-
-    if [ ! -d "$HOME/.local" ]; then
-        mkdir "$HOME"/.local
-    fi
-
-    if [ ! -d "$HOME/.local/share" ]; then
-        mkdir "$HOME"/.local/share
-    fi
 
     if [ ! -d "$HOME/.local/share/fonts" ]; then
         mkdir "$HOME"/.local/share/fonts
@@ -379,10 +417,12 @@ function InstallDebGet {
     InstallPackageIfMissing lsb-release
 
     debGetCheck=$(sudo apt list deb-get 2>/dev/null | grep installed)
-    if [ "$debGetCheck" == "" ]; then
-        curl -sL https://raw.githubusercontent.com/wimpysworld/deb-get/main/deb-get | sudo -E bash -s install deb-get &>/dev/null
-        echo "...deb-get installed"
+    if [ "$debGetCheck" != "" ]; then
+        return 0
     fi
+
+    curl -sL https://raw.githubusercontent.com/wimpysworld/deb-get/main/deb-get | sudo -E bash -s install deb-get &>/dev/null
+    echo "...deb-get installed"
 }
 
 function InstallFlatpak {
@@ -391,10 +431,12 @@ function InstallFlatpak {
     InstallPackageIfMissing flatpak
 
     flathubCheck=$(sudo flatpak remotes | grep flathub)
-    if [ "$flathubCheck" == "" ]; then
-        sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
-        echo "...Flathub repository added"
+    if [ "$flathubCheck" != "" ]; then
+        return 0
     fi
+
+    sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
+    echo "...Flathub repository added"
 }
 
 function InstallWebBrowsers {
@@ -441,64 +483,72 @@ function InstallSpotify {
     echo "TASK: InstallSpotify"
 
     spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
-    if [ "$spotifyCheck" == "" ]; then
-        curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
-        echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
-
-        sudo apt update &>/dev/null
-        aptUpdated=true
-
-        InstallPackageIfMissing spotify-client
+    if [ "$spotifyCheck" != "" ]; then
+        return 0
     fi
+
+    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
+    echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
+
+    sudo apt update &>/dev/null
+    aptUpdated=true
+
+    InstallPackageIfMissing spotify-client
 }
 
 function InstallVisualStudioCode {
     echo "TASK: InstallVisualStudioCode"
 
     vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
-    if [ "$vscodeCheck" == "" ]; then
-        InstallPackageIfMissing gpg
-
-        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
-        sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
-
-        sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
-
-        rm -f packages.microsoft.gpg
-
-        sudo apt update &>/dev/null
-        aptUpdated=true
-
-        InstallPackageIfMissing code
+    if [ "$vscodeCheck" != "" ]; then
+        return 0
     fi
+
+    InstallPackageIfMissing gpg
+
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
+    sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
+
+    sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
+
+    rm -f packages.microsoft.gpg
+
+    sudo apt update &>/dev/null
+    aptUpdated=true
+
+    InstallPackageIfMissing code
 }
 
 function InstallDoctl {
     echo "TASK: InstallDoctl"
 
+    if (hash doctl 2>/dev/null); then
+        return 0
+    fi
+
     filename="doctl-$doctlVersion-linux-amd64.tar.gz"
 
-    if ! (hash doctl 2>/dev/null); then
-        wget -q https://github.com/digitalocean/doctl/releases/latest/download/$filename
-        tar xf $filename &>/dev/null
-        sudo mv doctl /usr/local/bin
-        rm -f $filename
-        echo "...doctl installed"
-    fi
+    wget -q https://github.com/digitalocean/doctl/releases/download/v$doctlVersion/$filename
+    tar xf $filename &>/dev/null
+    sudo mv doctl /usr/local/bin
+    rm -f $filename
+    echo "...doctl installed"
 }
 
 function InstallSlack {
     echo "TASK: InstallSlack"
 
+    slackCheck=$(sudo apt list slack-desktop 2>/dev/null | grep installed)
+    if [ "$slackCheck" != "" ]; then
+        return 0
+    fi
+
     filename="slack-desktop-$slackVersion-amd64.deb"
 
-    slackCheck=$(sudo apt list slack-desktop 2>/dev/null | grep installed)
-    if [ "$slackCheck" == "" ]; then
-        wget -q https://downloads.slack-edge.com/releases/linux/$slackVersion/prod/x64/$filename
-        sudo dpkg -i $filename &>/dev/null
-        rm $filename
-        echo "...Slack installed"
-    fi
+    wget -q https://downloads.slack-edge.com/releases/linux/$slackVersion/prod/x64/$filename
+    sudo dpkg -i $filename &>/dev/null
+    rm $filename
+    echo "...Slack installed"
 }
 
 function InstallVirtManager {
@@ -569,15 +619,17 @@ function InstallVirtManager {
 function InstallAndroidStudio {
     echo "TASK: InstallAndroidStudio"
 
-    if [ ! -d "$HOME"/android-studio ]; then
-        echo "...Downloading Android Studio"
-        wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/$androidStudioVersion/android-studio-$androidStudioVersion-linux.tar.gz
-        echo "...Unpacking Android Studio"
-        tar -xvzf android-studio-$androidStudioVersion-linux.tar.gz &>/dev/null
-        mv android-studio "$HOME"
-        rm -f android-studio-$androidStudioVersion-linux.tar.gz
-        echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
+    if [ -d "$HOME"/android-studio ]; then
+        return 0
     fi
+
+    echo "...Downloading Android Studio"
+    wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/$androidStudioVersion/android-studio-$androidStudioVersion-linux.tar.gz
+    echo "...Unpacking Android Studio"
+    tar -xvzf android-studio-$androidStudioVersion-linux.tar.gz &>/dev/null
+    mv android-studio "$HOME"
+    rm -f android-studio-$androidStudioVersion-linux.tar.gz
+    echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
 }
 
 function InstallAdditionalSoftware {
