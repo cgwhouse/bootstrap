@@ -8,8 +8,19 @@ slackVersion="4.36.140"
 androidStudioVersion="2023.1.1.28"
 
 function InstallPackageIfMissing {
+    packageToCheck=$1
+    grepStr="installed"
+
+    # Handle 32-bit
+    if [[ "$packageToCheck" == *":i386"* ]]; then
+        # Strip i386 from the package name that was provided
+        packageToCheck="${packageToCheck/:i386/""}"
+        # Update the string used by grep to check if installed
+        grepStr="i386 \[installed\]"
+    fi
+
     # Check for package using apt list
-    packageCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    packageCheck=$(sudo apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
     if [ "$packageCheck" != "" ]; then
         return 0
     fi
@@ -25,7 +36,7 @@ function InstallPackageIfMissing {
     sudo apt install -y "$1" &>/dev/null
 
     # Ensure package was installed, return error if not
-    installCheck=$(sudo apt list "$1" 2>/dev/null | grep installed)
+    installCheck=$(sudo apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
     if [ "$installCheck" == "" ]; then
         echo "ERROR: Failed to install $1"
         return 1
@@ -172,6 +183,20 @@ function InstallOhMyZsh {
     fi
 }
 
+function EnableMultiarch {
+    echo "TASK: EnabledMultiarch"
+
+    multiarchCheck=$(dpkg --print-foreign-architectures | grep i386)
+    if [ "$multiarchCheck" != "" ]; then
+        return 0
+    fi
+
+    sudo dpkg --add-architecture i386 &>/dev/null
+    echo "...Added i386 architecture"
+    sudo apt update &>/dev/null
+    echo "...Updated apt sources"
+}
+
 function InstallProprietaryGraphics {
     echo "TASK: InstallProprietaryGraphics"
 
@@ -189,6 +214,9 @@ function InstallProprietaryGraphics {
 
     # Main driver
     InstallPackageIfMissing nvidia-driver
+
+    # 32-bit libs
+    InstallPackageIfMissing nvidia-driver-libs:i386
 }
 
 function InstallDesktopEnvironment {
@@ -208,7 +236,7 @@ function InstallDesktopEnvironment {
     # App Launcher (requires extra setup)
 
     # Exit if already installed
-    ulauncherCheck=$(apt list ulauncher | grep installed)
+    ulauncherCheck=$(apt list ulauncher 2>/dev/null | grep installed)
     if [ "$ulauncherCheck" != "" ]; then
         return 0
     fi
