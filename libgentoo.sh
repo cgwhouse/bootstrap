@@ -13,8 +13,9 @@ function InstallDesktopEnvironment {
     echo "TASK: InstallDesktopEnvironment"
 
     if IsPackageInstalled "mate-base/mate" ; then
-        echo "package is installed"
-    else
-        echo "package not installed"
+        return 0
     fi
+
+    echo "...Add the following USE flags: elogind networkmanager X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+    echo "...Visit the wiki page for MATE and follow the instructions"
 }
