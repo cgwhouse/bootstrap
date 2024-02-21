@@ -20,6 +20,9 @@ if [ $# -eq 1 ]; then
         "InstallDesktopEnvironment")
             InstallDesktopEnvironment
             ;;
+        "InstallFirefox")
+            InstallFirefox
+            ;;
         "CreateDirectories")
             CreateDirectories
             ;;
@@ -97,6 +100,14 @@ if [ $# -eq 1 ]; then
 fi
 
 # Full run, exit if a task errors
+
+if ! InstallDesktopEnvironment; then
+    exit 1
+fi
+
+if ! InstallFirefox; then
+    exit 1
+fi
 
 if ! CreateDirectories; then
     exit 1
