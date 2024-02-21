@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ./libbootstrap.sh
+source ./libdebian.sh
 
 # Update this if doing a minimal bootstrap (no GUI)
 server=false
