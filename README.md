@@ -1,4 +1,6 @@
-# bootstrap-debian
+# bootstrap
+
+## Debian
 
 1. Update apt sources (optional)
 2. Full update of system using apt
