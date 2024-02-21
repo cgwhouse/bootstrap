@@ -17,6 +17,9 @@ printf "\n"
 
 if [ $# -eq 1 ]; then
     case $1 in
+        "InstallDesktopEnvironment")
+            InstallDesktopEnvironment
+            ;;
         "CreateDirectories")
             CreateDirectories
             ;;
