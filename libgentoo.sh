@@ -46,7 +46,7 @@ function InstallTmux {
 function InstallFirefox {
     echo "TASK: InstallFirefox"
 
-    if IsPackageInstalled "www-client/firefox"; then
+    if IsPackageInstalled "www-client/firefox" || IsPackageInstalled "www-client/firefox-bin"; then
         return 0
     fi
 
