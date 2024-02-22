@@ -23,7 +23,7 @@
 ### TODO
 
 - we want to get to a desktop environment + web browser as soon as possible, because of all the config files and manual shit required
-- that leaves only pulseaudio and zsh-completion USE flags to go
+- that leaves only pulseaudio USE flag to go
 - font routine is semi shared, but using unar currently
   - could break out the package installs into their own OS specific which then call a common one
   - this same principle would be good for themeing task as well

@@ -113,6 +113,10 @@ if ! InstallZsh; then
     exit 1
 fi
 
+if ! InstallTmux; then
+    exit 1
+fi
+
 if ! CreateDirectories; then
     exit 1
 fi

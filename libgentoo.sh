@@ -42,3 +42,14 @@ function InstallZsh {
     echo "...Add the following global USE flag, then emerge zsh: zsh-completion"
     return 1
 }
+
+function InstallTmux {
+    echo "TASK: InstallTmux"
+
+    if IsPackageInstalled "app-misc/tmux"; then
+        return 0
+    fi
+
+    echo "...Tmux can be emerged normally"
+    return 1
+}
