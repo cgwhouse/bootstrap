@@ -76,7 +76,7 @@ function InstallPipewire {
         return 0
     fi
 
-    echo "...Add the following global use flag: pulseaudio"
+    echo "...Add the following global use flag: pulseaudio screencast"
     echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
 }
 
