@@ -28,7 +28,7 @@ function InstallFirefox {
         return 0
     fi
 
-    echo "...Firefox can be emerged normally, we need a web browser to stop relying on another computer for this"
+    echo "...Firefox can be emerged normally, we need a web browser to stop relying on another computer for remaining setup!"
     return 1
 }
 

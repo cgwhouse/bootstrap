@@ -47,14 +47,6 @@ function CreateDirectories {
 function ConfigureCoreUtilities {
     echo "TASK: ConfigureCoreUtilities"
 
-    # Ensure zsh is default shell for user
-    #userShell=$(getent passwd "$USER" | awk -F: '{print $NF}')
-    #if [ "$userShell" != "/usr/bin/zsh" ]; then
-    #    echo "...Changing default shell to zsh"
-    #    sudo usermod --shell /usr/bin/zsh "$USER" &>/dev/null
-    #    echo "...Default shell changed to zsh"
-    #fi
-
     # Oh My Tmux
     ohMyTmuxPath="$HOME/.tmux"
     if [ ! -d "$ohMyTmuxPath" ]; then
