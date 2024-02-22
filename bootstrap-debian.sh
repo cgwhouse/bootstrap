@@ -26,8 +26,8 @@ if [ $# -eq 1 ]; then
         "InstallCoreUtilities")
             InstallCoreUtilities
             ;;
-        "ConfigureCoreUtilities")
-            ConfigureCoreUtilities
+        "ConfigureTmux")
+            ConfigureTmux
             ;;
         "InstallDotNetCore")
             InstallDotNetCore
@@ -35,8 +35,8 @@ if [ $# -eq 1 ]; then
         "InstallNvm")
             InstallNvm
             ;;
-        "InstallOhMyZsh")
-            InstallOhMyZsh
+        "ConfigureZsh")
+            ConfigureZsh
             ;;
         "EnableMultiarch")
             EnableMultiarch
@@ -106,7 +106,7 @@ if ! InstallCoreUtilities; then
     exit 1
 fi
 
-if ! ConfigureCoreUtilities; then
+if ! ConfigureTmux; then
     exit 1
 fi
 
@@ -120,7 +120,7 @@ fi
 
 # Exit with minimal workload if server bootstrap
 if [ $server == true ]; then
-    if ! InstallOhMyZsh; then
+    if ! ConfigureZsh; then
         exit 1
     fi
 
@@ -191,7 +191,7 @@ if ! InstallAdditionalSoftware; then
     exit 1
 fi
 
-if ! InstallOhMyZsh; then
+if ! ConfigureZsh; then
     exit 1
 fi
 

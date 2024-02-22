@@ -17,11 +17,11 @@ printf "\n"
 
 if [ $# -eq 1 ]; then
     case $1 in
+        "CreateDirectories")
+            CreateDirectories
+            ;;
         "InstallDesktopEnvironment")
             InstallDesktopEnvironment
-            ;;
-        "InstallFirefox")
-            InstallFirefox
             ;;
         "InstallZsh")
             InstallZsh
@@ -29,25 +29,22 @@ if [ $# -eq 1 ]; then
         "InstallTmux")
             InstallTmux
             ;;
-        "CreateDirectories")
-            CreateDirectories
+        "ConfigureTmux")
+            ConfigureTmux
             ;;
-        #"InstallCoreUtilities")
-        #    InstallCoreUtilities
-        #    ;;
-        "ConfigureCoreUtilities")
-            ConfigureCoreUtilities
+        "InstallFirefox")
+            InstallFirefox
             ;;
-        #"InstallDotNetCore")
-        #    InstallDotNetCore
-        #    ;;
         "InstallNvm")
             InstallNvm
             ;;
-        "InstallOhMyZsh")
-            InstallOhMyZsh
-            ;;
-        #"EnableMultiarch")
+            #"InstallCoreUtilities")
+            #    InstallCoreUtilities
+            #    ;;
+            #"InstallDotNetCore")
+            #    InstallDotNetCore
+            #    ;;
+            #"EnableMultiarch")
         #    EnableMultiarch
         #    ;;
         #"InstallProprietaryGraphics")
@@ -95,6 +92,9 @@ if [ $# -eq 1 ]; then
         #"InstallAdditionalSoftware")
         #    InstallAdditionalSoftware
         #    ;;
+        "ConfigureZsh")
+            ConfigureZsh
+            ;;
         *)
             printf "ERROR: Unknown task\n\n"
             exit 1
@@ -107,11 +107,11 @@ fi
 
 # Full run, exit if a task errors
 
-if ! InstallDesktopEnvironment; then
+if ! CreateDirectories; then
     exit 1
 fi
 
-if ! InstallFirefox; then
+if ! InstallDesktopEnvironment; then
     exit 1
 fi
 
@@ -123,7 +123,15 @@ if ! InstallTmux; then
     exit 1
 fi
 
-if ! CreateDirectories; then
+if ! ConfigureTmux; then
+    exit 1
+fi
+
+if ! InstallFirefox; then
+    exit 1
+fi
+
+if ! InstallNvm; then
     exit 1
 fi
 
@@ -131,17 +139,9 @@ fi
 #    exit 1
 #fi
 
-if ! ConfigureCoreUtilities; then
-    exit 1
-fi
-
 #if ! InstallDotNetCore; then
 #    exit 1
 #fi
-
-if ! InstallNvm; then
-    exit 1
-fi
 
 #if ! EnableMultiarch; then
 #    exit 1
@@ -207,7 +207,7 @@ fi
 #    exit 1
 #fi
 
-if ! InstallOhMyZsh; then
+if ! ConfigureZsh; then
     exit 1
 fi
 

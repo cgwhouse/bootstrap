@@ -44,8 +44,8 @@ function CreateDirectories {
     fi
 }
 
-function ConfigureCoreUtilities {
-    echo "TASK: ConfigureCoreUtilities"
+function ConfigureTmux {
+    echo "TASK: ConfigureTmux"
 
     # Oh My Tmux
     ohMyTmuxPath="$HOME/.tmux"
@@ -75,8 +75,8 @@ function InstallNvm {
     fi
 }
 
-function InstallOhMyZsh {
-    echo "TASK: InstallOhMyZsh"
+function ConfigureZsh {
+    echo "TASK: ConfigureZsh"
 
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
