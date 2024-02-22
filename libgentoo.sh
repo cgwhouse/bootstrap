@@ -32,15 +32,28 @@ function InstallZsh {
     return 1
 }
 
-function InstallTmux {
-    echo "TASK: InstallTmux"
+function InstallCoreUtilities {
+    echo "TASK: InstallCoreUtilities"
 
-    if IsPackageInstalled "app-misc/tmux"; then
-        return 0
+    if ! IsPackageInstalled "app-misc/tmux"; then
+        echo "...emerge app-misc/tmux"
+        return 1
     fi
 
-    echo "...Tmux can be emerged normally"
-    return 1
+    if ! IsPackageInstalled "app-arch/unar"; then
+        echo "...emerge app-arch/unar"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "app-misc/fastfetch"; then
+        echo "...emerge app-misc/fastfetch"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "sys-process/htop"; then
+        echo "...emerge sys-process/htop"
+        return 1
+    fi
 }
 
 function InstallFirefox {

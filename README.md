@@ -25,6 +25,7 @@
 - we want to get to a desktop environment + web browser as soon as possible, because of all the config files and manual shit required
 - can put off the web browser if additional things that don't need extra configuring / looking up stuff
 - all the ones that can be installed normally / without configs should be in their own bit routine that cycles through package names
+- maybe standard part of install is getting firefox-bin, then replacing with regular after we have librewolf and / or chromium?
 - that leaves only pulseaudio USE flag to go
 - font routine is semi shared, but using unar currently
   - could break out the package installs into their own OS specific which then call a common one

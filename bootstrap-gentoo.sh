@@ -26,8 +26,8 @@ if [ $# -eq 1 ]; then
         "InstallZsh")
             InstallZsh
             ;;
-        "InstallTmux")
-            InstallTmux
+        "InstallCoreUtilities")
+            InstallCoreUtilities
             ;;
         "ConfigureTmux")
             ConfigureTmux
@@ -38,21 +38,9 @@ if [ $# -eq 1 ]; then
         "InstallNvm")
             InstallNvm
             ;;
-            #"InstallCoreUtilities")
-            #    InstallCoreUtilities
-            #    ;;
             #"InstallDotNetCore")
             #    InstallDotNetCore
             #    ;;
-            #"EnableMultiarch")
-        #    EnableMultiarch
-        #    ;;
-        #"InstallProprietaryGraphics")
-        #    InstallProprietaryGraphics
-        #    ;;
-        #"InstallDesktopEnvironment")
-        #    InstallDesktopEnvironment
-        #    ;;
         #"InstallPipewire")
         #    InstallPipewire
         #    ;;
@@ -61,9 +49,6 @@ if [ $# -eq 1 ]; then
         #    ;;
         #"DownloadTheming")
         #    DownloadTheming
-        #    ;;
-        #"InstallDebGet")
-        #    InstallDebGet
         #    ;;
         #"InstallFlatpak")
         #    InstallFlatpak
@@ -119,7 +104,7 @@ if ! InstallZsh; then
     exit 1
 fi
 
-if ! InstallTmux; then
+if ! InstallCoreUtilities; then
     exit 1
 fi
 
