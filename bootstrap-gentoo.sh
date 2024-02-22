@@ -129,6 +129,14 @@ if ! InstallFonts; then
     exit 1
 fi
 
+if ! InstallUlauncher; then
+    exit 1
+fi
+
+if ! InstallPlank; then
+    exit 1
+fi
+
 #if ! InstallDotNetCore; then
 #    exit 1
 #fi

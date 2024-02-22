@@ -26,3 +26,4 @@
 - add vdagent guest package if VM detected in InstallCoreUtilities
 - rename main scripts for easier tab complete / reruns
 - bookmark places to check for updated versions
+- when ulauncher and plank?

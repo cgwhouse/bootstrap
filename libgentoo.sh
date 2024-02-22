@@ -111,3 +111,25 @@ function InstallFonts {
         return 1
     fi
 }
+
+function InstallUlauncher {
+   echo "TASK: InstallUlauncher"
+
+    if IsPackageInstalled "x11-misc/ulauncher"; then
+        return 0
+    fi
+
+    echo "...Emerge x11-misc/ulauncher, only available via overlay"
+    return 1
+}
+
+function InstallPlank {
+   echo "TASK: InstallPlank"
+
+    if IsPackageInstalled "x11-misc/plank"; then
+        return 0
+    fi
+
+    echo "...Emerge x11-misc/plank, only available via overlay"
+    return 1
+}
