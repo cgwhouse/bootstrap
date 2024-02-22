@@ -7,9 +7,9 @@ source ./libgentoo.sh
 if [ $# -gt 1 ]; then
     printf "\nUsage:\n\n"
     printf "# Runs all tasks\n"
-    printf "./bootstrap-gentoo.sh\n\n"
+    printf "./gentoo.sh\n\n"
     printf "# Runs specified task only\n"
-    printf "./bootstrap-gentoo.sh TASK_NAME\n\n"
+    printf "./gentoo.sh TASK_NAME\n\n"
     exit 1
 fi
 

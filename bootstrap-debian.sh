@@ -10,9 +10,9 @@ server=false
 if [ $# -gt 1 ]; then
     printf "\nUsage:\n\n"
     printf "# Runs all tasks\n"
-    printf "./bootstrap-debian.sh\n\n"
+    printf "./debian.sh\n\n"
     printf "# Runs specified task only\n"
-    printf "./bootstrap-debian.sh TASK_NAME\n\n"
+    printf "./debian.sh TASK_NAME\n\n"
     exit 1
 fi
 
