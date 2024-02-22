@@ -12,7 +12,7 @@ function IsPackageInstalled {
 function InstallDesktopEnvironment {
     echo "TASK: InstallDesktopEnvironment"
 
-    if IsPackageInstalled "mate-base/mate" ; then
+    if IsPackageInstalled "mate-base/mate"; then
         return 0
     fi
 
@@ -22,13 +22,23 @@ function InstallDesktopEnvironment {
 }
 
 function InstallFirefox {
-   echo "TASK: InstallFirefox"
+    echo "TASK: InstallFirefox"
 
-    if IsPackageInstalled "www-client/firefox" ; then
+    if IsPackageInstalled "www-client/firefox"; then
         return 0
     fi
 
     echo "...Firefox can be emerged normally, we need a web browser to stop relying on another computer for this"
     return 1
+}
 
+function InstallZsh {
+    echo "TASK: InstallZsh"
+
+    if IsPackageInstalled "app-shells/zsh"; then
+        return 0
+    fi
+
+    echo "...Add the following global USE flag, then emerge zsh: zsh-completion"
+    return 1
 }

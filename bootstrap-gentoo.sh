@@ -109,6 +109,10 @@ if ! InstallFirefox; then
     exit 1
 fi
 
+if ! InstallZsh; then
+    exit 1
+fi
+
 if ! CreateDirectories; then
     exit 1
 fi
