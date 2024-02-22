@@ -83,3 +83,43 @@ function ConfigureZsh {
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     fi
 }
+
+function InstallFontsCommon {
+    if [ ! -d "$HOME/.local/share/fonts" ]; then
+        mkdir "$HOME"/.local/share/fonts
+        echo "...Fonts directory created"
+    fi
+
+    firaCodeNerdFontCheck="$HOME/.local/share/fonts/FiraCodeNerdFont-Regular.ttf"
+    if [ ! -f "$firaCodeNerdFontCheck" ]; then
+        echo "...Installing FiraCode Nerd Font"
+        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip -o fira.zip &>/dev/null
+        unar -d fira.zip &>/dev/null
+        cp fira/*.ttf "$HOME"/.local/share/fonts &>/dev/null
+        rm -r fira &>/dev/null
+        rm fira.zip &>/dev/null
+        echo "...FiraCode Nerd Font installed"
+    fi
+
+    ubuntuNerdFontCheck="$HOME/.local/share/fonts/UbuntuNerdFont-Regular.ttf"
+    if [ ! -f "$ubuntuNerdFontCheck" ]; then
+        echo "...Installing Ubuntu Nerd Font"
+        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Ubuntu.zip -o ubuntu.zip &>/dev/null
+        unar -d ubuntu.zip &>/dev/null
+        cp ubuntu/*.ttf "$HOME"/.local/share/fonts &>/dev/null
+        rm -r ubuntu &>/dev/null
+        rm ubuntu.zip &>/dev/null
+        echo "...Ubuntu Nerd Font installed"
+    fi
+
+    ubuntuMonoNerdFontCheck="$HOME/.local/share/fonts/UbuntuMonoNerdFont-Regular.ttf"
+    if [ ! -f "$ubuntuMonoNerdFontCheck" ]; then
+        echo "...Installing UbuntuMono Nerd Font"
+        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/UbuntuMono.zip -o ubuntumono.zip &>/dev/null
+        unar -d ubuntumono.zip &>/dev/null
+        cp ubuntumono/*.ttf "$HOME"/.local/share/fonts &>/dev/null
+        rm -r ubuntumono &>/dev/null
+        rm ubuntumono.zip &>/dev/null
+        echo "...UbuntuMono Nerd Font installed"
+    fi
+}

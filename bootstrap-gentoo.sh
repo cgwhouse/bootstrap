@@ -38,15 +38,16 @@ if [ $# -eq 1 ]; then
         "InstallNvm")
             InstallNvm
             ;;
+        "InstallPipewire")
+            InstallPipewire
+            ;;
+        "InstallFonts")
+            InstallFonts
+            ;;
             #"InstallDotNetCore")
             #    InstallDotNetCore
             #    ;;
-        #"InstallPipewire")
-        #    InstallPipewire
-        #    ;;
-        #"InstallFonts")
-        #    InstallFonts
-        #    ;;
+
         #"DownloadTheming")
         #    DownloadTheming
         #    ;;
@@ -120,6 +121,14 @@ if ! InstallNvm; then
     exit 1
 fi
 
+if ! InstallPipewire; then
+    exit 1
+fi
+
+if ! InstallFonts; then
+    exit 1
+fi
+
 #if ! InstallCoreUtilities; then
 #    exit 1
 #fi
@@ -139,14 +148,7 @@ fi
 #if ! InstallDesktopEnvironment; then
 #    exit 1
 #fi
-#
-#if ! InstallPipewire; then
-#    exit 1
-#fi
-#
-#if ! InstallFonts; then
-#    exit 1
-#fi
+
 #
 #if ! DownloadTheming; then
 #    exit 1

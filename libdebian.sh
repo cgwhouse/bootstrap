@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ./libbootstrap.sh
+
 aptUpdated=false
 
 # Versions of manual stuff
@@ -178,54 +180,12 @@ function InstallPipewire {
 function InstallFonts {
     echo "TASK: InstallFonts"
 
-    if [ ! -d "$HOME/.local/share/fonts" ]; then
-        mkdir "$HOME"/.local/share/fonts
-        echo "...Fonts directory created"
-    fi
+    # Nerd Fonts
+    InstallFontsCommon
 
-    # MSFT
     InstallPackageIfMissing ttf-mscorefonts-installer
-
-    # Fira Code + Nerd Font
     InstallPackageIfMissing fonts-firacode
-
-    firaCodeNerdFontCheck="$HOME/.local/share/fonts/FiraCodeNerdFont-Regular.ttf"
-    if [ ! -f "$firaCodeNerdFontCheck" ]; then
-        echo "...Installing FiraCode Nerd Font"
-        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip -o fira.zip &>/dev/null
-        unar -d fira.zip &>/dev/null
-        cp fira/*.ttf "$HOME"/.local/share/fonts &>/dev/null
-        rm -r fira &>/dev/null
-        rm fira.zip &>/dev/null
-        echo "...FiraCode Nerd Font installed"
-    fi
-
-    # Ubuntu + Nerd Font + UbuntuMono Nerd Font
     InstallPackageIfMissing fonts-ubuntu
-
-    ubuntuNerdFontCheck="$HOME/.local/share/fonts/UbuntuNerdFont-Regular.ttf"
-    if [ ! -f "$ubuntuNerdFontCheck" ]; then
-        echo "...Installing Ubuntu Nerd Font"
-        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Ubuntu.zip -o ubuntu.zip &>/dev/null
-        unar -d ubuntu.zip &>/dev/null
-        cp ubuntu/*.ttf "$HOME"/.local/share/fonts &>/dev/null
-        rm -r ubuntu &>/dev/null
-        rm ubuntu.zip &>/dev/null
-        echo "...Ubuntu Nerd Font installed"
-    fi
-
-    ubuntuMonoNerdFontCheck="$HOME/.local/share/fonts/UbuntuMonoNerdFont-Regular.ttf"
-    if [ ! -f "$ubuntuMonoNerdFontCheck" ]; then
-        echo "...Installing UbuntuMono Nerd Font"
-        curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/UbuntuMono.zip -o ubuntumono.zip &>/dev/null
-        unar -d ubuntumono.zip &>/dev/null
-        cp ubuntumono/*.ttf "$HOME"/.local/share/fonts &>/dev/null
-        rm -r ubuntumono &>/dev/null
-        rm ubuntumono.zip &>/dev/null
-        echo "...UbuntuMono Nerd Font installed"
-    fi
-
-    # Noto Emoji
     InstallPackageIfMissing fonts-noto-color-emoji
 }
 
