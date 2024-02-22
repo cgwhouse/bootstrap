@@ -129,35 +129,14 @@ if ! InstallFonts; then
     exit 1
 fi
 
-#if ! InstallCoreUtilities; then
-#    exit 1
-#fi
-
 #if ! InstallDotNetCore; then
 #    exit 1
 #fi
 
-#if ! EnableMultiarch; then
-#    exit 1
-#fi
-#
-#if ! InstallProprietaryGraphics; then
-#    exit 1
-#fi
-#
-#if ! InstallDesktopEnvironment; then
-#    exit 1
-#fi
-
-#
 #if ! DownloadTheming; then
 #    exit 1
 #fi
-#
-#if ! InstallDebGet; then
-#    exit 1
-#fi
-#
+
 #if ! InstallFlatpak; then
 #    exit 1
 #fi
