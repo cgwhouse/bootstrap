@@ -23,6 +23,12 @@ if [ $# -eq 1 ]; then
         "InstallFirefox")
             InstallFirefox
             ;;
+        "InstallZsh")
+            InstallZsh
+            ;;
+        "InstallTmux")
+            InstallTmux
+            ;;
         "CreateDirectories")
             CreateDirectories
             ;;
@@ -101,21 +107,21 @@ fi
 
 # Full run, exit if a task errors
 
-if ! InstallDesktopEnvironment; then
-    exit 1
-fi
-
-if ! InstallFirefox; then
-    exit 1
-fi
-
-if ! InstallZsh; then
-    exit 1
-fi
-
-if ! InstallTmux; then
-    exit 1
-fi
+#if ! InstallDesktopEnvironment; then
+#    exit 1
+#fi
+#
+#if ! InstallFirefox; then
+#    exit 1
+#fi
+#
+#if ! InstallZsh; then
+#    exit 1
+#fi
+#
+#if ! InstallTmux; then
+#    exit 1
+#fi
 
 if ! CreateDirectories; then
     exit 1
