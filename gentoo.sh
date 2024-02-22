@@ -44,6 +44,12 @@ if [ $# -eq 1 ]; then
         "InstallFonts")
             InstallFonts
             ;;
+        "InstallUlauncher")
+            InstallUlauncher
+            ;;
+        "InstallPlank")
+            InstallPlank
+            ;;
             #"InstallDotNetCore")
             #    InstallDotNetCore
             #    ;;
