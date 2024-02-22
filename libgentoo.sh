@@ -16,7 +16,7 @@ function InstallDesktopEnvironment {
         return 0
     fi
 
-    echo "...Add the following USE flags, then update system: elogind networkmanager X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+    echo "...Add the following USE flags, then update system: elogind gtk networkmanager X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
     echo "...Visit the wiki pages for MATE, elogind, and NetworkManager, and follow the instructions"
     return 1
 }
