@@ -131,7 +131,7 @@ function InstallUlauncher {
 function InstallPlank {
     echo "TASK: InstallPlank"
 
-    if IsPackageInstalled "x11-misc/plank"; then
+    if IsPackageInstalled "x11-misc/plank" inOverlay; then
         return 0
     fi
 
