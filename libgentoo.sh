@@ -160,3 +160,14 @@ function InstallDotNetCore {
     echo "...emerge virtual/dotnet-sdk, may need multiple versions"
     return 1
 }
+
+function InstallFlatpak {
+    echo "TASK: InstallFlatpak"
+
+    if IsPackageInstalled "sys-apps/flatpak"; then
+        return 0
+    fi
+
+    echo "...emerge sys-apps/flatpak"
+    return 1
+}

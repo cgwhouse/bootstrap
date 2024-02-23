@@ -56,10 +56,9 @@ if [ $# -eq 1 ]; then
         "InstallDotNetCore")
             InstallDotNetCore
             ;;
-
-            #"InstallFlatpak")
-        #    InstallFlatpak
-        #    ;;
+        "InstallFlatpak")
+            InstallFlatpak
+            ;;
         #"InstallWebBrowsers")
         #    InstallWebBrowsers
         #    ;;
@@ -151,9 +150,9 @@ if ! InstallDotNetCore; then
     exit 1
 fi
 
-#if ! InstallFlatpak; then
-#    exit 1
-#fi
+if ! InstallFlatpak; then
+    exit 1
+fi
 #
 #if ! InstallWebBrowsers; then
 #    exit 1
