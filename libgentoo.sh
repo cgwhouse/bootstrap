@@ -245,49 +245,49 @@ function InstallAndroidStudio {
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
-        # NetworkManager
-        #"network-manager-gnome"
-        #"network-manager-openvpn-gnome"
-        ## Doom Emacs
-        #"emacs-gtk"
-        #"elpa-ligature"
-        #"ripgrep"
-        #"fd-find"
-        ## Tiling window manager
-        #"picom"
-        #"lxappearance"
-        #"lxsession"
-        #"nitrogen"
-        #"volumeicon-alsa"
-        #"arandr"
-        ## qtile specific
-        #"python-is-python3"
-        #"python3-pip"
-        #"pipx"
-        #"xserver-xorg"
-        #"xinit"
-        #"libpangocairo-1.0-0"
-        #"python3-xcffib"
-        #"python3-cairocffi"
-        #"python3-dbus-next"
-        ## Media + Office
-        #"vlc"
-        #"transmission-gtk"
-        #"obs-studio"
-        #"libreoffice"
-        ## Games
-        #"aisleriot"
-        #"gnome-mines"
-        #"mgba-qt"
-        #"lutris"
-        #"dolphin-emu"
-        ## Misc
-        #"gparted"
-        #"copyq"
-        #"awscli"
-        #"sshpass"
-        #"qflipper"
-        #"openjdk-21-jdk"
+    ## NetworkManager
+    #"network-manager-gnome"
+    #"network-manager-openvpn-gnome"
+    ## Doom Emacs
+    #"emacs-gtk"
+    #"elpa-ligature"
+    #"ripgrep"
+    #"fd-find"
+    ## Tiling window manager
+    #"picom"
+    #"lxappearance"
+    #"lxsession"
+    #"nitrogen"
+    #"volumeicon-alsa"
+    #"arandr"
+    ## qtile specific
+    #"python-is-python3"
+    #"python3-pip"
+    #"pipx"
+    #"xserver-xorg"
+    #"xinit"
+    #"libpangocairo-1.0-0"
+    #"python3-xcffib"
+    #"python3-cairocffi"
+    #"python3-dbus-next"
+    ## Media + Office
+    #"vlc"
+    #"transmission-gtk"
+    #"obs-studio"
+    #"libreoffice"
+    ## Games
+    #"aisleriot"
+    #"gnome-mines"
+    #"mgba-qt"
+    #"lutris"
+    #"dolphin-emu"
+    ## Misc
+    #"gparted"
+    #"copyq"
+    #"awscli"
+    #"sshpass"
+    #"qflipper"
+    #"openjdk-21-jdk"
 }
 
 function InstallWebBrowsers {
@@ -299,16 +299,16 @@ function InstallWebBrowsers {
         return 1
     fi
 
+    # Firefox
+    if ! IsPackageInstalled "www-client/firefox"; then
+        echo "...replace firefox-bin with the real one"
+        return 1
+    fi
+
     # Chromium
     if ! IsPackageInstalled "www-client/ungoogled-chromium" inOverlay; then
         echo "...Ensure the following USE flags for chromium: proprietary-codecs widevine"
         echo "...emerge www-client/ungoogled-chromium, only available via overlay"
-        return 1
-    fi
-
-    # Firefox
-    if ! IsPackageInstalled "www-client/firefox"; then
-        echo "...replace firefox-bin with the real one"
         return 1
     fi
 }
