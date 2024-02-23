@@ -59,6 +59,9 @@ if [ $# -eq 1 ]; then
         "InstallFlatpak")
             InstallFlatpak
             ;;
+        "EnsureAppImage")
+            EnsureAppImage
+            ;;
         "InstallSpotify")
             InstallSpotify
             ;;
@@ -152,6 +155,10 @@ if ! InstallDotNetCore; then
 fi
 
 if ! InstallFlatpak; then
+    exit 1
+fi
+
+if ! EnsureAppImage; then
     exit 1
 fi
 

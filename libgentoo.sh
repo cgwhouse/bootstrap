@@ -176,6 +176,17 @@ function InstallFlatpak {
     return 1
 }
 
+function EnsureAppImage {
+    echo "TASK: EnsureAppImage"
+
+    if IsPackageInstalled "sys-fs/fuse"; then
+        return 0
+    fi
+
+    echo "...emerge sys-fs/fuse:0"
+    return 1
+}
+
 function InstallSpotify {
     echo "TASK: InstallSpotify"
 
