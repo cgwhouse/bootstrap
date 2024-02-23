@@ -63,14 +63,14 @@ function InstallCoreUtilities {
     fi
 }
 
-function InstallFirefox {
-    echo "TASK: InstallFirefox"
+function InstallFirefoxBin {
+    echo "TASK: InstallFirefoxBin"
 
     if IsPackageInstalled "www-client/firefox" || IsPackageInstalled "www-client/firefox-bin"; then
         return 0
     fi
 
-    echo "...Firefox can be emerged normally, we need a web browser to stop relying on another computer for remaining setup!"
+    echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
     return 1
 }
 
@@ -344,9 +344,10 @@ function InstallWebBrowsers {
         return 1
     fi
 
-    # Firefox
-    if ! IsPackageInstalled "www-client/firefox"; then
-        echo "...replace firefox-bin with the real one"
+    # Fancy Firefox check
+    firefoxCheck=$(eix -I --exact www-client/firefox | grep "No matches found")
+    if [ "$firefoxCheck" == "No matches found" ]; then
+        echo "...emerge www-client/firefox, may need to remove the bin version first"
         return 1
     fi
 
