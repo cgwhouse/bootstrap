@@ -53,9 +53,9 @@ if [ $# -eq 1 ]; then
         "DownloadTheming")
             DownloadTheming
             ;;
-            #"InstallDotNetCore")
-            #    InstallDotNetCore
-            #    ;;
+        "InstallDotNetCore")
+            InstallDotNetCore
+            ;;
 
             #"InstallFlatpak")
         #    InstallFlatpak
@@ -147,9 +147,9 @@ if ! DownloadTheming; then
     exit 1
 fi
 
-#if ! InstallDotNetCore; then
-#    exit 1
-#fi
+if ! InstallDotNetCore; then
+    exit 1
+fi
 
 #if ! InstallFlatpak; then
 #    exit 1
