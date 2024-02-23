@@ -65,13 +65,13 @@ if [ $# -eq 1 ]; then
         "InstallSpotify")
             InstallSpotify
             ;;
+        "InstallVisualStudioCode")
+            InstallVisualStudioCode
+            ;;
 
             #"InstallWebBrowsers")
             #    InstallWebBrowsers
             #    ;;
-            #"InstallVisualStudioCode")
-        #    InstallVisualStudioCode
-        #    ;;
         #"InstallDoctl")
         #    InstallDoctl
         #    ;;
@@ -166,6 +166,10 @@ if ! InstallSpotify; then
     exit 1
 fi
 
+if ! InstallVisualStudioCode; then
+    exit 1
+fi
+
 #
 #if ! InstallWebBrowsers; then
 #    exit 1
@@ -173,9 +177,7 @@ fi
 #
 
 #
-#if ! InstallVisualStudioCode; then
-#    exit 1
-#fi
+
 #
 #if ! InstallDoctl; then
 #    exit 1

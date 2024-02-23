@@ -197,3 +197,14 @@ function InstallSpotify {
     echo "...emerge media-sound/spotify"
     return 1
 }
+
+function InstallVisualStudioCode {
+    echo "TASK: InstallVisualStudioCode"
+
+    if IsPackageInstalled "app-editors/vscode"; then
+        return 0
+    fi
+
+    echo "...emerge app-editors/vscode"
+    return 1
+}
