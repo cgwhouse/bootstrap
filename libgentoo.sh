@@ -249,31 +249,74 @@ function InstallEmacs {
         return 0
     fi
 
-    echo "...emerge app-editors/emacs, refer to the wiki and dotfiles backup for USE flags"
-    echo "...there is also a global emacs USE flag"
+    echo "...Add global USE flag: emacs"
+    echo "...emerge app-editors/emacs, refer to the wiki and dotfiles for USE flags"
     return 1
 }
 
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
-    ## NetworkManager
-    #"network-manager-openvpn-gnome"
-    ## Doom Emacs
-    #"ripgrep"
-    #"fd-find"
-    ## Tiling window manager
-    #"picom"
-    #"lxappearance"
-    #"lxsession"
-    #"nitrogen"
-    #"volumeicon-alsa"
-    #"arandr"
-    ## qtile specific
-    #"python3-pip"
-    #"pipx"
-    ## Media + Office
-    #"vlc"
+    # OpenVPN
+    if ! IsPackageInstalled "net-vpn/networkmanager-openvpn"; then
+        echo "...emerge net-vpn/networkmanager-openvpn"
+        return 1
+    fi
+
+    # Doom Emacs Dependencies
+    if ! IsPackageInstalled "sys-apps/ripgrep"; then
+        echo "...emerge sys-apps/ripgrep"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "sys-apps/fd"; then
+        echo "...emerge sys-apps/fd"
+        return 1
+    fi
+
+    # Tiling WM
+    if ! IsPackageInstalled "x11-misc/picom"; then
+        echo "...emerge x11-misc/picom"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "lxde-base/lxappearance"; then
+        echo "...emerge lxde-base/lxappearance"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "lxde-base/lxsession"; then
+        echo "...emerge lxde-base/lxsession"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "x11-misc/nitrogen"; then
+        echo "...emerge x11-misc/nitrogen"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "media-sound/volumeicon"; then
+        echo "...emerge media-sound/volumeicon"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "x11-misc/arandr"; then
+        echo "...emerge x11-misc/arandr"
+        return 1
+    fi
+
+    # For qtile
+    if ! IsPackageInstalled "dev-python/pip"; then
+        echo "...emerge dev-python/pip"
+        return 1
+    fi
+
+    # Media + Office
+    if ! IsPackageInstalled "media-video/vlc"; then
+        echo "...emerge media-video/vlc"
+        return 1
+    fi
+
     #"transmission-gtk"
     #"obs-studio"
     #"libreoffice"
