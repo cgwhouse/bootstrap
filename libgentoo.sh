@@ -176,17 +176,6 @@ function EnsureAppImage {
     fi
 }
 
-#function InstallSlack {
-#    echo "TASK: InstallSlack"
-#
-#    if IsPackageInstalled "net-im/slack"; then
-#        return 0
-#    fi
-#
-#    echo "...emerge net-im/slack"
-#    return 1
-#}
-
 function InstallEmacs {
     echo "TASK: InstallEmacs"
 
@@ -208,6 +197,22 @@ function InstallAdditionalSoftware {
         "sys-apps/fd"
         "app-editors/vscode"
         "dev-util/android-studio"
+        # Tiling WM
+        "x11-misc/picom"
+        "lxde-base/lxappearance"
+        "lxde-base/lxsession"
+        "x11-misc/nitrogen"
+        "media-sound/volumeicon"
+        "x11-misc/arandr"
+        # For qtile
+        "dev-python/pip"
+        # Work
+        "net-vpn/networkmanager-openvpn"
+        "net-im/slack"
+        # Media + Office
+        "media-video/vlc"
+        "media-sound/spotify"
+        "net-p2p/transmission"
     )
 
     for package in "${packages[@]}"; do
@@ -217,77 +222,9 @@ function InstallAdditionalSoftware {
         fi
     done
 
-    # Dev stuff
-    #if ! IsPackageInstalled "sys-apps/ripgrep"; then
-    #    echo "...emerge sys-apps/ripgrep"
-    #    return 1
-    #fi
-
-    #if ! IsPackageInstalled "sys-apps/fd"; then
-    #    echo "...emerge sys-apps/fd"
-    #    return 1
-    #fi
-
-    #if ! IsPackageInstalled "app-editors/vscode"; then
-    #    echo "...emerge app-editors/vscode"
-    #    return 1
-    #fi
-
-    #if ! IsPackageInstalled "dev-util/android-studio"; then
-    #    echo "...emerge dev-util/android-studio"
-    #    return 1
-    #fi
-
-    # Tiling WM
-    if ! IsPackageInstalled "x11-misc/picom"; then
-        echo "...emerge x11-misc/picom"
-        return 1
-    fi
-
-    if ! IsPackageInstalled "lxde-base/lxappearance"; then
-        echo "...emerge lxde-base/lxappearance"
-        return 1
-    fi
-
-    if ! IsPackageInstalled "lxde-base/lxsession"; then
-        echo "...emerge lxde-base/lxsession"
-        return 1
-    fi
-
-    if ! IsPackageInstalled "x11-misc/nitrogen"; then
-        echo "...emerge x11-misc/nitrogen"
-        return 1
-    fi
-
-    if ! IsPackageInstalled "media-sound/volumeicon"; then
-        echo "...emerge media-sound/volumeicon"
-        return 1
-    fi
-
-    if ! IsPackageInstalled "x11-misc/arandr"; then
-        echo "...emerge x11-misc/arandr"
-        return 1
-    fi
-
-    # For qtile
-    if ! IsPackageInstalled "dev-python/pip"; then
-        echo "...emerge dev-python/pip"
-        return 1
-    fi
-
-    # Media + Office
-    if ! IsPackageInstalled "media-video/vlc"; then
-        echo "...emerge media-video/vlc"
-        return 1
-    fi
-
-    if ! IsPackageInstalled "media-sound/spotify"; then
-        echo "...emerge media-sound/spotify"
-        return 1
-    fi
-
-    #"transmission-gtk"
+    # TODO needs its own
     #"obs-studio"
+
     #"libreoffice"
 
     # Games
@@ -298,16 +235,7 @@ function InstallAdditionalSoftware {
     #"lutris"
     #"dolphin-emu"
 
-    # Work related
-    if ! IsPackageInstalled "net-vpn/networkmanager-openvpn"; then
-        echo "...emerge net-vpn/networkmanager-openvpn"
-        return 1
-    fi
 
-    if ! IsPackageInstalled "net-im/slack"; then
-        echo "...emerge net-im/slack"
-        return 1
-    fi
 
     # Misc
     if ! IsPackageInstalled "app-admin/doctl"; then
