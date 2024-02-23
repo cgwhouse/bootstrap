@@ -59,13 +59,14 @@ if [ $# -eq 1 ]; then
         "InstallFlatpak")
             InstallFlatpak
             ;;
-        #"InstallWebBrowsers")
-        #    InstallWebBrowsers
-        #    ;;
-        #"InstallSpotify")
-        #    InstallSpotify
-        #    ;;
-        #"InstallVisualStudioCode")
+        "InstallSpotify")
+            InstallSpotify
+            ;;
+
+            #"InstallWebBrowsers")
+            #    InstallWebBrowsers
+            #    ;;
+            #"InstallVisualStudioCode")
         #    InstallVisualStudioCode
         #    ;;
         #"InstallDoctl")
@@ -153,14 +154,17 @@ fi
 if ! InstallFlatpak; then
     exit 1
 fi
+
+if ! InstallSpotify; then
+    exit 1
+fi
+
 #
 #if ! InstallWebBrowsers; then
 #    exit 1
 #fi
 #
-#if ! InstallSpotify; then
-#    exit 1
-#fi
+
 #
 #if ! InstallVisualStudioCode; then
 #    exit 1

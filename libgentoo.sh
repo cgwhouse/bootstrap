@@ -171,3 +171,14 @@ function InstallFlatpak {
     echo "...emerge sys-apps/flatpak"
     return 1
 }
+
+function InstallSpotify {
+    echo "TASK: InstallSpotify"
+
+    if IsPackageInstalled "media-sound/spotify"; then
+        return 0
+    fi
+
+    echo "...emerge media-sound/spotify"
+    return 1
+}
