@@ -188,15 +188,6 @@ function InstallEmacs {
     return 1
 }
 
-function InstallLibreOffice {
-    echo "TASK: InstallLibreOffice"
-
-    if ! IsPackageInstalled "app-office/libreoffice"; then
-        echo "...emerge app-office/libreoffice, check wiki for USE flags"
-        return 1
-    fi
-}
-
 function InstallObsStudio {
     echo "TASK: InstallObsStudio"
 
@@ -231,6 +222,7 @@ function InstallAdditionalSoftware {
         "media-video/vlc"
         "media-sound/spotify"
         "net-p2p/transmission"
+        "app-office/libreoffice"
     )
 
     for package in "${packages[@]}"; do
