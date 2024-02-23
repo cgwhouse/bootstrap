@@ -242,15 +242,24 @@ function InstallAndroidStudio {
     return 1
 }
 
+function InstalllEmacs {
+    echo "TASK: InstallEmacs"
+
+    if IsPackageInstalled "app-editors/emacs"; then
+        return 0
+    fi
+
+    echo "...emerge app-editors/emacs, refer to the wiki and dotfiles backup for USE flags"
+    echo "...there is also a global emacs USE flag"
+    return 1
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
     ## NetworkManager
-    #"network-manager-gnome"
     #"network-manager-openvpn-gnome"
     ## Doom Emacs
-    #"emacs-gtk"
-    #"elpa-ligature"
     #"ripgrep"
     #"fd-find"
     ## Tiling window manager
@@ -261,15 +270,8 @@ function InstallAdditionalSoftware {
     #"volumeicon-alsa"
     #"arandr"
     ## qtile specific
-    #"python-is-python3"
     #"python3-pip"
     #"pipx"
-    #"xserver-xorg"
-    #"xinit"
-    #"libpangocairo-1.0-0"
-    #"python3-xcffib"
-    #"python3-cairocffi"
-    #"python3-dbus-next"
     ## Media + Office
     #"vlc"
     #"transmission-gtk"

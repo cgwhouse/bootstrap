@@ -80,6 +80,9 @@ if [ $# -eq 1 ]; then
         "InstallAndroidStudio")
             InstallAndroidStudio
             ;;
+        "InstallEmacs")
+            InstallEmacs
+            ;;
         "InstallAdditionalSoftware")
             InstallAdditionalSoftware
             ;;
@@ -184,6 +187,10 @@ if ! InstallSlack; then
 fi
 
 if ! InstallAndroidStudio; then
+    exit 1
+fi
+
+if ! InstallEmacs; then
     exit 1
 fi
 
