@@ -77,12 +77,16 @@ function InstallFirefox {
 function InstallPipewire {
     echo "TASK: InstallPipewire"
 
-    if IsPackageInstalled "media-video/pipewire"; then
-        return 0
+    if ! IsPackageInstalled "media-video/pipewire"; then
+        echo "...Add the following global use flag: pulseaudio screencast"
+        echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
+        return 1
     fi
 
-    echo "...Add the following global use flag: pulseaudio screencast"
-    echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
+    if ! IsPackageInstalled "media-sound/pavucontrol"; then
+        echo "emerge media-sound/pavucontrol"
+        return 1
+    fi
 }
 
 function InstallFonts {
