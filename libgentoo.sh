@@ -138,3 +138,14 @@ function InstallPlank {
     echo "...Emerge x11-misc/plank, only available via overlay"
     return 1
 }
+
+function DownloadTheming {
+    echo "TASK: Download Theming"
+
+    InstallFontsCommon
+
+    if IsPackageInstalled "x11-themes/gnome-themes-standard" inOverlay; then
+        echo "...Emerge x11-themes/gnome-themes-standard"
+        return 1
+    fi
+}

@@ -50,14 +50,14 @@ if [ $# -eq 1 ]; then
         "InstallPlank")
             InstallPlank
             ;;
+        "DownloadTheming")
+            DownloadTheming
+            ;;
             #"InstallDotNetCore")
             #    InstallDotNetCore
             #    ;;
 
-        #"DownloadTheming")
-        #    DownloadTheming
-        #    ;;
-        #"InstallFlatpak")
+            #"InstallFlatpak")
         #    InstallFlatpak
         #    ;;
         #"InstallWebBrowsers")
@@ -143,11 +143,11 @@ if ! InstallPlank; then
     exit 1
 fi
 
-#if ! InstallDotNetCore; then
-#    exit 1
-#fi
+if ! DownloadTheming; then
+    exit 1
+fi
 
-#if ! DownloadTheming; then
+#if ! InstallDotNetCore; then
 #    exit 1
 #fi
 
