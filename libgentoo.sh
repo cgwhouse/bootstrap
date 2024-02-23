@@ -182,11 +182,9 @@ function EnsureAppImage {
     # Fancy fuse check
     packageCheck=$(eix -I --exact sys-fs/fuse --installed-slot 0 | grep "No matches found")
     if [ "$packageCheck" == "No matches found" ]; then
+        echo "...emerge sys-fs/fuse:0"
         return 1
     fi
-
-    echo "...emerge sys-fs/fuse:0"
-    return 1
 }
 
 function InstallSpotify {
