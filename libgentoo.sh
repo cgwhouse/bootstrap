@@ -219,3 +219,25 @@ function InstallDoctl {
     echo "...emerge app-admin/doctl"
     return 1
 }
+
+function InstallSlack {
+    echo "TASK: InstallSlack"
+
+    if IsPackageInstalled "net-im/slack"; then
+        return 0
+    fi
+
+    echo "...emerge net-im/slack"
+    return 1
+}
+
+function InstallAndroidStudio {
+    echo "TASK: InstallAndroidStudio"
+
+    if IsPackageInstalled "dev-util/android-studio"; then
+        return 0
+    fi
+
+    echo "...emerge dev-util/android-studio"
+    return 1
+}

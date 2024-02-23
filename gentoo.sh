@@ -71,19 +71,21 @@ if [ $# -eq 1 ]; then
         "InstallDoctl")
             InstallDoctl
             ;;
+        "InstallSlack")
+            InstallSlack
+            ;;
+        "InstallAndroidStudio")
+            InstallAndroidStudio
+            ;;
+
             #"InstallWebBrowsers")
             #    InstallWebBrowsers
             #    ;;
 
-        #"InstallSlack")
-        #    InstallSlack
-        #    ;;
         #"InstallVirtManager")
         #    InstallVirtManager
         #    ;;
-        #"InstallAndroidStudio")
-        #    InstallAndroidStudio
-        #    ;;
+
         #"InstallAdditionalSoftware")
         #    InstallAdditionalSoftware
         #    ;;
@@ -174,23 +176,22 @@ if ! InstallDoctl; then
     exit 1
 fi
 
+if ! InstallSlack; then
+    exit 1
+fi
+
+if ! InstallAndroidStudio; then
+    exit 1
+fi
+
 #if ! InstallWebBrowsers; then
 #    exit 1
 #fi
-#
 
-#if ! InstallSlack; then
-#    exit 1
-#fi
-#
 #if ! InstallVirtManager; then
 #    exit 1
 #fi
-#
-#if ! InstallAndroidStudio; then
-#    exit 1
-#fi
-#
+
 #if ! InstallAdditionalSoftware; then
 #    exit 1
 #fi
