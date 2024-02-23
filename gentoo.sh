@@ -35,8 +35,8 @@ if [ $# -eq 1 ]; then
         "ConfigureZsh")
             ConfigureZsh
             ;;
-        "InstallFirefox")
-            InstallFirefox
+        "InstallFirefoxBin")
+            InstallFirefoxBin
             ;;
         "InstallNvm")
             InstallNvm
@@ -130,7 +130,7 @@ if ! ConfigureZsh; then
     exit 1
 fi
 
-if ! InstallFirefox; then
+if ! InstallFirefoxBin; then
     exit 1
 fi
 
