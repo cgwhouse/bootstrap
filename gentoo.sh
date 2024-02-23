@@ -59,26 +59,8 @@ if [ $# -eq 1 ]; then
         "InstallDotNetCore")
             InstallDotNetCore
             ;;
-        "InstallFlatpak")
-            InstallFlatpak
-            ;;
         "EnsureAppImage")
             EnsureAppImage
-            ;;
-        "InstallSpotify")
-            InstallSpotify
-            ;;
-        "InstallVisualStudioCode")
-            InstallVisualStudioCode
-            ;;
-        "InstallDoctl")
-            InstallDoctl
-            ;;
-        "InstallSlack")
-            InstallSlack
-            ;;
-        "InstallAndroidStudio")
-            InstallAndroidStudio
             ;;
         "InstallEmacs")
             InstallEmacs
@@ -162,31 +144,7 @@ if ! InstallDotNetCore; then
     exit 1
 fi
 
-if ! InstallFlatpak; then
-    exit 1
-fi
-
 if ! EnsureAppImage; then
-    exit 1
-fi
-
-if ! InstallSpotify; then
-    exit 1
-fi
-
-if ! InstallVisualStudioCode; then
-    exit 1
-fi
-
-if ! InstallDoctl; then
-    exit 1
-fi
-
-if ! InstallSlack; then
-    exit 1
-fi
-
-if ! InstallAndroidStudio; then
     exit 1
 fi
 

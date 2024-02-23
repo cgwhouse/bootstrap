@@ -165,17 +165,6 @@ function InstallDotNetCore {
     return 1
 }
 
-function InstallFlatpak {
-    echo "TASK: InstallFlatpak"
-
-    if IsPackageInstalled "sys-apps/flatpak"; then
-        return 0
-    fi
-
-    echo "...emerge sys-apps/flatpak"
-    return 1
-}
-
 function EnsureAppImage {
     echo "TASK: EnsureAppImage"
 
@@ -187,60 +176,16 @@ function EnsureAppImage {
     fi
 }
 
-function InstallSpotify {
-    echo "TASK: InstallSpotify"
-
-    if IsPackageInstalled "media-sound/spotify"; then
-        return 0
-    fi
-
-    echo "...emerge media-sound/spotify"
-    return 1
-}
-
-function InstallVisualStudioCode {
-    echo "TASK: InstallVisualStudioCode"
-
-    if IsPackageInstalled "app-editors/vscode"; then
-        return 0
-    fi
-
-    echo "...emerge app-editors/vscode"
-    return 1
-}
-
-function InstallDoctl {
-    echo "TASK: InstallDoctl"
-
-    if IsPackageInstalled "app-admin/doctl"; then
-        return 0
-    fi
-
-    echo "...emerge app-admin/doctl"
-    return 1
-}
-
-function InstallSlack {
-    echo "TASK: InstallSlack"
-
-    if IsPackageInstalled "net-im/slack"; then
-        return 0
-    fi
-
-    echo "...emerge net-im/slack"
-    return 1
-}
-
-function InstallAndroidStudio {
-    echo "TASK: InstallAndroidStudio"
-
-    if IsPackageInstalled "dev-util/android-studio"; then
-        return 0
-    fi
-
-    echo "...emerge dev-util/android-studio"
-    return 1
-}
+#function InstallSlack {
+#    echo "TASK: InstallSlack"
+#
+#    if IsPackageInstalled "net-im/slack"; then
+#        return 0
+#    fi
+#
+#    echo "...emerge net-im/slack"
+#    return 1
+#}
 
 function InstallEmacs {
     echo "TASK: InstallEmacs"
@@ -257,22 +202,41 @@ function InstallEmacs {
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
-    # OpenVPN
-    if ! IsPackageInstalled "net-vpn/networkmanager-openvpn"; then
-        echo "...emerge net-vpn/networkmanager-openvpn"
-        return 1
-    fi
+    packages=(
+        # Dev stuff
+        "sys-apps/ripgrep"
+        "sys-apps/fd"
+        "app-editors/vscode"
+        "dev-util/android-studio"
+    )
 
-    # Doom Emacs Dependencies
-    if ! IsPackageInstalled "sys-apps/ripgrep"; then
-        echo "...emerge sys-apps/ripgrep"
-        return 1
-    fi
+    for package in "${packages[@]}"; do
+        if ! IsPackageInstalled "$package"; then
+            echo "...emerge $package"
+            return 1
+        fi
+    done
 
-    if ! IsPackageInstalled "sys-apps/fd"; then
-        echo "...emerge sys-apps/fd"
-        return 1
-    fi
+    # Dev stuff
+    #if ! IsPackageInstalled "sys-apps/ripgrep"; then
+    #    echo "...emerge sys-apps/ripgrep"
+    #    return 1
+    #fi
+
+    #if ! IsPackageInstalled "sys-apps/fd"; then
+    #    echo "...emerge sys-apps/fd"
+    #    return 1
+    #fi
+
+    #if ! IsPackageInstalled "app-editors/vscode"; then
+    #    echo "...emerge app-editors/vscode"
+    #    return 1
+    #fi
+
+    #if ! IsPackageInstalled "dev-util/android-studio"; then
+    #    echo "...emerge dev-util/android-studio"
+    #    return 1
+    #fi
 
     # Tiling WM
     if ! IsPackageInstalled "x11-misc/picom"; then
@@ -317,16 +281,45 @@ function InstallAdditionalSoftware {
         return 1
     fi
 
+    if ! IsPackageInstalled "media-sound/spotify"; then
+        echo "...emerge media-sound/spotify"
+        return 1
+    fi
+
     #"transmission-gtk"
     #"obs-studio"
     #"libreoffice"
-    ## Games
+
+    # Games
+
     #"aisleriot"
     #"gnome-mines"
     #"mgba-qt"
     #"lutris"
     #"dolphin-emu"
-    ## Misc
+
+    # Work related
+    if ! IsPackageInstalled "net-vpn/networkmanager-openvpn"; then
+        echo "...emerge net-vpn/networkmanager-openvpn"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "net-im/slack"; then
+        echo "...emerge net-im/slack"
+        return 1
+    fi
+
+    # Misc
+    if ! IsPackageInstalled "app-admin/doctl"; then
+        echo "...emerge app-admin/doctl"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "sys-apps/flatpak"; then
+        echo "...emerge sys-apps/flatpak"
+        return 1
+    fi
+
     #"gparted"
     #"copyq"
     #"awscli"
