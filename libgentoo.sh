@@ -142,7 +142,7 @@ function InstallPlank {
 function DownloadTheming {
     echo "TASK: Download Theming"
 
-    InstallFontsCommon
+    DownloadThemingCommon
 
     if IsPackageInstalled "x11-themes/gnome-themes-standard" inOverlay; then
         echo "...Emerge x11-themes/gnome-themes-standard"
