@@ -244,6 +244,50 @@ function InstallAndroidStudio {
 
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
+
+        # NetworkManager
+        #"network-manager-gnome"
+        #"network-manager-openvpn-gnome"
+        ## Doom Emacs
+        #"emacs-gtk"
+        #"elpa-ligature"
+        #"ripgrep"
+        #"fd-find"
+        ## Tiling window manager
+        #"picom"
+        #"lxappearance"
+        #"lxsession"
+        #"nitrogen"
+        #"volumeicon-alsa"
+        #"arandr"
+        ## qtile specific
+        #"python-is-python3"
+        #"python3-pip"
+        #"pipx"
+        #"xserver-xorg"
+        #"xinit"
+        #"libpangocairo-1.0-0"
+        #"python3-xcffib"
+        #"python3-cairocffi"
+        #"python3-dbus-next"
+        ## Media + Office
+        #"vlc"
+        #"transmission-gtk"
+        #"obs-studio"
+        #"libreoffice"
+        ## Games
+        #"aisleriot"
+        #"gnome-mines"
+        #"mgba-qt"
+        #"lutris"
+        #"dolphin-emu"
+        ## Misc
+        #"gparted"
+        #"copyq"
+        #"awscli"
+        #"sshpass"
+        #"qflipper"
+        #"openjdk-21-jdk"
 }
 
 function InstallWebBrowsers {
