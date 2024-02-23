@@ -22,6 +22,6 @@
 
 ### TODO
 
-- all the ones that can be installed normally / without configs should be in their own big routine that cycles through package names
 - add vdagent guest package if VM detected in InstallCoreUtilities
 - bookmark places to check for updated versions
+- consolidate easy ones into InstallAdditionalSoftware, break out the hard ones
