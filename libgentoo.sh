@@ -242,7 +242,7 @@ function InstallAndroidStudio {
     return 1
 }
 
-function InstalllEmacs {
+function InstallEmacs {
     echo "TASK: InstallEmacs"
 
     if IsPackageInstalled "app-editors/emacs"; then
