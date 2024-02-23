@@ -32,6 +32,9 @@ if [ $# -eq 1 ]; then
         "ConfigureTmux")
             ConfigureTmux
             ;;
+        "ConfigureZsh")
+            ConfigureZsh
+            ;;
         "InstallFirefox")
             InstallFirefox
             ;;
@@ -88,9 +91,6 @@ if [ $# -eq 1 ]; then
         #    InstallVirtManager
         #    ;;
 
-        "ConfigureZsh")
-            ConfigureZsh
-            ;;
         *)
             printf "ERROR: Unknown task\n\n"
             exit 1
@@ -120,6 +120,10 @@ if ! InstallCoreUtilities; then
 fi
 
 if ! ConfigureTmux; then
+    exit 1
+fi
+
+if ! ConfigureZsh; then
     exit 1
 fi
 
@@ -194,9 +198,5 @@ fi
 #if ! InstallVirtManager; then
 #    exit 1
 #fi
-
-if ! ConfigureZsh; then
-    exit 1
-fi
 
 printf "\n"
