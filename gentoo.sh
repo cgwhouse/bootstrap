@@ -77,18 +77,17 @@ if [ $# -eq 1 ]; then
         "InstallAndroidStudio")
             InstallAndroidStudio
             ;;
-
-            #"InstallWebBrowsers")
-            #    InstallWebBrowsers
-            #    ;;
+        "InstallAdditionalSoftware")
+            InstallAdditionalSoftware
+            ;;
+        "InstallWebBrowsers")
+            InstallWebBrowsers
+            ;;
 
         #"InstallVirtManager")
         #    InstallVirtManager
         #    ;;
 
-        #"InstallAdditionalSoftware")
-        #    InstallAdditionalSoftware
-        #    ;;
         "ConfigureZsh")
             ConfigureZsh
             ;;
@@ -184,15 +183,15 @@ if ! InstallAndroidStudio; then
     exit 1
 fi
 
-#if ! InstallWebBrowsers; then
-#    exit 1
-#fi
+if ! InstallAdditionalSoftware; then
+    exit 1
+fi
+
+if ! InstallWebBrowsers; then
+    exit 1
+fi
 
 #if ! InstallVirtManager; then
-#    exit 1
-#fi
-
-#if ! InstallAdditionalSoftware; then
 #    exit 1
 #fi
 

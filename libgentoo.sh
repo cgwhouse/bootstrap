@@ -78,7 +78,7 @@ function InstallPipewire {
     echo "TASK: InstallPipewire"
 
     if ! IsPackageInstalled "media-video/pipewire"; then
-        echo "...Add the following global use flag: pulseaudio screencast"
+        echo "...Add the following global USE flags: pulseaudio screencast"
         echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
         return 1
     fi
@@ -240,4 +240,31 @@ function InstallAndroidStudio {
 
     echo "...emerge dev-util/android-studio"
     return 1
+}
+
+function InstallAdditionalSoftware {
+    echo "TASK: InstallAdditionalSoftware"
+}
+
+function InstallWebBrowsers {
+    echo "TASK: InstallWebBrowsers"
+
+    # Librewolf
+    if ! IsPackageInstalled "www-client/librewolf" inOverlay; then
+        echo "...emerge www-client/librewolf, only available via overlay"
+        return 1
+    fi
+
+    # Chromium
+    if ! IsPackageInstalled "www-client/ungoogled-chromium" inOverlay; then
+        echo "...Ensure the following USE flags for chromium: proprietary-codecs widevine"
+        echo "...emerge www-client/ungoogled-chromium, only available via overlay"
+        return 1
+    fi
+
+    # Firefox
+    if ! IsPackageInstalled "www-client/firefox"; then
+        echo "...replace firefox-bin with the real one"
+        return 1
+    fi
 }
