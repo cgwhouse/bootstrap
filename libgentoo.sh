@@ -179,8 +179,10 @@ function InstallFlatpak {
 function EnsureAppImage {
     echo "TASK: EnsureAppImage"
 
-    if IsPackageInstalled "sys-fs/fuse"; then
-        return 0
+    # Fancy fuse check
+    packageCheck=$(eix -I --exact sys-fs/fuse --installed-slot 0 | grep "No matches found")
+    if [ "$packageCheck" == "No matches found" ]; then
+        return 1
     fi
 
     echo "...emerge sys-fs/fuse:0"
