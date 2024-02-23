@@ -68,13 +68,13 @@ if [ $# -eq 1 ]; then
         "InstallVisualStudioCode")
             InstallVisualStudioCode
             ;;
-
+        "InstallDoctl")
+            InstallDoctl
+            ;;
             #"InstallWebBrowsers")
             #    InstallWebBrowsers
             #    ;;
-        #"InstallDoctl")
-        #    InstallDoctl
-        #    ;;
+
         #"InstallSlack")
         #    InstallSlack
         #    ;;
@@ -170,19 +170,15 @@ if ! InstallVisualStudioCode; then
     exit 1
 fi
 
-#
+if ! InstallDoctl; then
+    exit 1
+fi
+
 #if ! InstallWebBrowsers; then
 #    exit 1
 #fi
 #
 
-#
-
-#
-#if ! InstallDoctl; then
-#    exit 1
-#fi
-#
 #if ! InstallSlack; then
 #    exit 1
 #fi

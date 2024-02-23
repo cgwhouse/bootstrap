@@ -208,3 +208,14 @@ function InstallVisualStudioCode {
     echo "...emerge app-editors/vscode"
     return 1
 }
+
+function InstallDoctl {
+    echo "TASK: InstallDoctl"
+
+    if IsPackageInstalled "app-admin/doctl"; then
+        return 0
+    fi
+
+    echo "...emerge app-admin/doctl"
+    return 1
+}
