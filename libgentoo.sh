@@ -3,7 +3,12 @@
 source ./libbootstrap.sh
 
 function IsPackageInstalled {
-    packageCheck=$(eix -I "$1" | grep "No matches found")
+    if [ "$2" == "inOverlay" ]; then
+        packageCheck=$(eix -IR "$1" | grep "No matches found")
+    else
+        packageCheck=$(eix -I "$1" | grep "No matches found")
+    fi
+
     if [ "$packageCheck" != "" ]; then
         return 1
     fi
@@ -113,9 +118,9 @@ function InstallFonts {
 }
 
 function InstallUlauncher {
-   echo "TASK: InstallUlauncher"
+    echo "TASK: InstallUlauncher"
 
-    if IsPackageInstalled "x11-misc/ulauncher"; then
+    if IsPackageInstalled "x11-misc/ulauncher" inOverlay; then
         return 0
     fi
 
@@ -124,7 +129,7 @@ function InstallUlauncher {
 }
 
 function InstallPlank {
-   echo "TASK: InstallPlank"
+    echo "TASK: InstallPlank"
 
     if IsPackageInstalled "x11-misc/plank"; then
         return 0
