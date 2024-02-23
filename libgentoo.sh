@@ -144,7 +144,7 @@ function DownloadTheming {
 
     DownloadThemingCommon
 
-    if IsPackageInstalled "x11-themes/gnome-themes-standard" inOverlay; then
+    if ! IsPackageInstalled "x11-themes/gnome-themes-standard"; then
         echo "...Emerge x11-themes/gnome-themes-standard"
         return 1
     fi
