@@ -65,6 +65,12 @@ if [ $# -eq 1 ]; then
         "InstallEmacs")
             InstallEmacs
             ;;
+        "InstallLibreOffice")
+            InstallLibreOffice
+            ;;
+        "InstallObsStudio")
+            InstallObsStudio
+            ;;
         "InstallAdditionalSoftware")
             InstallAdditionalSoftware
             ;;
@@ -149,6 +155,14 @@ if ! EnsureAppImage; then
 fi
 
 if ! InstallEmacs; then
+    exit 1
+fi
+
+if ! InstallLibreOffice; then
+    exit 1
+fi
+
+if ! InstallObsStudio; then
     exit 1
 fi
 

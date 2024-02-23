@@ -24,4 +24,4 @@
 
 - add vdagent guest package if VM detected in InstallCoreUtilities
 - bookmark places to check for updated versions
-- consolidate easy ones into InstallAdditionalSoftware, break out the hard ones
+- aisleriot flatpak don't forget

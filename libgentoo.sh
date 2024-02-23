@@ -188,6 +188,24 @@ function InstallEmacs {
     return 1
 }
 
+function InstallLibreOffice {
+    echo "TASK: InstallLibreOffice"
+
+    if ! IsPackageInstalled "app-office/libreoffice"; then
+        echo "...emerge app-office/libreoffice, check wiki for USE flags"
+        return 1
+    fi
+}
+
+function InstallObsStudio {
+    echo "TASK: InstallObsStudio"
+
+    if ! IsPackageInstalled "media-video/obs-studio"; then
+        echo "...emerge media-video/obs-studio, check wiki for USE flags"
+        return 1
+    fi
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
@@ -222,20 +240,12 @@ function InstallAdditionalSoftware {
         fi
     done
 
-    # TODO needs its own
-    #"obs-studio"
-
-    #"libreoffice"
-
     # Games
 
-    #"aisleriot"
     #"gnome-mines"
     #"mgba-qt"
     #"lutris"
     #"dolphin-emu"
-
-
 
     # Misc
     if ! IsPackageInstalled "app-admin/doctl"; then
