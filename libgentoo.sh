@@ -124,7 +124,7 @@ function InstallUlauncher {
         return 0
     fi
 
-    echo "...Emerge x11-misc/ulauncher, only available via overlay"
+    echo "...emerge x11-misc/ulauncher, only available via overlay"
     return 1
 }
 
@@ -135,7 +135,7 @@ function InstallPlank {
         return 0
     fi
 
-    echo "...Emerge x11-misc/plank, only available via overlay"
+    echo "...emerge x11-misc/plank, only available via overlay"
     return 1
 }
 
@@ -145,7 +145,18 @@ function DownloadTheming {
     DownloadThemingCommon
 
     if ! IsPackageInstalled "x11-themes/gnome-themes-standard"; then
-        echo "...Emerge x11-themes/gnome-themes-standard"
+        echo "...emerge x11-themes/gnome-themes-standard"
         return 1
     fi
+}
+
+function InstallDotNetCore {
+    echo "TASK: InstallDotNetCore"
+
+    if IsPackageInstalled "virtual/dotnet-sdk"; then
+        return 0
+    fi
+
+    echo "...emerge virtual/dotnet-sdk, may need multiple versions"
+    return 1
 }
