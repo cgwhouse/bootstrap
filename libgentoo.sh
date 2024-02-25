@@ -206,15 +206,6 @@ function InstallLibreOffice {
     fi
 }
 
-function InstallQFlipper {
-    echo "TASK InstallQFlipper"
-
-    if ! IsPackageInstalled "net-wireless/qflipper" inOverlay; then
-        echo "...emerge net-wireless/qflipper, only available via overlay"
-        return 1
-    fi
-}
-
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 

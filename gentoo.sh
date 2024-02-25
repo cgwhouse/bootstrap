@@ -71,9 +71,6 @@ if [ $# -eq 1 ]; then
         "InstallLibreOffice")
             InstallLibreOffice
             ;;
-        "InstallQFlipper")
-            InstallQFlipper
-            ;;
         "InstallAdditionalSoftware")
             InstallAdditionalSoftware
             ;;
@@ -166,10 +163,6 @@ if ! InstallObsStudio; then
 fi
 
 if ! InstallLibreOffice; then
-    exit 1
-fi
-
-if ! InstallQFlipper; then
     exit 1
 fi
 
