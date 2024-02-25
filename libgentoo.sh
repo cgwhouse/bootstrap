@@ -197,6 +197,24 @@ function InstallObsStudio {
     fi
 }
 
+function InstallLibreOffice {
+    echo "TASK: InstallLibreOffice"
+
+    if ! IsPackageInstalled "app-office/libreoffice"; then
+        echo "...emerge app-office/libreoffice, ensure the java USE flag is enabled"
+        return 1
+    fi
+}
+
+function InstallQFlipper {
+    echo "TASK InstallQFlipper"
+
+    if ! IsPackageInstalled "net-wireless/qflipper" inOverlay; then
+        echo "...emerge net-wireless/qflipper, only available via overlay"
+        return 1
+    fi
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
@@ -222,7 +240,18 @@ function InstallAdditionalSoftware {
         "media-video/vlc"
         "media-sound/spotify"
         "net-p2p/transmission"
-        "app-office/libreoffice"
+        # Games
+        "games-board/gnome-mines"
+        "games-emulation/mgba"
+        "games-util/lutris"
+        "games-emulation/dolphin"
+        # Misc
+        "app-admin/doctl"
+        "sys-apps/flatpak"
+        "sys-block/gparted"
+        "x11-misc/copyq"
+        "net-misc/sshpass"
+        "dev-java/openjdk"
     )
 
     for package in "${packages[@]}"; do
@@ -231,31 +260,6 @@ function InstallAdditionalSoftware {
             return 1
         fi
     done
-
-    # Games
-
-    #"gnome-mines"
-    #"mgba-qt"
-    #"lutris"
-    #"dolphin-emu"
-
-    # Misc
-    if ! IsPackageInstalled "app-admin/doctl"; then
-        echo "...emerge app-admin/doctl"
-        return 1
-    fi
-
-    if ! IsPackageInstalled "sys-apps/flatpak"; then
-        echo "...emerge sys-apps/flatpak"
-        return 1
-    fi
-
-    #"gparted"
-    #"copyq"
-    #"awscli"
-    #"sshpass"
-    #"qflipper"
-    #"openjdk-21-jdk"
 }
 
 function InstallWebBrowsers {
