@@ -174,6 +174,23 @@ function InstallDotNetCore {
     return 1
 }
 
+function InstallFlatpak {
+    echo "TASK: InstallFlatpak"
+
+    if ! IsPackageInstalled "sys-apps/flatpak"; then
+        echo "...emerge sys-apps/flatpak"
+        return 1
+    fi
+
+    flathubCheck=$(sudo flatpak remotes | grep flathub)
+    if [ "$flathubCheck" != "" ]; then
+        return 0
+    fi
+
+    sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
+    echo "...Flathub repository added"
+}
+
 function EnsureAppImage {
     echo "TASK: EnsureAppImage"
 
@@ -257,7 +274,6 @@ function InstallAdditionalSoftware {
         "games-emulation/dolphin"
         # Misc
         "app-admin/doctl"
-        "sys-apps/flatpak"
         "sys-block/gparted"
         "x11-misc/copyq"
         "net-misc/sshpass"

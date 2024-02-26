@@ -59,6 +59,9 @@ if [ $# -eq 1 ]; then
         "InstallDotNetCore")
             InstallDotNetCore
             ;;
+        "InstallFlatpak")
+            InstallFlatpak
+            ;;
         "EnsureAppImage")
             EnsureAppImage
             ;;
@@ -145,6 +148,10 @@ if ! DownloadTheming; then
 fi
 
 if ! InstallDotNetCore; then
+    exit 1
+fi
+
+if ! InstallFlatpak; then
     exit 1
 fi
 
