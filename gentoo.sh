@@ -71,17 +71,15 @@ if [ $# -eq 1 ]; then
         "InstallLibreOffice")
             InstallLibreOffice
             ;;
+        "InstallVirtManager")
+            InstallVirtManager
+            ;;
         "InstallAdditionalSoftware")
             InstallAdditionalSoftware
             ;;
         "InstallWebBrowsers")
             InstallWebBrowsers
             ;;
-
-        #"InstallVirtManager")
-        #    InstallVirtManager
-        #    ;;
-
         *)
             printf "ERROR: Unknown task\n\n"
             exit 1
@@ -166,6 +164,10 @@ if ! InstallLibreOffice; then
     exit 1
 fi
 
+if ! InstallVirtManager; then
+    exit 1
+fi
+
 if ! InstallAdditionalSoftware; then
     exit 1
 fi
@@ -173,9 +175,5 @@ fi
 if ! InstallWebBrowsers; then
     exit 1
 fi
-
-#if ! InstallVirtManager; then
-#    exit 1
-#fi
 
 printf "\n"

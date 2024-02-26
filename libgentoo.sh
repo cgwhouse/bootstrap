@@ -215,6 +215,16 @@ function InstallLibreOffice {
     fi
 }
 
+function InstallVirtManager {
+    echo "TASK: InstallVirtManager"
+
+    if ! IsPackageInstalled "app-emulation/virt-manager"; then
+        echo "...Visit the wiki for QEMU, libvirt, and then virt-manager"
+        echo "...Once USE flags and setup are complete, emerge app-emulation/virt-manager"
+        return 1
+    fi
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
