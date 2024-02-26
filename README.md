@@ -18,8 +18,7 @@
 1. Follow the Handbook in its entirety, until at a tty logged in as regular user
 2. Ensure dist-kernel and nvidia USE flags
 3. Install git + vim + neovim, eselect editor
-3. Setup eix via the wiki
-4. depclean, reboot
-5. Clone bootstrap repo
-6. Run gentoo.sh
-
+4. Setup eix via the wiki
+5. depclean, reboot
+6. Clone bootstrap repo
+7. Run gentoo.sh
