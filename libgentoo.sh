@@ -61,6 +61,15 @@ function InstallCoreUtilities {
         echo "...emerge sys-process/htop"
         return 1
     fi
+
+    # If this is a VM, install spice guest agent
+    vmCheck=$(grep hypervisor </proc/cpuinfo)
+    if [ "$vmCheck" != "" ]; then
+        if ! IsPackageInstalled "spice-vdagent"; then
+            echo "...emerge app-emulation/spice-vdagent"
+            return 1
+        fi
+    fi
 }
 
 function InstallFirefoxBin {
@@ -272,7 +281,7 @@ function InstallWebBrowsers {
     # Chromium
     if ! IsPackageInstalled "www-client/ungoogled-chromium" inOverlay; then
         echo "...Ensure the following USE flags for chromium: proprietary-codecs widevine"
-        echo "...emerge www-client/ungoogled-chromium, only available via overlay"
+        echo "...emerge www-client/ungoogled-chromium, only available via overlay. Remember to mask vscode from this overlay."
         return 1
     fi
 }

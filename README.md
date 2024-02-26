@@ -22,8 +22,7 @@
 
 ### TODO
 
-- add vdagent guest package if VM detected in InstallCoreUtilities
 - bookmark places to check for updated versions
 - aisleriot flatpak don't forget
 - aws cli is outdated in gentoo repos
-- qflipper flatpak
+- qflipper appimage
