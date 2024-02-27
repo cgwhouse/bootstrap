@@ -240,6 +240,11 @@ function InstallVirtManager {
         echo "...Once USE flags and setup are complete, emerge app-emulation/virt-manager"
         return 1
     fi
+
+    if ! IsPackageInstalled "sys-apps/tuned"; then
+        echo "...emerge sys-apps/tuned"
+        return 1
+    fi
 }
 
 function InstallAdditionalSoftware {
