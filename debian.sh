@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ./libbootstrap.sh
+source ./libdebian.sh
 
 # Update this if doing a minimal bootstrap (no GUI)
 server=false
@@ -9,9 +10,9 @@ server=false
 if [ $# -gt 1 ]; then
     printf "\nUsage:\n\n"
     printf "# Runs all tasks\n"
-    printf "./bootstrap-debian.sh\n\n"
+    printf "./debian.sh\n\n"
     printf "# Runs specified task only\n"
-    printf "./bootstrap-debian.sh TASK_NAME\n\n"
+    printf "./debian.sh TASK_NAME\n\n"
     exit 1
 fi
 
@@ -25,8 +26,8 @@ if [ $# -eq 1 ]; then
         "InstallCoreUtilities")
             InstallCoreUtilities
             ;;
-        "ConfigureCoreUtilities")
-            ConfigureCoreUtilities
+        "ConfigureTmux")
+            ConfigureTmux
             ;;
         "InstallDotNetCore")
             InstallDotNetCore
@@ -34,8 +35,8 @@ if [ $# -eq 1 ]; then
         "InstallNvm")
             InstallNvm
             ;;
-        "InstallOhMyZsh")
-            InstallOhMyZsh
+        "ConfigureZsh")
+            ConfigureZsh
             ;;
         "EnableMultiarch")
             EnableMultiarch
@@ -105,7 +106,7 @@ if ! InstallCoreUtilities; then
     exit 1
 fi
 
-if ! ConfigureCoreUtilities; then
+if ! ConfigureTmux; then
     exit 1
 fi
 
@@ -119,7 +120,7 @@ fi
 
 # Exit with minimal workload if server bootstrap
 if [ $server == true ]; then
-    if ! InstallOhMyZsh; then
+    if ! ConfigureZsh; then
         exit 1
     fi
 
@@ -190,7 +191,7 @@ if ! InstallAdditionalSoftware; then
     exit 1
 fi
 
-if ! InstallOhMyZsh; then
+if ! ConfigureZsh; then
     exit 1
 fi
 
