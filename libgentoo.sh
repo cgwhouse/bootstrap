@@ -31,12 +31,10 @@ function InstallDesktopEnvironment {
 function InstallZsh {
     echo "TASK: InstallZsh"
 
-    if IsPackageInstalled "app-shells/zsh"; then
-        return 0
+    if ! IsPackageInstalled "app-shells/zsh"; then
+        echo "...Add the following global USE flag, then emerge zsh: zsh-completion"
+        return 1
     fi
-
-    echo "...Add the following global USE flag, then emerge zsh: zsh-completion"
-    return 1
 }
 
 function InstallCoreUtilities {
@@ -75,12 +73,10 @@ function InstallCoreUtilities {
 function InstallFirefoxBin {
     echo "TASK: InstallFirefoxBin"
 
-    if IsPackageInstalled "www-client/firefox" || IsPackageInstalled "www-client/firefox-bin"; then
-        return 0
+    if ! IsPackageInstalled "www-client/firefox" || IsPackageInstalled "www-client/firefox-bin"; then
+        echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
+        return 1
     fi
-
-    echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
-    return 1
 }
 
 function InstallPipewire {
@@ -133,23 +129,19 @@ function InstallFonts {
 function InstallUlauncher {
     echo "TASK: InstallUlauncher"
 
-    if IsPackageInstalled "x11-misc/ulauncher" inOverlay; then
-        return 0
+    if ! IsPackageInstalled "x11-misc/ulauncher" inOverlay; then
+        echo "...emerge x11-misc/ulauncher, only available via overlay"
+        return 1
     fi
-
-    echo "...emerge x11-misc/ulauncher, only available via overlay"
-    return 1
 }
 
 function InstallPlank {
     echo "TASK: InstallPlank"
 
-    if IsPackageInstalled "x11-misc/plank" inOverlay; then
-        return 0
+    if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
+        echo "...emerge x11-misc/plank, only available via overlay"
+        return 1
     fi
-
-    echo "...emerge x11-misc/plank, only available via overlay"
-    return 1
 }
 
 function DownloadTheming {
@@ -166,12 +158,10 @@ function DownloadTheming {
 function InstallDotNetCore {
     echo "TASK: InstallDotNetCore"
 
-    if IsPackageInstalled "virtual/dotnet-sdk"; then
-        return 0
+    if ! IsPackageInstalled "virtual/dotnet-sdk"; then
+        echo "...emerge virtual/dotnet-sdk, may need multiple versions"
+        return 1
     fi
-
-    echo "...emerge virtual/dotnet-sdk, may need multiple versions"
-    return 1
 }
 
 function InstallFlatpak {
@@ -205,13 +195,11 @@ function EnsureAppImage {
 function InstallEmacs {
     echo "TASK: InstallEmacs"
 
-    if IsPackageInstalled "app-editors/emacs"; then
-        return 0
+    if ! IsPackageInstalled "app-editors/emacs"; then
+        echo "...Add global USE flag: emacs"
+        echo "...emerge app-editors/emacs, refer to the wiki and dotfiles for USE flags"
+        return 1
     fi
-
-    echo "...Add global USE flag: emacs"
-    echo "...emerge app-editors/emacs, refer to the wiki and dotfiles for USE flags"
-    return 1
 }
 
 function InstallObsStudio {
