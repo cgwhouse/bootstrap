@@ -80,6 +80,9 @@ if [ $# -eq 1 ]; then
         "InstallDBeaver")
             InstallDBeaver
             ;;
+        "InstallAws")
+            InstallAws
+            ;;
         "InstallAdditionalSoftware")
             InstallAdditionalSoftware
             ;;
@@ -179,6 +182,10 @@ if ! InstallVirtManager; then
 fi
 
 if ! InstallDBeaver; then
+    exit 1
+fi
+
+if ! InstallAws; then
     exit 1
 fi
 
