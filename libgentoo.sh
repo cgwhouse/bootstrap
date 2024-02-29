@@ -19,7 +19,7 @@ function IsPackageInstalled {
 function InstallDesktopEnvironment {
     echo "TASK: InstallDesktopEnvironment"
 
-    if IsPackageInstalled "gnome-extra/cinnamon"; then
+    if ! IsPackageInstalled "gnome-extra/cinnamon"; then
         echo "...Add the following global USE flags, then update system: elogind gtk X -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
         echo "...Visit the wiki pages for Cinnamon and elogind and follow the instructions"
         return 1
