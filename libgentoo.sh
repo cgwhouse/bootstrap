@@ -19,13 +19,23 @@ function IsPackageInstalled {
 function InstallDesktopEnvironment {
     echo "TASK: InstallDesktopEnvironment"
 
-    if IsPackageInstalled "mate-base/mate"; then
-        return 0
+    if IsPackageInstalled "gnome-extra/cinnamon"; then
+        echo "...Add the following global USE flags, then update system: elogind gtk X -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+        echo "...Visit the wiki pages for Cinnamon and elogind and follow the instructions"
+        return 1
     fi
 
-    echo "...Add the following global USE flags, then update system: elogind gtk networkmanager X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
-    echo "...Visit the wiki pages for MATE, elogind, and NetworkManager, and follow the instructions"
-    return 1
+    if ! IsPackageInstalled "x11-misc/lightdm"; then
+        echo "...emerge x11-misc/lightdm, visit the LightDM wiki page for instructions on the display manager startup script"
+        return 1
+    fi
+
+    # MATE
+    #if ! IsPackageInstalled "mate-base/mate"; then
+    #    echo "...Add the following global USE flags, then update system: elogind gtk X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+    #    echo "...Visit the wiki pages for MATE, elogind, and NetworkManager, and follow the instructions"
+    #    return 1
+    #fi
 }
 
 function InstallZsh {
@@ -138,10 +148,10 @@ function InstallUlauncher {
 function InstallPlank {
     echo "TASK: InstallPlank"
 
-    if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
-        echo "...emerge x11-misc/plank, only available via overlay"
-        return 1
-    fi
+    #if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
+    #    echo "...emerge x11-misc/plank, only available via overlay"
+    #    return 1
+    #fi
 }
 
 function DownloadTheming {
@@ -169,6 +179,16 @@ function InstallFlatpak {
 
     if ! IsPackageInstalled "sys-apps/flatpak"; then
         echo "...emerge sys-apps/flatpak"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "sys-apps/xdg-desktop-portal"; then
+        echo "...emerge sys-apps/xdg-desktop-portal"
+        return 1
+    fi
+
+    if ! IsPackageInstalled "sys-apps/xdg-desktop-portal-gtk"; then
+        echo "...emerge sys-apps/xdg-desktop-portal-gtk"
         return 1
     fi
 
@@ -281,7 +301,6 @@ function InstallAdditionalSoftware {
         "net-im/zoom"
         # Media + Office
         "media-video/vlc"
-        "media-sound/spotify"
         "net-p2p/transmission"
         # Games
         "games-board/gnome-mines"
