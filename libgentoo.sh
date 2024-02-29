@@ -192,7 +192,7 @@ function InstallFlatpak {
         return 1
     fi
 
-    flathubCheck=$(sudo flatpak remotes | grep flathub)
+    flathubCheck=$(flatpak remotes | grep flathub)
     if [ "$flathubCheck" != "" ]; then
         return 0
     fi
