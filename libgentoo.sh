@@ -250,7 +250,7 @@ function InstallVirtManager {
 function InstallDBeaver {
     echo "TASK: InstallDBeaver"
 
-    if ! IsPackageInstalled "dev-db/dbeaver-bin"; then
+    if ! IsPackageInstalled "dev-db/dbeaver-bin" inOverlay; then
         echo "...emerge dev-db/dbeaver-bin, only available via overlay"
         return 1
     fi
