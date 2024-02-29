@@ -259,7 +259,7 @@ function InstallDBeaver {
 function InstallAws {
     echo "TASK: InstallAws"
 
-    if [ ! -d "/usr/local/bin/aws" ]; then
+    if [ ! -f "/usr/local/bin/aws" ]; then
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &>/dev/null
         unzip awscliv2.zip &>/dev/null
         sudo ./aws/install &>/dev/null
