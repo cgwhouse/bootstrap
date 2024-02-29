@@ -77,6 +77,9 @@ if [ $# -eq 1 ]; then
         "InstallVirtManager")
             InstallVirtManager
             ;;
+        "InstallDBeaver")
+            InstallDBeaver
+            ;;
         "InstallAdditionalSoftware")
             InstallAdditionalSoftware
             ;;
@@ -172,6 +175,10 @@ if ! InstallLibreOffice; then
 fi
 
 if ! InstallVirtManager; then
+    exit 1
+fi
+
+if ! InstallDBeaver; then
     exit 1
 fi
 

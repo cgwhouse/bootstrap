@@ -247,6 +247,15 @@ function InstallVirtManager {
     fi
 }
 
+function InstallDBeaver {
+    echo "TASK: InstallDBeaver"
+
+    if ! IsPackageInstalled "dev-db/dbeaver-bin"; then
+        echo "...emerge dev-db/dbeaver-bin, only available via overlay"
+        return 1
+    fi
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
@@ -268,6 +277,7 @@ function InstallAdditionalSoftware {
         # Work
         "net-vpn/networkmanager-openvpn"
         "net-im/slack"
+        "net-im/zoom"
         # Media + Office
         "media-video/vlc"
         "media-sound/spotify"
@@ -278,6 +288,7 @@ function InstallAdditionalSoftware {
         "games-util/lutris"
         "games-emulation/dolphin"
         # Misc
+        "net-im/discord"
         "app-admin/doctl"
         "sys-block/gparted"
         "x11-misc/copyq"
