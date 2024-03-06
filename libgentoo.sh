@@ -50,6 +50,11 @@ function InstallZsh {
 function InstallCoreUtilities {
     echo "TASK: InstallCoreUtilities"
 
+    if ! IsPackageInstalled "app-portage/gentoolkit"; then
+        echo "...emerge app-portage/gentoolkit"
+        return 1
+    fi
+
     if ! IsPackageInstalled "app-misc/tmux"; then
         echo "...emerge app-misc/tmux"
         return 1
