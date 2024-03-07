@@ -131,14 +131,33 @@ function DownloadThemingCommon {
         echo "...Created .themes directory"
     fi
 
-    if [ ! -d "$HOME"/.themes/Catppuccin-Mocha-Standard-Green-Dark ]; then
-        wget -q https://github.com/catppuccin/gtk/releases/latest/download/Catppuccin-Mocha-Standard-Green-Dark.zip
-        unar -d Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
-        mv Catppuccin-Mocha-Standard-Green-Dark/Catppuccin-Mocha-Standard-Green-Dark "$HOME"/.themes &>/dev/null
-        rm -rf Catppuccin-Mocha-Standard-Green-Dark &>/dev/null
-        rm -f Catppuccin-Mocha-Standard-Green-Dark.zip &>/dev/null
-        echo "...Installed Catppuccin GTK theme"
-    fi
+    accentColors=(
+        "Blue"
+        "Flamingo"
+        "Green"
+        "Lavender"
+        "Maroon"
+        "Mauve"
+        "Peach"
+        "Pink"
+        "Red"
+        "Rosewater"
+        "Sapphire"
+        "Sky"
+        "Teal"
+        "Yellow"
+    )
+
+    for accentColor in "${accentColors[@]}"; do
+        if [ ! -d "$HOME"/.themes/Catppuccin-Mocha-Standard-"$accentColor"-Dark ]; then
+            wget -q https://github.com/catppuccin/gtk/releases/latest/download/Catppuccin-Mocha-Standard-"$accentColor"-Dark.zip
+            unar -d Catppuccin-Mocha-Standard-"$accentColor"-Dark.zip &>/dev/null
+            mv Catppuccin-Mocha-Standard-"$accentColor"-Dark/Catppuccin-Mocha-Standard-"$accentColor"-Dark "$HOME"/.themes &>/dev/null
+            rm -rf Catppuccin-Mocha-Standard-"$accentColor"-Dark &>/dev/null
+            rm -f Catppuccin-Mocha-Standard-"$accentColor"-Dark.zip &>/dev/null
+            echo "...Installed Catppuccin GTK Mocha $accentColor theme"
+        fi
+    done
 
     if [ ! -d "$HOME"/.local/share/icons ]; then
         mkdir "$HOME"/.local/share/icons &>/dev/null
