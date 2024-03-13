@@ -47,6 +47,9 @@ if [ $# -eq 1 ]; then
         "InstallDesktopEnvironment")
             InstallDesktopEnvironment
             ;;
+        "InstallPlank")
+            InstallPlank
+            ;;
         "InstallPipewire")
             InstallPipewire
             ;;
@@ -55,9 +58,6 @@ if [ $# -eq 1 ]; then
             ;;
         "DownloadTheming")
             DownloadTheming
-            ;;
-        "InstallDebGet")
-            InstallDebGet
             ;;
         "InstallFlatpak")
             InstallFlatpak
@@ -139,6 +139,10 @@ if ! InstallDesktopEnvironment; then
     exit 1
 fi
 
+if ! InstallPlank; then
+    exit 1
+fi
+
 if ! InstallPipewire; then
     exit 1
 fi
@@ -148,10 +152,6 @@ if ! InstallFonts; then
 fi
 
 if ! DownloadTheming; then
-    exit 1
-fi
-
-if ! InstallDebGet; then
     exit 1
 fi
 

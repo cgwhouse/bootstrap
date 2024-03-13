@@ -177,24 +177,6 @@ function DownloadThemingCommon {
         echo "...Installed Ulauncher Catppuccin themes"
     fi
 
-    # Plank
-    if [ ! -d "$HOME"/.local/share/plank ]; then
-        mkdir "$HOME"/.local/share/plank
-        echo "...Created plank directory"
-    fi
-
-    if [ ! -d "$HOME"/.local/share/plank/themes ]; then
-        mkdir "$HOME"/.local/share/plank/themes
-        echo "...Created plank themes directory"
-    fi
-
-    if [ ! -d "$HOME"/.local/share/plank/themes/Catppuccin-mocha ]; then
-        mkdir "$HOME"/repos/theming/catppuccin-plank
-        git clone https://github.com/catppuccin/plank.git "$HOME"/repos/theming/catppuccin-plank &>/dev/null
-        cp -r "$HOME"/repos/theming/catppuccin-plank/src/Catppuccin-mocha "$HOME"/.local/share/plank/themes &>/dev/null
-        echo "...Installed Catppuccin plank theme"
-    fi
-
     # Grub
     if [ ! -d /usr/share/grub/themes ]; then
         sudo mkdir /usr/share/grub/themes
@@ -226,5 +208,24 @@ function DownloadThemingCommon {
     # Tmux
     if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" "$HOME"/.tmux.conf.local; then
         echo "NOTE: Set tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'catppuccin/tmux'"
+    fi
+}
+
+function DownloadPlankThemeCommon {
+    if [ ! -d "$HOME"/.local/share/plank ]; then
+        mkdir "$HOME"/.local/share/plank
+        echo "...Created plank directory"
+    fi
+
+    if [ ! -d "$HOME"/.local/share/plank/themes ]; then
+        mkdir "$HOME"/.local/share/plank/themes
+        echo "...Created plank themes directory"
+    fi
+
+    if [ ! -d "$HOME"/.local/share/plank/themes/Catppuccin-mocha ]; then
+        mkdir "$HOME"/repos/theming/catppuccin-plank
+        git clone https://github.com/catppuccin/plank.git "$HOME"/repos/theming/catppuccin-plank &>/dev/null
+        cp -r "$HOME"/repos/theming/catppuccin-plank/src/Catppuccin-mocha "$HOME"/.local/share/plank/themes &>/dev/null
+        echo "...Installed Catppuccin plank theme"
     fi
 }

@@ -153,10 +153,12 @@ function InstallUlauncher {
 function InstallPlank {
     echo "TASK: InstallPlank"
 
-    #if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
-    #    echo "...emerge x11-misc/plank, only available via overlay"
-    #    return 1
-    #fi
+    if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
+        echo "...emerge x11-misc/plank, only available via overlay"
+        return 1
+    fi
+
+    DownloadPlankThemeCommon
 }
 
 function DownloadTheming {

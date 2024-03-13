@@ -50,9 +50,9 @@ if [ $# -eq 1 ]; then
         "InstallUlauncher")
             InstallUlauncher
             ;;
-        "InstallPlank")
-            InstallPlank
-            ;;
+        #"InstallPlank")
+        #    InstallPlank
+        #    ;;
         "DownloadTheming")
             DownloadTheming
             ;;
@@ -145,9 +145,9 @@ if ! InstallUlauncher; then
     exit 1
 fi
 
-if ! InstallPlank; then
-    exit 1
-fi
+#if ! InstallPlank; then
+#    exit 1
+#fi
 
 if ! DownloadTheming; then
     exit 1
