@@ -140,9 +140,6 @@ function InstallDesktopEnvironment {
     InstallPackageIfMissing mate-desktop-environment-extras
     InstallPackageIfMissing xscreensaver
 
-    # Dock
-    InstallPackageIfMissing plank
-
     # App Launcher (requires extra setup)
 
     # Exit if already installed
@@ -168,6 +165,14 @@ function InstallDesktopEnvironment {
 
     # Install now
     InstallPackageIfMissing ulauncher
+}
+
+function InstallPlank {
+    echo "TASK: InstallPlank"
+
+    InstallPackageIfMissing plank
+
+    DownloadPlankThemeCommon
 }
 
 function InstallPipewire {
@@ -196,20 +201,6 @@ function DownloadTheming {
 
     # GTK + icons
     InstallPackageIfMissing gnome-themes-extra
-}
-
-function InstallDebGet {
-    echo "TASK: InstallDebGet"
-
-    InstallPackageIfMissing lsb-release
-
-    debGetCheck=$(sudo apt list deb-get 2>/dev/null | grep installed)
-    if [ "$debGetCheck" != "" ]; then
-        return 0
-    fi
-
-    curl -sL https://raw.githubusercontent.com/wimpysworld/deb-get/main/deb-get | sudo -E bash -s install deb-get &>/dev/null
-    echo "...deb-get installed"
 }
 
 function InstallFlatpak {
