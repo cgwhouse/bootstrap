@@ -7,7 +7,7 @@ aptUpdated=false
 # Versions of manual stuff
 doctlVersion="1.104.0"
 slackVersion="4.36.140"
-androidStudioVersion="2023.1.1.28"
+androidStudioVersion="2023.2.1.23"
 
 function InstallPackageIfMissing {
     packageToCheck=$1
