@@ -2,7 +2,7 @@
 
 ## Debian
 
-1. Update apt sources (optional)
+1. Ensure apt sources fit the use case
 2. Full update of base system to latest using apt
 3. Reboot
 4. Install git
@@ -15,11 +15,22 @@
 
 ## Gentoo
 
-1. Follow the Handbook in its entirety, until at a tty logged in as regular user. Before first reboot to tty:
+1. Follow the Handbook in its entirety, until at a tty logged in as regular user. Before first reboot:
    - Install and configure eix
-   - Install and configure NetworkManager with the tools USE flag for nm-tui
-2. Ensure dist-kernel, nvidia, networkmanager USE flags
+   - Install and configure NetworkManager, ensure nmtui
+2. Ensure dist-kernel, nvidia, USE flags
 3. Install git + vim + neovim, eselect editor
 4. depclean, reboot
 5. Clone bootstrap repo
 6. Run gentoo.sh
+
+jdk gentoo
+jdk debian
+
+qtile quarantine debian
+qtile quarantine gentoo
+
+cinnamon, mate present but commented out. plank as well
+
+check versions of manual things for updates
+

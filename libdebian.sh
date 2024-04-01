@@ -456,7 +456,7 @@ function InstallAdditionalSoftware {
         "awscli"
         "sshpass"
         "qflipper"
-        "openjdk-21-jdk"
+        "default-jdk"
     )
 
     for package in "${packages[@]}"; do
