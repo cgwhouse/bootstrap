@@ -47,9 +47,12 @@ if [ $# -eq 1 ]; then
         "InstallDesktopEnvironment")
             InstallDesktopEnvironment
             ;;
-        #"InstallPlank")
-        #    InstallPlank
-        #    ;;
+        "InstallMATE")
+            InstallMATE
+            ;;
+        "InstallQtile")
+            InstallQtile
+            ;;
         "InstallPipewire")
             InstallPipewire
             ;;
@@ -138,10 +141,6 @@ fi
 if ! InstallDesktopEnvironment; then
     exit 1
 fi
-
-#if ! InstallPlank; then
-#    exit 1
-#fi
 
 if ! InstallPipewire; then
     exit 1
