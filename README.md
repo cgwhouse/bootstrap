@@ -25,12 +25,4 @@
 6. Run gentoo.sh
 
 jdk gentoo
-jdk debian
-
-qtile quarantine debian
-qtile quarantine gentoo
-
-cinnamon, mate present but commented out. plank as well
-
-check versions of manual things for updates
 
