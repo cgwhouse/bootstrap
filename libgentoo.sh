@@ -29,13 +29,47 @@ function InstallDesktopEnvironment {
         echo "...emerge x11-misc/lightdm, visit the LightDM wiki page for instructions on the display manager startup script"
         return 1
     fi
+}
 
-    # MATE
-    #if ! IsPackageInstalled "mate-base/mate"; then
-    #    echo "...Add the following global USE flags, then update system: elogind gtk X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
-    #    echo "...Visit the wiki pages for MATE, elogind, and NetworkManager, and follow the instructions"
-    #    return 1
-    #fi
+function InstallMATE {
+    echo "TASK: InstallMATE"
+
+    if ! IsPackageInstalled "mate-base/mate"; then
+        echo "...Add the following global USE flags, then update system: elogind gtk X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+        echo "...Visit the wiki pages for MATE and elogind and follow the instructions"
+        return 1
+    fi
+
+    # Plank
+    if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
+        echo "...emerge x11-misc/plank, only available via overlay"
+        return 1
+    fi
+
+    DownloadPlankThemeCommon
+}
+
+function InstallQtile {
+    echo "TASK: InstallQtile"
+
+packages=(
+        # Tiling WM
+        "x11-misc/picom"
+        "lxde-base/lxappearance"
+        "lxde-base/lxsession"
+        "x11-misc/nitrogen"
+        "media-sound/volumeicon"
+        "x11-misc/arandr"
+        # For qtile
+        "dev-python/pip"
+    )
+
+    for package in "${packages[@]}"; do
+        if ! IsPackageInstalled "$package"; then
+            echo "...emerge $package"
+            return 1
+        fi
+    done
 }
 
 function InstallZsh {
@@ -148,17 +182,6 @@ function InstallUlauncher {
         echo "...emerge x11-misc/ulauncher, only available via overlay"
         return 1
     fi
-}
-
-function InstallPlank {
-    echo "TASK: InstallPlank"
-
-    if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
-        echo "...emerge x11-misc/plank, only available via overlay"
-        return 1
-    fi
-
-    DownloadPlankThemeCommon
 }
 
 function DownloadTheming {
@@ -293,15 +316,6 @@ function InstallAdditionalSoftware {
         "sys-apps/fd"
         "app-editors/vscode"
         "dev-util/android-studio"
-        # Tiling WM
-        "x11-misc/picom"
-        "lxde-base/lxappearance"
-        "lxde-base/lxsession"
-        "x11-misc/nitrogen"
-        "media-sound/volumeicon"
-        "x11-misc/arandr"
-        # For qtile
-        "dev-python/pip"
         # Work
         "net-vpn/networkmanager-openvpn"
         "net-im/slack"
@@ -320,6 +334,7 @@ function InstallAdditionalSoftware {
         "sys-block/gparted"
         "x11-misc/copyq"
         "net-misc/sshpass"
+        # TODO: change this
         "dev-java/openjdk"
     )
 

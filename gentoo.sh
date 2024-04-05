@@ -23,6 +23,12 @@ if [ $# -eq 1 ]; then
         "InstallDesktopEnvironment")
             InstallDesktopEnvironment
             ;;
+        "InstallMATE")
+            InstallMATE
+            ;;
+        "InstallQtile")
+            InstallQtile
+            ;;
         "InstallZsh")
             InstallZsh
             ;;
@@ -50,9 +56,6 @@ if [ $# -eq 1 ]; then
         "InstallUlauncher")
             InstallUlauncher
             ;;
-        #"InstallPlank")
-        #    InstallPlank
-        #    ;;
         "DownloadTheming")
             DownloadTheming
             ;;
@@ -144,10 +147,6 @@ fi
 if ! InstallUlauncher; then
     exit 1
 fi
-
-#if ! InstallPlank; then
-#    exit 1
-#fi
 
 if ! DownloadTheming; then
     exit 1
