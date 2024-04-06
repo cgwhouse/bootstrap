@@ -23,6 +23,3 @@
 4. depclean, reboot
 5. Clone bootstrap repo
 6. Run gentoo.sh
-
-jdk gentoo
-

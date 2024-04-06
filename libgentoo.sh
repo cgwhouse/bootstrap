@@ -334,8 +334,7 @@ function InstallAdditionalSoftware {
         "sys-block/gparted"
         "x11-misc/copyq"
         "net-misc/sshpass"
-        # TODO: change this
-        "dev-java/openjdk"
+        "virtual/jdk"
     )
 
     for package in "${packages[@]}"; do
