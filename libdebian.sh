@@ -5,9 +5,9 @@ source ./libbootstrap.sh
 aptUpdated=false
 
 # Versions of manual stuff
-doctlVersion="1.104.0"
-slackVersion="4.36.140"
-androidStudioVersion="2023.2.1.23"
+doctlVersion="1.105.0"
+slackVersion="4.37.94"
+androidStudioVersion="2023.2.1.24"
 
 function InstallPackageIfMissing {
     packageToCheck=$1
@@ -135,10 +135,8 @@ function InstallDesktopEnvironment {
     # Display manager
     InstallPackageIfMissing lightdm
 
-    # Standard MATE + extras
-    InstallPackageIfMissing mate-desktop-environment
-    InstallPackageIfMissing mate-desktop-environment-extras
-    InstallPackageIfMissing xscreensaver
+    # DE
+    InstallPackageIfMissing cinnamon-desktop-environment
 
     # App Launcher (requires extra setup)
 
@@ -167,12 +165,46 @@ function InstallDesktopEnvironment {
     InstallPackageIfMissing ulauncher
 }
 
-function InstallPlank {
-    echo "TASK: InstallPlank"
+function InstallMATE {
+    echo "TASK: InstallMATE"
 
+    # MATE + extras, and xscreensaver cause it adds those to MATE screensaver
+    InstallPackageIfMissing mate-desktop-environment
+    InstallPackageIfMissing mate-desktop-environment-extras
+    InstallPackageIfMissing xscreensaver
+
+    # Plank
     InstallPackageIfMissing plank
 
     DownloadPlankThemeCommon
+}
+
+function InstallQtile {
+    echo "TASK: InstallQtile"
+
+    packages=(
+        # Tiling window manager
+        "picom"
+        "lxappearance"
+        "lxsession"
+        "nitrogen"
+        "volumeicon-alsa"
+        "arandr"
+        # qtile specific
+        "python-is-python3"
+        "python3-pip"
+        "pipx"
+        "xserver-xorg"
+        "xinit"
+        "libpangocairo-1.0-0"
+        "python3-xcffib"
+        "python3-cairocffi"
+        "python3-dbus-next"
+    )
+
+    for package in "${packages[@]}"; do
+        InstallPackageIfMissing "$package"
+    done
 }
 
 function InstallPipewire {
@@ -422,23 +454,6 @@ function InstallAdditionalSoftware {
         "elpa-ligature"
         "ripgrep"
         "fd-find"
-        # Tiling window manager
-        "picom"
-        "lxappearance"
-        "lxsession"
-        "nitrogen"
-        "volumeicon-alsa"
-        "arandr"
-        # qtile specific
-        "python-is-python3"
-        "python3-pip"
-        "pipx"
-        "xserver-xorg"
-        "xinit"
-        "libpangocairo-1.0-0"
-        "python3-xcffib"
-        "python3-cairocffi"
-        "python3-dbus-next"
         # Media + Office
         "vlc"
         "transmission-gtk"
@@ -456,7 +471,7 @@ function InstallAdditionalSoftware {
         "awscli"
         "sshpass"
         "qflipper"
-        "openjdk-21-jdk"
+        "default-jdk"
     )
 
     for package in "${packages[@]}"; do
