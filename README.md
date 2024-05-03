@@ -13,6 +13,17 @@
 9. Move bootstrap directory to repos
 10. Reboot, finish setup using dotfiles
 
+## Fedora
+
+1. Install via ISO of desired desktop environment
+2. Update system + autoremove + reboot
+3. [Enable RPM Fusion repos](https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/)
+4. Install git
+5. Clone bootstrap repo
+6. Run fedora.sh
+7. Move bootstrap directory to repos
+8. Reboot, finish setup using dotfiles
+
 ## Gentoo
 
 1. Follow the Handbook in its entirety, until at a tty logged in as regular user. Before first reboot:
