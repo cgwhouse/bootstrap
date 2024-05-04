@@ -137,35 +137,35 @@ function InstallDesktopEnvironment {
     echo "TASK: InstallDesktopEnvironment"
 
     # Display manager
-    InstallPackageIfMissing lightdm
+    #InstallPackageIfMissing lightdm
 
-    # DE
-    InstallPackageIfMissing cinnamon-desktop-environment
+    ## DE
+    #InstallPackageIfMissing cinnamon-desktop-environment
 
-    # App Launcher (requires extra setup)
+    ## App Launcher (requires extra setup)
 
-    # Exit if already installed
-    ulauncherCheck=$(apt list ulauncher 2>/dev/null | grep installed)
-    if [ "$ulauncherCheck" != "" ]; then
-        return 0
-    fi
+    ## Exit if already installed
+    #ulauncherCheck=$(apt list ulauncher 2>/dev/null | grep installed)
+    #if [ "$ulauncherCheck" != "" ]; then
+    #    return 0
+    #fi
 
-    # Setup keyring using gnupg and export
-    InstallPackageIfMissing gnupg
-    gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176 &>/dev/null
-    gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
+    ## Setup keyring using gnupg and export
+    #InstallPackageIfMissing gnupg
+    #gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176 &>/dev/null
+    #gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
 
-    # Add source with exported keyring to sources
-    echo "deb [signed-by=/usr/share/keyrings/ulauncher-archive-keyring.gpg] \
-          http://ppa.launchpad.net/agornostal/ulauncher/ubuntu jammy main" |
-        sudo tee /etc/apt/sources.list.d/ulauncher-jammy.list &>/dev/null
+    ## Add source with exported keyring to sources
+    #echo "deb [signed-by=/usr/share/keyrings/ulauncher-archive-keyring.gpg] \
+    #      http://ppa.launchpad.net/agornostal/ulauncher/ubuntu jammy main" |
+    #    sudo tee /etc/apt/sources.list.d/ulauncher-jammy.list &>/dev/null
 
-    # Do a manual apt update here so we can get the new source and install package
-    # Ensure flag is true if not already
-    sudo apt update &>/dev/null
-    aptUpdated=true
+    ## Do a manual apt update here so we can get the new source and install package
+    ## Ensure flag is true if not already
+    #sudo apt update &>/dev/null
+    #aptUpdated=true
 
-    # Install now
+    # Install ulauncher
     InstallPackageIfMissing ulauncher
 }
 
@@ -224,16 +224,33 @@ function InstallFonts {
     # Nerd Fonts
     InstallFontsCommon
 
-    # TODO: download thing and install
-    #InstallPackageIfMissing mscore-fonts-all
-
-    InstallPackageIfMissing fira-code-fonts
-
-    # TODO: copr
-    #InstallPackageIfMissing fonts-ubuntu
-
+    # Metapackages for default font set, and emojis
     InstallPackageIfMissing default-fonts
     InstallPackageIfMissing default-fonts-core-emoji
+
+    # FiraCode
+    InstallPackageIfMissing fira-code-fonts
+
+    # Ubuntu
+    coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
+    if [ "$coprCheck" == "" ]; then
+        sudo dnf copr enable atim/ubuntu-fonts &>/dev/null
+        echo "...ubuntu-fonts copr repository enabled"
+    fi
+
+    InstallPackageIfMissing ubuntu-family-fonts
+
+    # Microsoft fonts
+    InstallPackageIfMissing cabextract
+    InstallPackageIfMissing xorg-x11-font-utils
+    InstallPackageIfMissing fontconfig
+
+    if [ -d "/usr/share/fonts/truetype/msttcorefonts" ]; then
+        return 0
+    fi
+
+    sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm &>/dev/null
+    echo "...Installed MSFT fonts"
 }
 
 function DownloadTheming {
@@ -444,11 +461,11 @@ function InstallAndroidStudio {
     fi
 
     echo "...Downloading Android Studio"
-    wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/$androidStudioVersion/android-studio-$androidStudioVersion-linux.tar.gz
+    wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/"$androidStudioVersion"/android-studio-"$androidStudioVersion"-linux.tar.gz
     echo "...Unpacking Android Studio"
-    tar -xvzf android-studio-$androidStudioVersion-linux.tar.gz &>/dev/null
+    tar -xvzf android-studio-"$androidStudioVersion"-linux.tar.gz &>/dev/null
     mv android-studio "$HOME"
-    rm -f android-studio-$androidStudioVersion-linux.tar.gz
+    rm -f android-studio-"$androidStudioVersion"-linux.tar.gz
     echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
 }
 

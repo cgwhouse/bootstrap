@@ -130,9 +130,9 @@ if ! InstallDesktopEnvironment; then
     exit 1
 fi
 
-if ! InstallPipewire; then
-    exit 1
-fi
+#if ! InstallPipewire; then
+#    exit 1
+#fi
 
 if ! InstallFonts; then
     exit 1
