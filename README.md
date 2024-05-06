@@ -18,11 +18,12 @@
 1. Install via ISO of desired desktop environment
 2. Update system + autoremove + reboot
 3. [Enable RPM Fusion repos](https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/)
-4. Install git
-5. Clone bootstrap repo
-6. Run fedora.sh
-7. Move bootstrap directory to repos
-8. Reboot, finish setup using dotfiles
+4. Install codecs + H264 using Fedora docs
+5. Install git
+6. Clone bootstrap repo
+7. Run fedora.sh
+8. Move bootstrap directory to repos
+9. Reboot, finish setup using dotfiles
 
 ## Gentoo
 
