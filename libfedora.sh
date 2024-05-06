@@ -54,7 +54,7 @@ function InstallCoreUtilities {
         "neovim"
         "zsh"
         "curl"
-        "wget"
+        "wget2"
         "tmux"
         "htop"
         "unar"
@@ -89,7 +89,7 @@ function InstallDotNetCore {
     #sudo apt update &>/dev/null
     #aptUpdated=true
 
-    InstallPackageIfMissing dotnet-sdk-7.0
+    #InstallPackageIfMissing dotnet-sdk-7.0
     InstallPackageIfMissing dotnet-sdk-8.0
 }
 
