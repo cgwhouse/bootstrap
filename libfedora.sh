@@ -233,7 +233,7 @@ function InstallFonts {
     # Ubuntu
     coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
     if [ "$coprCheck" == "" ]; then
-        sudo dnf copr enable atim/ubuntu-fonts &>/dev/null
+        sudo dnf copr enable -y atim/ubuntu-fonts &>/dev/null
         echo "...ubuntu-fonts copr repository enabled"
     fi
 
