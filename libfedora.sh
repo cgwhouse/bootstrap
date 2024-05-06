@@ -10,7 +10,6 @@ source ./libbootstrap.sh
 #androidStudioVersion="2023.2.1.24"
 
 function InstallPackageIfMissing {
-    echo "stub"
     packageToCheck=$1
     grepStr="Installed Packages"
 
