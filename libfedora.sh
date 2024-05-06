@@ -52,6 +52,7 @@ function InstallCoreUtilities {
 
     packages=(
         "neovim"
+        "python3-neovim"
         "zsh"
         "curl"
         "wget2"
