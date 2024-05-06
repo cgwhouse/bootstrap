@@ -244,7 +244,7 @@ function InstallFonts {
     InstallPackageIfMissing xorg-x11-font-utils
     InstallPackageIfMissing fontconfig
 
-    if [ -d "/usr/share/fonts/truetype/msttcorefonts" ]; then
+    if [ -d "/usr/share/fonts/msttcore" ]; then
         return 0
     fi
 
