@@ -282,226 +282,228 @@ function InstallWebBrowsers {
     InstallPackageIfMissing firefox
 
     # Ungoogled Chromium
-    chromiumCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
-    if [ "$chromiumCheck" == "" ]; then
-        echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list &>/dev/null
-        curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
+    # TODO:
+    #chromiumCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
+    #if [ "$chromiumCheck" == "" ]; then
+    #    echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list &>/dev/null
+    #    curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
 
-        sudo apt update &>/dev/null
-        aptUpdated=true
+    #    sudo apt update &>/dev/null
+    #    aptUpdated=true
 
-        InstallPackageIfMissing ungoogled-chromium
-    fi
+    #    InstallPackageIfMissing ungoogled-chromium
+    #fi
 
     # LibreWolf
-    librewolfCheck=$(sudo apt list librewolf 2>/dev/null | grep installed)
-    if [ "$librewolfCheck" == "" ]; then
-        InstallPackageIfMissing ca-certificates
+    # TODO:
+    #librewolfCheck=$(sudo apt list librewolf 2>/dev/null | grep installed)
+    #if [ "$librewolfCheck" == "" ]; then
+    #    InstallPackageIfMissing ca-certificates
 
-        wget -qO- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
+    #    wget -qO- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
 
-        sudo tee /etc/apt/sources.list.d/librewolf.sources <<EOF >/dev/null
-Types: deb
-URIs: https://deb.librewolf.net
-Suites: bookworm
-Components: main
-Architectures: amd64
-Signed-By: /usr/share/keyrings/librewolf.gpg
-EOF
+    #    sudo tee /etc/apt/sources.list.d/librewolf.sources <<EOF >/dev/null
+#Type#s: deb
+#URIs#: https://deb.librewolf.net
+#Suit#es: bookworm
+#Comp#onents: main
+#Arch#itectures: amd64
+#Sign#ed-By: /usr/share/keyrings/librewolf.gpg
+#EOF
 
-        sudo apt update &>/dev/null
-        aptUpdated=true
+    #    sudo apt update &>/dev/null
+    #    aptUpdated=true
 
-        InstallPackageIfMissing librewolf
-    fi
+    #    InstallPackageIfMissing librewolf
+    #fi
 }
 
 function InstallSpotify {
     echo "TASK: InstallSpotify"
 
-    spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
-    if [ "$spotifyCheck" != "" ]; then
-        return 0
-    fi
+    #spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
+    #if [ "$spotifyCheck" != "" ]; then
+    #    return 0
+    #fi
 
-    curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
-    echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
+    #curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
+    #echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
 
-    sudo apt update &>/dev/null
-    aptUpdated=true
+    #sudo apt update &>/dev/null
+    #aptUpdated=true
 
-    InstallPackageIfMissing spotify-client
+    #InstallPackageIfMissing spotify-client
 }
 
 function InstallVisualStudioCode {
     echo "TASK: InstallVisualStudioCode"
 
-    vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
-    if [ "$vscodeCheck" != "" ]; then
-        return 0
-    fi
+    #vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
+    #if [ "$vscodeCheck" != "" ]; then
+    #    return 0
+    #fi
 
-    InstallPackageIfMissing gpg
+    #InstallPackageIfMissing gpg
 
-    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
-    sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
+    #wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
+    #sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
 
-    sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
+    #sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
 
-    rm -f packages.microsoft.gpg
+    #rm -f packages.microsoft.gpg
 
-    sudo apt update &>/dev/null
-    aptUpdated=true
+    #sudo apt update &>/dev/null
+    #aptUpdated=true
 
-    InstallPackageIfMissing code
+    #InstallPackageIfMissing code
 }
 
 function InstallDoctl {
     echo "TASK: InstallDoctl"
 
-    if (hash doctl 2>/dev/null); then
-        return 0
-    fi
+    #if (hash doctl 2>/dev/null); then
+    #    return 0
+    #fi
 
-    filename="doctl-$doctlVersion-linux-amd64.tar.gz"
+    #filename="doctl-$doctlVersion-linux-amd64.tar.gz"
 
-    wget -q https://github.com/digitalocean/doctl/releases/download/v$doctlVersion/$filename
-    tar xf $filename &>/dev/null
-    sudo mv doctl /usr/local/bin
-    rm -f $filename
-    echo "...doctl installed"
+    #wget -q https://github.com/digitalocean/doctl/releases/download/v$doctlVersion/$filename
+    #tar xf $filename &>/dev/null
+    #sudo mv doctl /usr/local/bin
+    #rm -f $filename
+    #echo "...doctl installed"
 }
 
 function InstallSlack {
     echo "TASK: InstallSlack"
 
-    slackCheck=$(sudo apt list slack-desktop 2>/dev/null | grep installed)
-    if [ "$slackCheck" != "" ]; then
-        return 0
-    fi
+    #slackCheck=$(sudo apt list slack-desktop 2>/dev/null | grep installed)
+    #if [ "$slackCheck" != "" ]; then
+    #    return 0
+    #fi
 
-    filename="slack-desktop-$slackVersion-amd64.deb"
+    #filename="slack-desktop-$slackVersion-amd64.deb"
 
-    wget -q https://downloads.slack-edge.com/releases/linux/$slackVersion/prod/x64/$filename
-    sudo dpkg -i $filename &>/dev/null
-    rm $filename
-    echo "...Slack installed"
+    #wget -q https://downloads.slack-edge.com/releases/linux/$slackVersion/prod/x64/$filename
+    #sudo dpkg -i $filename &>/dev/null
+    #rm $filename
+    #echo "...Slack installed"
 }
 
 function InstallVirtManager {
     echo "TASK: InstallVirtManager"
 
     # Compatibility checks
-    lscpuCheck=$(lscpu | grep VT-x)
-    if [ "$lscpuCheck" == "" ]; then
-        return 0
-    fi
+    #lscpuCheck=$(lscpu | grep VT-x)
+    #if [ "$lscpuCheck" == "" ]; then
+    #    return 0
+    #fi
 
-    uname=$(uname -r)
-    zgrepCheck=$(zgrep CONFIG_KVM /boot/config-"$uname" | grep "CONFIG_KVM_GUEST=y")
-    if [ "$zgrepCheck" == "" ]; then
-        return 0
-    fi
+    #uname=$(uname -r)
+    #zgrepCheck=$(zgrep CONFIG_KVM /boot/config-"$uname" | grep "CONFIG_KVM_GUEST=y")
+    #if [ "$zgrepCheck" == "" ]; then
+    #    return 0
+    #fi
 
-    packages=(
-        "qemu-system-x86"
-        "libvirt-daemon-system"
-        "virtinst"
-        "virt-manager"
-        "virt-viewer"
-        "ovmf"
-        "swtpm"
-        "qemu-utils"
-        "guestfs-tools"
-        "libosinfo-bin"
-        "tuned"
-        "spice-client-gtk"
-    )
+    #packages=(
+    #    "qemu-system-x86"
+    #    "libvirt-daemon-system"
+    #    "virtinst"
+    #    "virt-manager"
+    #    "virt-viewer"
+    #    "ovmf"
+    #    "swtpm"
+    #    "qemu-utils"
+    #    "guestfs-tools"
+    #    "libosinfo-bin"
+    #    "tuned"
+    #    "spice-client-gtk"
+    #)
 
-    for package in "${packages[@]}"; do
-        InstallPackageIfMissing "$package"
-    done
+    #for package in "${packages[@]}"; do
+    #    InstallPackageIfMissing "$package"
+    #done
 
-    # Ensure libvirtd and tuned services are enabled
-    # This service will not stay running if in a VM, so only do this part if no VM detected
-    vmCheck=$(grep hypervisor </proc/cpuinfo)
+    ## Ensure libvirtd and tuned services are enabled
+    ## This service will not stay running if in a VM, so only do this part if no VM detected
+    #vmCheck=$(grep hypervisor </proc/cpuinfo)
 
-    libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
-    if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
-        sudo systemctl enable --now libvirtd.service &>/dev/null
-        echo "...libvirtd service enabled"
-    fi
+    #libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
+    #if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
+    #    sudo systemctl enable --now libvirtd.service &>/dev/null
+    #    echo "...libvirtd service enabled"
+    #fi
 
-    tunedCheck=$(sudo systemctl is-active tuned.service)
-    if [ "$tunedCheck" == "inactive" ]; then
-        sudo systemctl enable --now tuned.service &>/dev/null
-        echo "...tuned service enabled"
-    fi
+    #tunedCheck=$(sudo systemctl is-active tuned.service)
+    #if [ "$tunedCheck" == "inactive" ]; then
+    #    sudo systemctl enable --now tuned.service &>/dev/null
+    #    echo "...tuned service enabled"
+    #fi
 
-    # Set autostart on virtual network
-    virshNetworkCheck=$(sudo virsh net-list --all --autostart | grep default)
-    if [ "$virshNetworkCheck" == "" ]; then
-        sudo virsh net-autostart default &>/dev/null
-        echo "...Virtual network set to autostart"
-    fi
+    ## Set autostart on virtual network
+    #virshNetworkCheck=$(sudo virsh net-list --all --autostart | grep default)
+    #if [ "$virshNetworkCheck" == "" ]; then
+    #    sudo virsh net-autostart default &>/dev/null
+    #    echo "...Virtual network set to autostart"
+    #fi
 
-    # Add regular user to libvirt group
-    groupCheck=$(groups "$USER" | grep libvirt)
-    if [ "$groupCheck" == "" ]; then
-        sudo usermod -aG libvirt "$USER" &>/dev/null
-        echo "...User added to libvirt group"
-    fi
+    ## Add regular user to libvirt group
+    #groupCheck=$(groups "$USER" | grep libvirt)
+    #if [ "$groupCheck" == "" ]; then
+    #    sudo usermod -aG libvirt "$USER" &>/dev/null
+    #    echo "...User added to libvirt group"
+    #fi
 }
 
 function InstallAndroidStudio {
     echo "TASK: InstallAndroidStudio"
 
-    if [ -d "$HOME"/android-studio ]; then
-        return 0
-    fi
+    #if [ -d "$HOME"/android-studio ]; then
+    #    return 0
+    #fi
 
-    echo "...Downloading Android Studio"
-    wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/"$androidStudioVersion"/android-studio-"$androidStudioVersion"-linux.tar.gz
-    echo "...Unpacking Android Studio"
-    tar -xvzf android-studio-"$androidStudioVersion"-linux.tar.gz &>/dev/null
-    mv android-studio "$HOME"
-    rm -f android-studio-"$androidStudioVersion"-linux.tar.gz
-    echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
+    #echo "...Downloading Android Studio"
+    #wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/"$androidStudioVersion"/android-studio-"$androidStudioVersion"-linux.tar.gz
+    #echo "...Unpacking Android Studio"
+    #tar -xvzf android-studio-"$androidStudioVersion"-linux.tar.gz &>/dev/null
+    #mv android-studio "$HOME"
+    #rm -f android-studio-"$androidStudioVersion"-linux.tar.gz
+    #echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
 }
 
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
-    packages=(
-        # NetworkManager
-        "network-manager-gnome"
-        "network-manager-openvpn-gnome"
-        # Doom Emacs
-        "emacs-gtk"
-        "elpa-ligature"
-        "ripgrep"
-        "fd-find"
-        # Media + Office
-        "vlc"
-        "transmission-gtk"
-        "obs-studio"
-        "libreoffice"
-        # Games
-        "aisleriot"
-        "gnome-mines"
-        "mgba-qt"
-        "lutris"
-        "dolphin-emu"
-        # Misc
-        "gparted"
-        "copyq"
-        "awscli"
-        "sshpass"
-        "qflipper"
-        "default-jdk"
-    )
+    #packages=(
+    #    # NetworkManager
+    #    "network-manager-gnome"
+    #    "network-manager-openvpn-gnome"
+    #    # Doom Emacs
+    #    "emacs-gtk"
+    #    "elpa-ligature"
+    #    "ripgrep"
+    #    "fd-find"
+    #    # Media + Office
+    #    "vlc"
+    #    "transmission-gtk"
+    #    "obs-studio"
+    #    "libreoffice"
+    #    # Games
+    #    "aisleriot"
+    #    "gnome-mines"
+    #    "mgba-qt"
+    #    "lutris"
+    #    "dolphin-emu"
+    #    # Misc
+    #    "gparted"
+    #    "copyq"
+    #    "awscli"
+    #    "sshpass"
+    #    "qflipper"
+    #    "default-jdk"
+    #)
 
-    for package in "${packages[@]}"; do
-        InstallPackageIfMissing "$package"
-    done
+    #for package in "${packages[@]}"; do
+    #    InstallPackageIfMissing "$package"
+    #done
 }
