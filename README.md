@@ -40,3 +40,4 @@
 
 slack and spotify in flatpak installs
 consolidate more things after comparing fedora to debian
+make sure it installs nvidia-cuda-libs too
