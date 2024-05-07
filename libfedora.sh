@@ -282,40 +282,22 @@ function InstallWebBrowsers {
     InstallPackageIfMissing firefox
 
     # Ungoogled Chromium
-    # TODO:
-    #chromiumCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
-    #if [ "$chromiumCheck" == "" ]; then
-    #    echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list &>/dev/null
-    #    curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
+    coprCheck=$(sudo dnf copr list | grep "ungoogled-chromium")
+    if [ "$coprCheck" == "" ]; then
+        sudo dnf copr enable -y wojnilowicz/ungoogled-chromium &>/dev/null
+        echo "...ungoogled-chromium copr repository enabled"
+    fi
 
-    #    sudo apt update &>/dev/null
-    #    aptUpdated=true
-
-    #    InstallPackageIfMissing ungoogled-chromium
-    #fi
+    InstallPackageIfMissing ungoogled-chromium
 
     # LibreWolf
-    # TODO:
-    #librewolfCheck=$(sudo apt list librewolf 2>/dev/null | grep installed)
-    #if [ "$librewolfCheck" == "" ]; then
-    #    InstallPackageIfMissing ca-certificates
+    librewolfRepoCheck=$(dnf repolist | grep "librewolf")
+    if [ "$librewolfRepoCheck" == "" ]; then
+        curl -fsSL https://rpm.librewolf.net/librewolf-repo.repo | pkexec tee /etc/yum.repos.d/librewolf.repo &>/dev/null
+        echo "...LibreWolf repo enabled"
+    fi
 
-    #    wget -qO- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
-
-    #    sudo tee /etc/apt/sources.list.d/librewolf.sources <<EOF >/dev/null
-#Type#s: deb
-#URIs#: https://deb.librewolf.net
-#Suit#es: bookworm
-#Comp#onents: main
-#Arch#itectures: amd64
-#Sign#ed-By: /usr/share/keyrings/librewolf.gpg
-#EOF
-
-    #    sudo apt update &>/dev/null
-    #    aptUpdated=true
-
-    #    InstallPackageIfMissing librewolf
-    #fi
+    InstallPackageIfMissing librewolf
 }
 
 function InstallSpotify {
