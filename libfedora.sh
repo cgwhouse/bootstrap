@@ -249,40 +249,51 @@ function InstallAndroidStudio {
     echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
 }
 
+function InstallAws {
+    echo "TASK: InstallAws"
+
+    if [ ! -f "/usr/local/bin/aws" ]; then
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &>/dev/null
+        unzip awscliv2.zip &>/dev/null
+        sudo ./aws/install &>/dev/null
+        rm -f awscliv2.zip
+        rm -rf aws
+        echo "...Installed AWS CLI"
+    fi
+}
+
 function InstallAdditionalSoftware {
     echo "TASK: InstallAdditionalSoftware"
 
-    # doctl and ulauncher and dotnet sdk
-    #packages=(
-    #    # NetworkManager
-    #    "network-manager-gnome"
-    #    "network-manager-openvpn-gnome"
-    #    # Doom Emacs
-    #    "emacs-gtk"
-    #    "elpa-ligature"
-    #    "ripgrep"
-    #    "fd-find"
-    #    # Media + Office
-    #    "vlc"
-    #    "transmission-gtk"
-    #    "obs-studio"
-    #    "libreoffice"
-    #    # Games
-    #    "aisleriot"
-    #    "gnome-mines"
-    #    "mgba-qt"
-    #    "lutris"
-    #    "dolphin-emu"
-    #    # Misc
-    #    "gparted"
-    #    "copyq"
-    #    "awscli"
-    #    "sshpass"
-    #    "qflipper"
-    #    "default-jdk"
-    #)
+    packages=(
+        "doctl"
+        "ulauncher"
+        "dotnet-sdk-8.0"
+        "NetworkManager-openvpn"
+        # Doom Emacs
+        "emacs"
+        "ripgrep"
+        "fd-find"
+        # Media + Office
+        "vlc"
+        "transmission"
+        "obs-studio"
+        "libreoffice"
+        # Games
+        "aisleriot"
+        "gnome-mines"
+        "libretro-mgba"
+        "lutris"
+        "dolphin-emu"
+        # Misc
+        "gparted"
+        "copyq"
+        "sshpass"
+        "qflipper"
+        "java-17-openjdk"
+    )
 
-    #for package in "${packages[@]}"; do
-    #    InstallPackageIfMissing "$package"
-    #done
+    for package in "${packages[@]}"; do
+        InstallPackageIfMissing "$package"
+    done
 }

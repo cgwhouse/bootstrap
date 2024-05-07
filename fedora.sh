@@ -56,6 +56,9 @@ if [ $# -eq 1 ]; then
         "InstallAndroidStudio")
             InstallAndroidStudio
             ;;
+        "InstallAws")
+            InstallAws
+            ;;
         "InstallAdditionalSoftware")
             InstallAdditionalSoftware
             ;;
@@ -116,6 +119,10 @@ if ! InstallVirtManager; then
 fi
 
 if ! InstallAndroidStudio; then
+    exit 1
+fi
+
+if ! InstallAws; then
     exit 1
 fi
 

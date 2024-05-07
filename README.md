@@ -18,7 +18,7 @@
 1. Install via ISO of desired desktop environment
 2. Update system + autoremove + reboot
 3. [Enable RPM Fusion repos](https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/)
-4. Install codecs + H264 using Fedora docs
+4. Install codecs + H264 using both Fedora docs and RPM fusion docs in that order
 5. Install git
 6. Clone bootstrap repo
 7. Run fedora.sh
@@ -40,3 +40,4 @@
 
 slack and spotify in flatpak installs
 consolidate more things after comparing fedora to debian
+version checks at the end, maybe at end of finish script
