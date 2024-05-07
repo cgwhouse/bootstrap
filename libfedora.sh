@@ -320,7 +320,7 @@ function InstallWebBrowsers {
 function InstallVisualStudioCode {
     echo "TASK: InstallVisualStudioCode"
 
-    vscodeCheck=$(dnf repolist | grep microsoft)
+    vscodeCheck=$(dnf repolist | grep "Visual Studio Code")
     if [ "$vscodeCheck" == "" ]; then
         sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &>/dev/null
         echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo >/dev/null
@@ -355,7 +355,7 @@ function InstallSlack {
     fi
 
     filename="slack-$slackVersion-0.1.el8.x86_64.rpm"
-    sudo rpm -i -y https://downloads.slack-edge.com/desktop-releases/linux/x64/$slackVersion/$filename &>/dev/null
+    sudo rpm -i https://downloads.slack-edge.com/desktop-releases/linux/x64/$slackVersion/$filename &>/dev/null
     echo "...Slack installed"
 }
 
