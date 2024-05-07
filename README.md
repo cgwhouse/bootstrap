@@ -39,5 +39,5 @@
 ## TODO
 
 slack and spotify in flatpak installs
-consolidate more things after comparing fedora to debian
+consolidate more things after comparing fedora to debian, also fedora and gentoo for aws
 version checks at the end, maybe at end of finish script
