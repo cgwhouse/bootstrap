@@ -354,8 +354,7 @@ function InstallSlack {
     fi
 
     filename="slack-desktop-$slackVersion-amd64.deb"
-
-    wget -q https://downloads.slack-edge.com/releases/linux/$slackVersion/prod/x64/$filename
+    wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/$slackVersion/$filename
     sudo dpkg -i $filename &>/dev/null
     rm $filename
     echo "...Slack installed"
