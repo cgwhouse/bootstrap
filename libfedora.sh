@@ -6,7 +6,7 @@ source ./libbootstrap.sh
 
 # Versions of manual stuff
 #doctlVersion="1.105.0"
-#slackVersion="4.37.94"
+slackVersion="4.37.101"
 #androidStudioVersion="2023.2.1.24"
 
 function InstallPackageIfMissing {
@@ -291,7 +291,7 @@ function InstallWebBrowsers {
     InstallPackageIfMissing ungoogled-chromium
 
     # LibreWolf
-    librewolfRepoCheck=$(dnf repolist | grep "librewolf")
+    librewolfRepoCheck=$(dnf repolist | grep "LibreWolf")
     if [ "$librewolfRepoCheck" == "" ]; then
         curl -fsSL https://rpm.librewolf.net/librewolf-repo.repo | pkexec tee /etc/yum.repos.d/librewolf.repo &>/dev/null
         echo "...LibreWolf repo enabled"
@@ -300,44 +300,34 @@ function InstallWebBrowsers {
     InstallPackageIfMissing librewolf
 }
 
-function InstallSpotify {
-    echo "TASK: InstallSpotify"
-
-    #spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
-    #if [ "$spotifyCheck" != "" ]; then
-    #    return 0
-    #fi
-
-    #curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
-    #echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
-
-    #sudo apt update &>/dev/null
-    #aptUpdated=true
-
-    #InstallPackageIfMissing spotify-client
-}
+#function InstallSpotify {
+#    echo "TASK: InstallSpotify"
+#
+#    #spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
+#    #if [ "$spotifyCheck" != "" ]; then
+#    #    return 0
+#    #fi
+#
+#    #curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
+#    #echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
+#
+#    #sudo apt update &>/dev/null
+#    #aptUpdated=true
+#
+#    #InstallPackageIfMissing spotify-client
+#}
 
 function InstallVisualStudioCode {
     echo "TASK: InstallVisualStudioCode"
 
-    #vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
-    #if [ "$vscodeCheck" != "" ]; then
-    #    return 0
-    #fi
+    vscodeCheck=$(dnf repolist | grep microsoft)
+    if [ "$vscodeCheck" == "" ]; then
+        sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &>/dev/null
+        echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo >/dev/null
+        echo "...VS Code repo enabled"
+    fi
 
-    #InstallPackageIfMissing gpg
-
-    #wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
-    #sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
-
-    #sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
-
-    #rm -f packages.microsoft.gpg
-
-    #sudo apt update &>/dev/null
-    #aptUpdated=true
-
-    #InstallPackageIfMissing code
+    InstallPackageIfMissing code
 }
 
 function InstallDoctl {
@@ -359,17 +349,14 @@ function InstallDoctl {
 function InstallSlack {
     echo "TASK: InstallSlack"
 
-    #slackCheck=$(sudo apt list slack-desktop 2>/dev/null | grep installed)
-    #if [ "$slackCheck" != "" ]; then
-    #    return 0
-    #fi
+    slackCheck=$(dnf list slack 2>/dev/null | grep "Installed Packages")
+    if [ "$slackCheck" != "" ]; then
+        return 0
+    fi
 
-    #filename="slack-desktop-$slackVersion-amd64.deb"
-
-    #wget -q https://downloads.slack-edge.com/releases/linux/$slackVersion/prod/x64/$filename
-    #sudo dpkg -i $filename &>/dev/null
-    #rm $filename
-    #echo "...Slack installed"
+    filename="slack-$slackVersion-0.1.el8.x86_64.rpm"
+    sudo rpm -i -y https://downloads.slack-edge.com/desktop-releases/linux/x64/$slackVersion/$filename &>/dev/null
+    echo "...Slack installed"
 }
 
 function InstallVirtManager {
