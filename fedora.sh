@@ -35,9 +35,6 @@ if [ $# -eq 1 ]; then
         "InstallProprietaryGraphics")
             InstallProprietaryGraphics
             ;;
-        "InstallDesktopEnvironment")
-            InstallDesktopEnvironment
-            ;;
         "InstallFonts")
             InstallFonts
             ;;
@@ -91,10 +88,6 @@ if ! InstallNvm; then
 fi
 
 if ! InstallProprietaryGraphics; then
-    exit 1
-fi
-
-if ! InstallDesktopEnvironment; then
     exit 1
 fi
 
