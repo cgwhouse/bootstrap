@@ -26,33 +26,18 @@ if [ $# -eq 1 ]; then
         "ConfigureTmux")
             ConfigureTmux
             ;;
-        "InstallDotNetCore")
-            InstallDotNetCore
-            ;;
         "InstallNvm")
             InstallNvm
             ;;
         "ConfigureZsh")
             ConfigureZsh
             ;;
-        #"EnableMultiarch")
-        #    EnableMultiarch
-        #    ;;
         "InstallProprietaryGraphics")
             InstallProprietaryGraphics
             ;;
         "InstallDesktopEnvironment")
             InstallDesktopEnvironment
             ;;
-        #"InstallMATE")
-        #    InstallMATE
-        #    ;;
-        #"InstallQtile")
-        #    InstallQtile
-        #    ;;
-        #"InstallPipewire")
-        #    InstallPipewire
-        #    ;;
         "InstallFonts")
             InstallFonts
             ;;
@@ -65,17 +50,8 @@ if [ $# -eq 1 ]; then
         "InstallWebBrowsers")
             InstallWebBrowsers
             ;;
-        #"InstallSpotify")
-        #    InstallSpotify
-        #    ;;
         "InstallVisualStudioCode")
             InstallVisualStudioCode
-            ;;
-        "InstallDoctl")
-            InstallDoctl
-            ;;
-        "InstallSlack")
-            InstallSlack
             ;;
         "InstallVirtManager")
             InstallVirtManager
@@ -110,17 +86,9 @@ if ! ConfigureTmux; then
     exit 1
 fi
 
-if ! InstallDotNetCore; then
-    exit 1
-fi
-
 if ! InstallNvm; then
     exit 1
 fi
-
-#if ! EnableMultiarch; then
-#    exit 1
-#fi
 
 if ! InstallProprietaryGraphics; then
     exit 1
@@ -129,10 +97,6 @@ fi
 if ! InstallDesktopEnvironment; then
     exit 1
 fi
-
-#if ! InstallPipewire; then
-#    exit 1
-#fi
 
 if ! InstallFonts; then
     exit 1
@@ -150,19 +114,7 @@ if ! InstallWebBrowsers; then
     exit 1
 fi
 
-#if ! InstallSpotify; then
-#    exit 1
-#fi
-
 if ! InstallVisualStudioCode; then
-    exit 1
-fi
-
-if ! InstallDoctl; then
-    exit 1
-fi
-
-if ! InstallSlack; then
     exit 1
 fi
 
