@@ -35,3 +35,7 @@
 4. depclean, reboot
 5. Clone bootstrap repo
 6. Run gentoo.sh
+
+## TODO
+
+slack and spotify in flatpak installs
