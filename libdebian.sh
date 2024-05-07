@@ -6,7 +6,7 @@ aptUpdated=false
 
 # Versions of manual stuff
 doctlVersion="1.105.0"
-slackVersion="4.37.94"
+slackVersion="4.37.101"
 androidStudioVersion="2023.2.1.24"
 
 function InstallPackageIfMissing {
