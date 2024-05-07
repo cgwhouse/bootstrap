@@ -39,3 +39,4 @@
 ## TODO
 
 slack and spotify in flatpak installs
+consolidate more things after comparing fedora to debian

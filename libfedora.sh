@@ -3,7 +3,7 @@
 source ./libbootstrap.sh
 
 # Versions of manual stuff
-#androidStudioVersion="2023.2.1.24"
+androidStudioVersion="2023.3.1.18"
 
 function InstallPackageIfMissing {
     packageToCheck=$1
@@ -236,17 +236,17 @@ function InstallVirtManager {
 function InstallAndroidStudio {
     echo "TASK: InstallAndroidStudio"
 
-    #if [ -d "$HOME"/android-studio ]; then
-    #    return 0
-    #fi
+    if [ -d "$HOME"/android-studio ]; then
+        return 0
+    fi
 
-    #echo "...Downloading Android Studio"
-    #wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/"$androidStudioVersion"/android-studio-"$androidStudioVersion"-linux.tar.gz
-    #echo "...Unpacking Android Studio"
-    #tar -xvzf android-studio-"$androidStudioVersion"-linux.tar.gz &>/dev/null
-    #mv android-studio "$HOME"
-    #rm -f android-studio-"$androidStudioVersion"-linux.tar.gz
-    #echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
+    echo "...Downloading Android Studio"
+    wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/"$androidStudioVersion"/android-studio-"$androidStudioVersion"-linux.tar.gz
+    echo "...Unpacking Android Studio"
+    tar -xvzf android-studio-"$androidStudioVersion"-linux.tar.gz &>/dev/null
+    mv android-studio "$HOME"
+    rm -f android-studio-"$androidStudioVersion"-linux.tar.gz
+    echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
 }
 
 function InstallAdditionalSoftware {
