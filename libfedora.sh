@@ -53,8 +53,7 @@ function InstallProprietaryGraphics {
     echo "TASK: InstallProprietaryGraphics"
 
     # Check for NVIDIA hardware using lspci, exit if not found
-    nvidiaHardwareCheck=$(lspci | grep NVIDIA | awk -F: '{print $NF}')
-    if [ "$nvidiaHardwareCheck" == "" ]; then
+    if ! PerformNvidiaHardwareCheck; then
         return 0
     fi
 

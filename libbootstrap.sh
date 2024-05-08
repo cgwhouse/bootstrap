@@ -300,3 +300,10 @@ function EnableFlathubRepo {
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
     echo "...Flathub repository added"
 }
+
+function PerformNvidiaHardwareCheck {
+    nvidiaHardwareCheck=$(lspci | grep NVIDIA | awk -F: '{print $NF}')
+    if [ "$nvidiaHardwareCheck" == "" ]; then
+        return 1
+    fi
+}
