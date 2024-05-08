@@ -207,6 +207,7 @@ function InstallAdditionalSoftware {
         "ulauncher"
         "dotnet-sdk-8.0"
         "NetworkManager-openvpn"
+        "pavucontrol"
         # Doom Emacs
         "emacs"
         "ripgrep"
