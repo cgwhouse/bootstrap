@@ -356,7 +356,9 @@ function InstallSlack {
 function InstallVirtManager {
     echo "TASK: InstallVirtManager"
 
-    CheckVirtManagerCompatibility
+    if ! CheckVirtManagerCompatibility; then
+        return 1
+    fi
 
     packages=(
         "qemu-system-x86"

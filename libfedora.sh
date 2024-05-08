@@ -167,12 +167,8 @@ function InstallVirtManager {
     echo "TASK: InstallVirtManager"
 
     if ! CheckVirtManagerCompatibility; then
-        echo "compat check failed"
-    else
-        echo "compat check succeeded"
+        return 1
     fi
-
-    return 0
 
     packages=(
         "qemu-kvm"
