@@ -52,7 +52,7 @@ function InstallMATE {
 function InstallQtile {
     echo "TASK: InstallQtile"
 
-packages=(
+    packages=(
         # Tiling WM
         "x11-misc/picom"
         "lxde-base/lxappearance"
@@ -222,13 +222,7 @@ function InstallFlatpak {
         return 1
     fi
 
-    flathubCheck=$(flatpak remotes | grep flathub)
-    if [ "$flathubCheck" != "" ]; then
-        return 0
-    fi
-
-    sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
-    echo "...Flathub repository added"
+    EnableFlathubRepo
 }
 
 function EnsureAppImage {
@@ -297,14 +291,7 @@ function InstallDBeaver {
 function InstallAws {
     echo "TASK: InstallAws"
 
-    if [ ! -f "/usr/local/bin/aws" ]; then
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &>/dev/null
-        unzip awscliv2.zip &>/dev/null
-        sudo ./aws/install &>/dev/null
-        rm -f awscliv2.zip
-        rm -rf aws
-        echo "...Installed AWS CLI"
-    fi
+    InstallAwsCommon
 }
 
 function InstallAdditionalSoftware {

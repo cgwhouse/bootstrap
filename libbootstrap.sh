@@ -1,5 +1,7 @@
 #!/bin/bash
 
+androidStudioVersion="2023.3.1.18"
+
 function CreateDirectories {
     echo "TASK: CreateDirectories"
 
@@ -227,5 +229,92 @@ function DownloadPlankThemeCommon {
         git clone https://github.com/catppuccin/plank.git "$HOME"/repos/theming/catppuccin-plank &>/dev/null
         cp -r "$HOME"/repos/theming/catppuccin-plank/src/Catppuccin-mocha "$HOME"/.local/share/plank/themes &>/dev/null
         echo "...Installed Catppuccin plank theme"
+    fi
+}
+
+function InstallAndroidStudioCommon {
+    if [ -d "$HOME"/android-studio ]; then
+        return 0
+    fi
+
+    echo "...Downloading Android Studio"
+    wget -q https://redirector.gvt1.com/edgedl/android/studio/ide-zips/$androidStudioVersion/android-studio-$androidStudioVersion-linux.tar.gz
+    echo "...Unpacking Android Studio"
+    tar -xvzf android-studio-$androidStudioVersion-linux.tar.gz &>/dev/null
+    mv android-studio "$HOME"
+    rm -f android-studio-$androidStudioVersion-linux.tar.gz
+    echo "...Installed Android Studio. Run via CLI and use the in-app option for creating desktop entry"
+}
+
+function CheckVirtManagerCompatibility {
+    lscpuCheck=$(lscpu | grep VT-x)
+    if [ "$lscpuCheck" == "" ]; then
+        return 1
+    fi
+
+    uname=$(uname -r)
+    zgrepCheck=$(zgrep CONFIG_KVM /boot/config-"$uname" | grep "CONFIG_KVM_GUEST=y")
+    if [ "$zgrepCheck" == "" ]; then
+        return 1
+    fi
+}
+
+function PerformCommonVirtManagerChecks {
+    # Ensure libvirtd and tuned services are enabled
+    # This service will not stay running if in a VM, so only do this part if no VM detected
+    vmCheck=$(grep hypervisor </proc/cpuinfo)
+
+    libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
+    if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
+        sudo systemctl enable --now libvirtd.service &>/dev/null
+        echo "...libvirtd service enabled"
+    fi
+
+    tunedCheck=$(sudo systemctl is-active tuned.service)
+    if [ "$tunedCheck" == "inactive" ]; then
+        sudo systemctl enable --now tuned.service &>/dev/null
+        echo "...tuned service enabled"
+    fi
+
+    # Set autostart on virtual network
+    virshNetworkCheck=$(sudo virsh net-list --all --autostart | grep default)
+    if [ "$virshNetworkCheck" == "" ]; then
+        sudo virsh net-autostart default &>/dev/null
+        echo "...Virtual network set to autostart"
+    fi
+
+    # Add regular user to libvirt group
+    groupCheck=$(groups "$USER" | grep libvirt)
+    if [ "$groupCheck" == "" ]; then
+        sudo usermod -aG libvirt "$USER" &>/dev/null
+        echo "...User added to libvirt group"
+    fi
+}
+
+function EnableFlathubRepo {
+    flathubCheck=$(sudo flatpak remotes | grep flathub)
+    if [ "$flathubCheck" != "" ]; then
+        return 0
+    fi
+
+    sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
+    echo "...Flathub repository added"
+}
+
+function PerformNvidiaHardwareCheck {
+    nvidiaHardwareCheck=$(lspci | grep NVIDIA | awk -F: '{print $NF}')
+    if [ "$nvidiaHardwareCheck" == "" ]; then
+        return 1
+    fi
+}
+
+function InstallAwsCommon {
+    if [ ! -f "/usr/local/bin/aws" ]; then
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &>/dev/null
+        unzip awscliv2.zip &>/dev/null
+        sudo ./aws/install &>/dev/null
+        rm -f awscliv2.zip
+        rm -rf aws
+        echo "...Installed AWS CLI"
     fi
 }
