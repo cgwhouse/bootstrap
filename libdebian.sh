@@ -5,7 +5,7 @@ source ./libbootstrap.sh
 aptUpdated=false
 
 # Versions of manual stuff
-doctlVersion="1.105.0"
+doctlVersion="1.106.0"
 slackVersion="4.37.101"
 
 function InstallPackageIfMissing {
