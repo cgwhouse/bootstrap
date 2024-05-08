@@ -2,9 +2,6 @@
 
 source ./libbootstrap.sh
 
-# Versions of manual stuff
-androidStudioVersion="2023.3.1.18"
-
 function InstallPackageIfMissing {
     packageToCheck=$1
     grepStr="Installed Packages"
@@ -166,7 +163,7 @@ function InstallVirtManager {
     echo "TASK: InstallVirtManager"
 
     if ! CheckVirtManagerCompatibility; then
-        return 1
+        return 0
     fi
 
     packages=(
@@ -199,14 +196,7 @@ function InstallAndroidStudio {
 function InstallAws {
     echo "TASK: InstallAws"
 
-    if [ ! -f "/usr/local/bin/aws" ]; then
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &>/dev/null
-        unzip awscliv2.zip &>/dev/null
-        sudo ./aws/install &>/dev/null
-        rm -f awscliv2.zip
-        rm -rf aws
-        echo "...Installed AWS CLI"
-    fi
+    InstallAwsCommon
 }
 
 function InstallAdditionalSoftware {

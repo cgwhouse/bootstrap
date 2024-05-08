@@ -356,7 +356,7 @@ function InstallVirtManager {
     echo "TASK: InstallVirtManager"
 
     if ! CheckVirtManagerCompatibility; then
-        return 1
+        return 0
     fi
 
     packages=(

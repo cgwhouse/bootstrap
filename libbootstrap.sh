@@ -307,3 +307,14 @@ function PerformNvidiaHardwareCheck {
         return 1
     fi
 }
+
+function InstallAwsCommon {
+    if [ ! -f "/usr/local/bin/aws" ]; then
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &>/dev/null
+        unzip awscliv2.zip &>/dev/null
+        sudo ./aws/install &>/dev/null
+        rm -f awscliv2.zip
+        rm -rf aws
+        echo "...Installed AWS CLI"
+    fi
+}
