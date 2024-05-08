@@ -38,8 +38,3 @@
 4. depclean, reboot
 5. Clone bootstrap repo
 6. Run gentoo.sh
-
-## TODO
-
-consolidate more things after comparing fedora to debian, also fedora and gentoo for aws
-version checks in both projects
