@@ -74,17 +74,8 @@ if [ $# -eq 1 ]; then
         "InstallVisualStudioCode")
             InstallVisualStudioCode
             ;;
-        "InstallDoctl")
-            InstallDoctl
-            ;;
-        "InstallSlack")
-            InstallSlack
-            ;;
         "InstallVirtManager")
             InstallVirtManager
-            ;;
-        "InstallAndroidStudio")
-            InstallAndroidStudio
             ;;
         "InstallAdditionalSoftware")
             InstallAdditionalSoftware
@@ -170,19 +161,7 @@ if ! InstallVisualStudioCode; then
     exit 1
 fi
 
-if ! InstallDoctl; then
-    exit 1
-fi
-
-if ! InstallSlack; then
-    exit 1
-fi
-
 if ! InstallVirtManager; then
-    exit 1
-fi
-
-if ! InstallAndroidStudio; then
     exit 1
 fi
 
