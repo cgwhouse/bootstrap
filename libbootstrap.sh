@@ -148,6 +148,10 @@ function DownloadThemingCommon {
         "Yellow"
     )
 
+    # This is no longer what it is called
+    # TODO: replace the old one with the new one if old one is detected
+    # leave a note that it can be removed after sometime
+
     for accentColor in "${accentColors[@]}"; do
         if [ ! -d "$HOME"/.themes/Catppuccin-Mocha-Standard-"$accentColor"-Dark ]; then
             wget -q https://github.com/catppuccin/gtk/releases/latest/download/Catppuccin-Mocha-Standard-"$accentColor"-Dark.zip
