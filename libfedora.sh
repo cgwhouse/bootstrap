@@ -187,12 +187,6 @@ function InstallVirtManager {
     PerformCommonVirtManagerChecks
 }
 
-function InstallAndroidStudio {
-    echo "TASK: InstallAndroidStudio"
-
-    InstallAndroidStudioCommon
-}
-
 function InstallAws {
     echo "TASK: InstallAws"
 

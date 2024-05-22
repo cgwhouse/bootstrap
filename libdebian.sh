@@ -4,10 +4,6 @@ source ./libbootstrap.sh
 
 aptUpdated=false
 
-# Versions of manual stuff
-doctlVersion="1.106.0"
-slackVersion="4.37.101"
-
 function InstallPackageIfMissing {
     packageToCheck=$1
     grepStr="installed"
@@ -321,37 +317,6 @@ function InstallVisualStudioCode {
     InstallPackageIfMissing code
 }
 
-function InstallDoctl {
-    echo "TASK: InstallDoctl"
-
-    if (hash doctl 2>/dev/null); then
-        return 0
-    fi
-
-    filename="doctl-$doctlVersion-linux-amd64.tar.gz"
-
-    wget -q https://github.com/digitalocean/doctl/releases/download/v$doctlVersion/$filename
-    tar xf $filename &>/dev/null
-    sudo mv doctl /usr/local/bin
-    rm -f $filename
-    echo "...doctl installed"
-}
-
-function InstallSlack {
-    echo "TASK: InstallSlack"
-
-    slackCheck=$(sudo apt list slack-desktop 2>/dev/null | grep installed)
-    if [ "$slackCheck" != "" ]; then
-        return 0
-    fi
-
-    filename="slack-desktop-$slackVersion-amd64.deb"
-    wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/$slackVersion/$filename
-    sudo dpkg -i $filename &>/dev/null
-    rm $filename
-    echo "...Slack installed"
-}
-
 function InstallVirtManager {
     echo "TASK: InstallVirtManager"
 
@@ -379,12 +344,6 @@ function InstallVirtManager {
     done
 
     PerformCommonVirtManagerChecks
-}
-
-function InstallAndroidStudio {
-    echo "TASK: InstallAndroidStudio"
-
-    InstallAndroidStudioCommon
 }
 
 function InstallAdditionalSoftware {
