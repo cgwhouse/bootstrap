@@ -31,7 +31,8 @@
 
 ## Gentoo
 
-1. Follow the Handbook in its entirety, until at a tty logged in as regular user. Before first reboot:
+1. Follow the Handbook in its entirety, until at a tty logged in as regular
+   user. Before first reboot:
    - Install and configure eix
    - Install and configure NetworkManager, ensure nmtui
 2. Ensure dist-kernel, nvidia, USE flags
