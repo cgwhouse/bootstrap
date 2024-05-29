@@ -35,8 +35,10 @@
    user. Before first reboot:
    - Install and configure eix
    - Install and configure NetworkManager, ensure nmtui
-2. Ensure dist-kernel, nvidia, USE flags
+2. Ensure dist-kernel, nvidia USE flags
 3. Install git + vim + neovim, eselect editor
 4. depclean, reboot
 5. Clone bootstrap repo
 6. Run gentoo.sh
+7. Move bootstrap directory to repos
+8. Reboot, finish setup using dotfiles repo
