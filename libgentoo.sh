@@ -241,7 +241,7 @@ function InstallEmacs {
 
 	if ! IsPackageInstalled "app-editors/emacs"; then
 		echo "...Add global USE flag: emacs"
-		echo "...emerge app-editors/emacs, refer to the wiki and dotfiles for USE flags"
+		echo "...emerge app-editors/emacs, refer to the wiki and Doom Emacs docs for USE flags"
 		return 1
 	fi
 }
