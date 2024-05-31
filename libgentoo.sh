@@ -16,11 +16,20 @@ function IsPackageInstalled {
 	return 0
 }
 
+function InstallFirefoxBin {
+	echo "TASK: InstallFirefoxBin"
+
+	if ! IsPackageInstalled "www-client/firefox" && ! IsPackageInstalled "www-client/firefox-bin"; then
+		echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
+		return 1
+	fi
+}
+
 function InstallDesktopEnvironment {
 	echo "TASK: InstallDesktopEnvironment"
 
 	if ! IsPackageInstalled "gnome-extra/cinnamon"; then
-		echo "...Add the following global USE flags, then update system: elogind gtk X -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+		echo "...Add the following global USE flags, then update system: elogind gtk X -kde -plasma -qt5 -qt6 -systemd -telemetry"
 		echo "...Visit the wiki pages for Cinnamon and elogind and follow the instructions"
 		return 1
 	fi
@@ -35,7 +44,7 @@ function InstallMATE {
 	echo "TASK: InstallMATE"
 
 	if ! IsPackageInstalled "mate-base/mate"; then
-		echo "...Add the following global USE flags, then update system: elogind gtk X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+		echo "...Add the following global USE flags, then update system: elogind gtk X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry"
 		echo "...Visit the wiki pages for MATE and elogind and follow the instructions"
 		return 1
 	fi
@@ -116,15 +125,6 @@ function InstallCoreUtilities {
 			echo "...emerge app-emulation/spice-vdagent"
 			return 1
 		fi
-	fi
-}
-
-function InstallFirefoxBin {
-	echo "TASK: InstallFirefoxBin"
-
-	if ! IsPackageInstalled "www-client/firefox" || IsPackageInstalled "www-client/firefox-bin"; then
-		echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
-		return 1
 	fi
 }
 

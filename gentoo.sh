@@ -20,6 +20,9 @@ if [ $# -eq 1 ]; then
 	"CreateDirectories")
 		CreateDirectories
 		;;
+	"InstallFirefoxBin")
+		InstallFirefoxBin
+		;;
 	"InstallDesktopEnvironment")
 		InstallDesktopEnvironment
 		;;
@@ -40,9 +43,6 @@ if [ $# -eq 1 ]; then
 		;;
 	"ConfigureZsh")
 		ConfigureZsh
-		;;
-	"InstallFirefoxBin")
-		InstallFirefoxBin
 		;;
 	"InstallNvm")
 		InstallNvm
@@ -108,6 +108,10 @@ if ! CreateDirectories; then
 	exit 1
 fi
 
+if ! InstallFirefoxBin; then
+	exit 1
+fi
+
 if ! InstallDesktopEnvironment; then
 	exit 1
 fi
@@ -125,10 +129,6 @@ if ! ConfigureTmux; then
 fi
 
 if ! ConfigureZsh; then
-	exit 1
-fi
-
-if ! InstallFirefoxBin; then
 	exit 1
 fi
 
