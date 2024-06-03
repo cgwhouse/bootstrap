@@ -16,6 +16,21 @@ function IsPackageInstalled {
 	return 0
 }
 
+function InstallDesktopEnvironment {
+	echo "TASK: InstallDesktopEnvironment"
+
+	if ! IsPackageInstalled "gnome-extra/cinnamon"; then
+		echo "...Add the following global USE flags, then update system: elogind gtk waylaynd X -kde -plasma -qt5 -qt6 -systemd -telemetry"
+		echo "...Visit the wiki pages for Cinnamon and elogind and follow the instructions"
+		return 1
+	fi
+
+	if ! IsPackageInstalled "x11-misc/lightdm"; then
+		echo "...emerge x11-misc/lightdm, visit the LightDM wiki page for instructions on the display manager startup script"
+		return 1
+	fi
+}
+
 function InstallFirefoxBin {
 	echo "TASK: InstallFirefoxBin"
 
@@ -25,17 +40,26 @@ function InstallFirefoxBin {
 	fi
 }
 
-function InstallDesktopEnvironment {
-	echo "TASK: InstallDesktopEnvironment"
+function InstallPipewire {
+	echo "TASK: InstallPipewire"
 
-	if ! IsPackageInstalled "gnome-extra/cinnamon"; then
-		echo "...Add the following global USE flags, then update system: elogind gtk X -kde -plasma -qt5 -qt6 -systemd -telemetry"
-		echo "...Visit the wiki pages for Cinnamon and elogind and follow the instructions"
+	if ! IsPackageInstalled "media-video/pipewire"; then
+		echo "...Add the following global USE flags: pulseaudio screencast"
+		echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
 		return 1
 	fi
 
-	if ! IsPackageInstalled "x11-misc/lightdm"; then
-		echo "...emerge x11-misc/lightdm, visit the LightDM wiki page for instructions on the display manager startup script"
+	if ! IsPackageInstalled "media-sound/pavucontrol"; then
+		echo "emerge media-sound/pavucontrol"
+		return 1
+	fi
+}
+
+function InstallDiscord {
+	echo "TASK: InstallDiscord"
+
+	if ! IsPackageInstalled "net-im/discord"; then
+		echo "...emerge net-im/discord"
 		return 1
 	fi
 }
@@ -125,21 +149,6 @@ function InstallCoreUtilities {
 			echo "...emerge app-emulation/spice-vdagent"
 			return 1
 		fi
-	fi
-}
-
-function InstallPipewire {
-	echo "TASK: InstallPipewire"
-
-	if ! IsPackageInstalled "media-video/pipewire"; then
-		echo "...Add the following global USE flags: pulseaudio screencast"
-		echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
-		return 1
-	fi
-
-	if ! IsPackageInstalled "media-sound/pavucontrol"; then
-		echo "emerge media-sound/pavucontrol"
-		return 1
 	fi
 }
 
@@ -316,7 +325,6 @@ function InstallAdditionalSoftware {
 		"games-util/lutris"
 		"games-emulation/dolphin"
 		# Misc
-		"net-im/discord"
 		"app-admin/doctl"
 		"sys-block/gparted"
 		"x11-misc/copyq"
