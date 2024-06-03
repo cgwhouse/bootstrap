@@ -20,7 +20,7 @@ function InstallDesktopEnvironment {
 	echo "TASK: InstallDesktopEnvironment"
 
 	if ! IsPackageInstalled "gnome-extra/cinnamon"; then
-		echo "...Add the following global USE flags, then update system: elogind gtk X -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+		echo "...Add the following global USE flags, then update system: elogind gtk waylaynd X -kde -plasma -qt5 -qt6 -systemd -telemetry"
 		echo "...Visit the wiki pages for Cinnamon and elogind and follow the instructions"
 		return 1
 	fi
@@ -31,11 +31,44 @@ function InstallDesktopEnvironment {
 	fi
 }
 
+function InstallFirefoxBin {
+	echo "TASK: InstallFirefoxBin"
+
+	if ! IsPackageInstalled "www-client/firefox" && ! IsPackageInstalled "www-client/firefox-bin"; then
+		echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
+		return 1
+	fi
+}
+
+function InstallPipewire {
+	echo "TASK: InstallPipewire"
+
+	if ! IsPackageInstalled "media-video/pipewire"; then
+		echo "...Add the following global USE flags: pulseaudio screencast"
+		echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
+		return 1
+	fi
+
+	if ! IsPackageInstalled "media-sound/pavucontrol"; then
+		echo "emerge media-sound/pavucontrol"
+		return 1
+	fi
+}
+
+function InstallDiscord {
+	echo "TASK: InstallDiscord"
+
+	if ! IsPackageInstalled "net-im/discord"; then
+		echo "...emerge net-im/discord"
+		return 1
+	fi
+}
+
 function InstallMATE {
 	echo "TASK: InstallMATE"
 
 	if ! IsPackageInstalled "mate-base/mate"; then
-		echo "...Add the following global USE flags, then update system: elogind gtk X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry -wayland"
+		echo "...Add the following global USE flags, then update system: elogind gtk wayland X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry"
 		echo "...Visit the wiki pages for MATE and elogind and follow the instructions"
 		return 1
 	fi
@@ -116,30 +149,6 @@ function InstallCoreUtilities {
 			echo "...emerge app-emulation/spice-vdagent"
 			return 1
 		fi
-	fi
-}
-
-function InstallFirefoxBin {
-	echo "TASK: InstallFirefoxBin"
-
-	if ! IsPackageInstalled "www-client/firefox" || IsPackageInstalled "www-client/firefox-bin"; then
-		echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
-		return 1
-	fi
-}
-
-function InstallPipewire {
-	echo "TASK: InstallPipewire"
-
-	if ! IsPackageInstalled "media-video/pipewire"; then
-		echo "...Add the following global USE flags: pulseaudio screencast"
-		echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
-		return 1
-	fi
-
-	if ! IsPackageInstalled "media-sound/pavucontrol"; then
-		echo "emerge media-sound/pavucontrol"
-		return 1
 	fi
 }
 
@@ -241,7 +250,7 @@ function InstallEmacs {
 
 	if ! IsPackageInstalled "app-editors/emacs"; then
 		echo "...Add global USE flag: emacs"
-		echo "...emerge app-editors/emacs, refer to the wiki and dotfiles for USE flags"
+		echo "...emerge app-editors/emacs, refer to the wiki and Doom Emacs docs for USE flags"
 		return 1
 	fi
 }
@@ -316,7 +325,6 @@ function InstallAdditionalSoftware {
 		"games-util/lutris"
 		"games-emulation/dolphin"
 		# Misc
-		"net-im/discord"
 		"app-admin/doctl"
 		"sys-block/gparted"
 		"x11-misc/copyq"

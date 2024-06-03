@@ -23,6 +23,15 @@ if [ $# -eq 1 ]; then
 	"InstallDesktopEnvironment")
 		InstallDesktopEnvironment
 		;;
+	"InstallFirefoxBin")
+		InstallFirefoxBin
+		;;
+	"InstallPipewire")
+		InstallPipewire
+		;;
+	"InstallDiscord")
+		InstallDiscord
+		;;
 	"InstallMATE")
 		InstallMATE
 		;;
@@ -41,14 +50,8 @@ if [ $# -eq 1 ]; then
 	"ConfigureZsh")
 		ConfigureZsh
 		;;
-	"InstallFirefoxBin")
-		InstallFirefoxBin
-		;;
 	"InstallNvm")
 		InstallNvm
-		;;
-	"InstallPipewire")
-		InstallPipewire
 		;;
 	"InstallFonts")
 		InstallFonts
@@ -112,6 +115,18 @@ if ! InstallDesktopEnvironment; then
 	exit 1
 fi
 
+if ! InstallFirefoxBin; then
+	exit 1
+fi
+
+if ! InstallPipewire; then
+	exit 1
+fi
+
+if ! InstallDiscord; then
+	exit 1
+fi
+
 if ! InstallZsh; then
 	exit 1
 fi
@@ -128,15 +143,7 @@ if ! ConfigureZsh; then
 	exit 1
 fi
 
-if ! InstallFirefoxBin; then
-	exit 1
-fi
-
 if ! InstallNvm; then
-	exit 1
-fi
-
-if ! InstallPipewire; then
 	exit 1
 fi
 
