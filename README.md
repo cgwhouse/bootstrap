@@ -31,14 +31,13 @@
 
 ## Gentoo
 
-1. Follow the Handbook in its entirety, until at a tty logged in as regular
-   user. Before first reboot:
-   - Install and configure eix
-   - Install and configure NetworkManager, ensure nmtui
-2. Ensure dist-kernel, nvidia USE flags
-3. Install git + vim + neovim, eselect editor
-4. depclean, reboot
-5. Clone bootstrap repo
-6. Run gentoo.sh
-7. Move bootstrap directory to repos
-8. Reboot, finish setup using dotfiles repo
+1. Follow the Handbook, but do not reboot when it says to
+2. Continue through post-reboot portion of handbook and complete remaining steps
+3. Make note of anything that shouldn't be done ahead of time (removing
+   stage3 tarball, disabling root user, etc.) so we can do it later
+4. Install and configure eix
+5. Install and configure NetworkManager
+6. Install git + vim + neovim, eselect editor, depclean
+7. Clone bootstrap repo
+8. Run gentoo.sh, proceed until desktop environment and web browser are installed
+9. Reboot, continue remaining setup via gentoo.sh
