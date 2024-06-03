@@ -68,7 +68,7 @@ function InstallMATE {
 	echo "TASK: InstallMATE"
 
 	if ! IsPackageInstalled "mate-base/mate"; then
-		echo "...Add the following global USE flags, then update system: elogind gtk X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry"
+		echo "...Add the following global USE flags, then update system: elogind gtk wayland X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry"
 		echo "...Visit the wiki pages for MATE and elogind and follow the instructions"
 		return 1
 	fi
