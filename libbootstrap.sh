@@ -150,10 +150,10 @@ function DownloadThemingCommon {
 
 	for accentColor in "${accentColors[@]}"; do
 
-		if [ ! -d "$HOME"/.themes/catppuccin-mocha-"$accentColor"-standard+default-dark ]; then
+		if [ ! -d "$HOME"/.themes/catppuccin-mocha-"$accentColor"-standard+default ]; then
 			wget -q https://github.com/catppuccin/gtk/releases/latest/download/catppuccin-mocha-"$accentColor"-standard+default.zip
 			unar -d catppuccin-mocha-"$accentColor"-standard+default.zip &>/dev/null
-			mv catppuccin-mocha-"$accentColor"-standard+default/catppuccin-mocha-"$accentColor"-standard+default-dark "$HOME"/.themes &>/dev/null
+			mv catppuccin-mocha-"$accentColor"-standard+default/catppuccin-mocha-"$accentColor"-standard+default "$HOME"/.themes &>/dev/null
 			rm -rf catppuccin-mocha-"$accentColor"-standard+default &>/dev/null
 			rm -f catppuccin-mocha-"$accentColor"-standard+default.zip &>/dev/null
 			echo "...Installed Catppuccin GTK Mocha $accentColor theme"
