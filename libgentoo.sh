@@ -20,7 +20,7 @@ function InstallDesktopEnvironment {
 	echo "TASK: InstallDesktopEnvironment"
 
 	if ! IsPackageInstalled "gnome-extra/cinnamon"; then
-		echo "...Add the following global USE flags, then update system: elogind gtk waylaynd X -kde -plasma -qt5 -qt6 -systemd -telemetry"
+		echo "...Add the following global USE flags, then update system: elogind gtk vaapi vdpau wayland X -kde -plasma -qt5 -qt6 -systemd -telemetry"
 		echo "...Visit the wiki pages for Cinnamon and elogind and follow the instructions"
 		return 1
 	fi
