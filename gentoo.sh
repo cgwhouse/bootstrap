@@ -17,88 +17,88 @@ printf "\n"
 
 if [ $# -eq 1 ]; then
 	case $1 in
-	"CreateDirectories")
-		CreateDirectories
-		;;
-	"InstallDesktopEnvironment")
-		InstallDesktopEnvironment
-		;;
-	"InstallFirefoxBin")
-		InstallFirefoxBin
-		;;
-	"InstallPipewire")
-		InstallPipewire
-		;;
-	"InstallDiscord")
-		InstallDiscord
-		;;
-	"InstallMATE")
-		InstallMATE
-		;;
-	"InstallQtile")
-		InstallQtile
-		;;
-	"InstallZsh")
-		InstallZsh
-		;;
-	"InstallCoreUtilities")
-		InstallCoreUtilities
-		;;
-	"ConfigureTmux")
-		ConfigureTmux
-		;;
-	"ConfigureZsh")
-		ConfigureZsh
-		;;
-	"InstallNvm")
-		InstallNvm
-		;;
-	"InstallFonts")
-		InstallFonts
-		;;
-	"InstallUlauncher")
-		InstallUlauncher
-		;;
-	"DownloadTheming")
-		DownloadTheming
-		;;
-	"InstallDotNetCore")
-		InstallDotNetCore
-		;;
-	"InstallFlatpak")
-		InstallFlatpak
-		;;
-	"EnsureAppImage")
-		EnsureAppImage
-		;;
-	"InstallEmacs")
-		InstallEmacs
-		;;
-	"InstallObsStudio")
-		InstallObsStudio
-		;;
-	"InstallLibreOffice")
-		InstallLibreOffice
-		;;
-	"InstallVirtManager")
-		InstallVirtManager
-		;;
-	"InstallDBeaver")
-		InstallDBeaver
-		;;
-	"InstallAws")
-		InstallAws
-		;;
-	"InstallAdditionalSoftware")
-		InstallAdditionalSoftware
-		;;
-	"InstallWebBrowsers")
-		InstallWebBrowsers
-		;;
-	*)
-		printf "ERROR: Unknown task\n\n"
-		exit 1
-		;;
+		"InstallDesktopEnvironment")
+			InstallDesktopEnvironment
+			;;
+		"InstallFirefoxBin")
+			InstallFirefoxBin
+			;;
+		"InstallPipewire")
+			InstallPipewire
+			;;
+		"CreateDirectories")
+			CreateDirectories
+			;;
+		"InstallDiscord")
+			InstallDiscord
+			;;
+		"InstallMATE")
+			InstallMATE
+			;;
+		"InstallQtile")
+			InstallQtile
+			;;
+		"InstallZsh")
+			InstallZsh
+			;;
+		"InstallCoreUtilities")
+			InstallCoreUtilities
+			;;
+		"ConfigureTmux")
+			ConfigureTmux
+			;;
+		"ConfigureZsh")
+			ConfigureZsh
+			;;
+		"InstallNvm")
+			InstallNvm
+			;;
+		"InstallFonts")
+			InstallFonts
+			;;
+		"InstallUlauncher")
+			InstallUlauncher
+			;;
+		"DownloadTheming")
+			DownloadTheming
+			;;
+		"InstallDotNetCore")
+			InstallDotNetCore
+			;;
+		"InstallFlatpak")
+			InstallFlatpak
+			;;
+		"EnsureAppImage")
+			EnsureAppImage
+			;;
+		"InstallEmacs")
+			InstallEmacs
+			;;
+		"InstallObsStudio")
+			InstallObsStudio
+			;;
+		"InstallLibreOffice")
+			InstallLibreOffice
+			;;
+		"InstallVirtManager")
+			InstallVirtManager
+			;;
+		"InstallDBeaver")
+			InstallDBeaver
+			;;
+		"InstallAws")
+			InstallAws
+			;;
+		"InstallAdditionalSoftware")
+			InstallAdditionalSoftware
+			;;
+		"InstallWebBrowsers")
+			InstallWebBrowsers
+			;;
+		*)
+			printf "ERROR: Unknown task\n\n"
+			exit 1
+			;;
 	esac
 
 	printf "\n"
@@ -106,10 +106,6 @@ if [ $# -eq 1 ]; then
 fi
 
 # Full run, exit if a task errors
-
-if ! CreateDirectories; then
-	exit 1
-fi
 
 if ! InstallDesktopEnvironment; then
 	exit 1
@@ -119,7 +115,16 @@ if ! InstallFirefoxBin; then
 	exit 1
 fi
 
+if [ "$USER" == "root" ]; then
+	echo "Need to login as regular user to continue the script"
+	exit 1
+fi
+
 if ! InstallPipewire; then
+	exit 1
+fi
+
+if ! CreateDirectories; then
 	exit 1
 fi
 
