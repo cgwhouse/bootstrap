@@ -3,6 +3,8 @@
 source ./libbootstrap.sh
 source ./libfedora.sh
 
+work=false
+
 # Validate script arguments
 if [ $# -gt 1 ]; then
 	printf "\nUsage:\n\n"
@@ -17,52 +19,55 @@ printf "\n"
 
 if [ $# -eq 1 ]; then
 	case $1 in
-	"CreateDirectories")
-		CreateDirectories
-		;;
-	"InstallCoreUtilities")
-		InstallCoreUtilities
-		;;
-	"ConfigureTmux")
-		ConfigureTmux
-		;;
-	"InstallNvm")
-		InstallNvm
-		;;
-	"ConfigureZsh")
-		ConfigureZsh
-		;;
-	"InstallProprietaryGraphics")
-		InstallProprietaryGraphics
-		;;
-	"InstallFonts")
-		InstallFonts
-		;;
-	"DownloadTheming")
-		DownloadTheming
-		;;
-	"InstallFlatpak")
-		InstallFlatpak
-		;;
-	"InstallWebBrowsers")
-		InstallWebBrowsers
-		;;
-	"InstallVisualStudioCode")
-		InstallVisualStudioCode
-		;;
-	"InstallVirtManager")
-		InstallVirtManager
-		;;
-	"InstallAws")
-		InstallAws
-		;;
-	"InstallAdditionalSoftware")
-		InstallAdditionalSoftware
-		;;
-	*)
-		printf "ERROR: Unknown task\n\n"
-		exit 1
-		;;
+		"CreateDirectories")
+			CreateDirectories
+			;;
+		"InstallCoreUtilities")
+			InstallCoreUtilities
+			;;
+		"ConfigureTmux")
+			ConfigureTmux
+			;;
+		"InstallNvm")
+			InstallNvm
+			;;
+		"ConfigureZsh")
+			ConfigureZsh
+			;;
+		"InstallProprietaryGraphics")
+			InstallProprietaryGraphics
+			;;
+		"InstallFonts")
+			InstallFonts
+			;;
+		"DownloadTheming")
+			DownloadTheming
+			;;
+		"InstallFlatpak")
+			InstallFlatpak
+			;;
+		"InstallWebBrowsers")
+			InstallWebBrowsers
+			;;
+		"InstallVisualStudioCode")
+			InstallVisualStudioCode
+			;;
+		"InstallVirtManager")
+			InstallVirtManager
+			;;
+		"InstallAws")
+			InstallAws
+			;;
+		"InstallAdditionalSoftware")
+			InstallAdditionalSoftware
+			;;
+		"InstallRecreationalSoftware")
+			InstallRecreationalSoftware
+			;;
+		*)
+			printf "ERROR: Unknown task\n\n"
+			exit 1
+			;;
 	esac
 
 	printf "\n"
@@ -121,6 +126,12 @@ fi
 
 if ! InstallAdditionalSoftware; then
 	exit 1
+fi
+
+if ! $work; then
+	if ! InstallRecreationalSoftware; then
+		exit 1
+	fi
 fi
 
 if ! ConfigureZsh; then

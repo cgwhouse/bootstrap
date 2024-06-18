@@ -53,9 +53,9 @@ function InstallCoreUtilities {
 		"tmux"
 		"htop"
 		"unar"
-		"neofetch"
 		"aptitude"
 		"apt-transport-https"
+		"ntp"
 	)
 
 	for package in "${packages[@]}"; do
@@ -89,7 +89,7 @@ function InstallDotNetCore {
 }
 
 function EnableMultiarch {
-	echo "TASK: EnabledMultiarch"
+	echo "TASK: EnableMultiarch"
 
 	multiarchCheck=$(dpkg --print-foreign-architectures | grep i386)
 	if [ "$multiarchCheck" != "" ]; then
@@ -360,22 +360,33 @@ function InstallAdditionalSoftware {
 		"fd-find"
 		# Media + Office
 		"vlc"
-		"transmission-gtk"
 		"obs-studio"
 		"libreoffice"
 		# Games
 		"aisleriot"
 		"gnome-mines"
-		"mgba-qt"
-		"lutris"
-		"dolphin-emu"
 		# Misc
 		"gparted"
 		"copyq"
 		"awscli"
 		"sshpass"
-		"qflipper"
 		"default-jdk"
+	)
+
+	for package in "${packages[@]}"; do
+		InstallPackageIfMissing "$package"
+	done
+}
+
+function InstallRecreationalSoftware {
+	echo "TASK: InstallRecreationalSoftware"
+
+	packages=(
+		"transmission-gtk"
+		"mgba-qt"
+		"lutris"
+		"dolphin-emu"
+		"qflipper"
 	)
 
 	for package in "${packages[@]}"; do

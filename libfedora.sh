@@ -208,21 +208,32 @@ function InstallAdditionalSoftware {
 		"fd-find"
 		# Media + Office
 		"vlc"
-		"transmission"
 		"obs-studio"
 		"libreoffice"
 		# Games
 		"aisleriot"
 		"gnome-mines"
-		"libretro-mgba"
-		"lutris"
-		"dolphin-emu"
 		# Misc
 		"gparted"
 		"copyq"
 		"sshpass"
-		"qflipper"
 		"java-17-openjdk"
+	)
+
+	for package in "${packages[@]}"; do
+		InstallPackageIfMissing "$package"
+	done
+}
+
+function InstallRecreationalSoftware {
+	echo "TASK: InstallRecreationalSoftware"
+
+	packages=(
+		"transmission"
+		"libretro-mgba"
+		"lutris"
+		"dolphin-emu"
+		"qflipper"
 	)
 
 	for package in "${packages[@]}"; do
