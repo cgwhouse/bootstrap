@@ -7,7 +7,7 @@
 3. Reboot
 4. Install git
 5. Clone bootstrap repo
-6. Edit server flag (optional)
+6. Edit server/work flags (optional)
 7. Run debian.sh
 8. Edit /etc/network/interfaces
 9. Move bootstrap directory to repos
@@ -25,9 +25,10 @@
    - RPM Fusion docs for Multimedia
 5. Install git
 6. Clone bootstrap repo
-7. Run fedora.sh
-8. Move bootstrap directory to repos
-9. Reboot, finish setup using dotfiles repo
+7. Edit work flag (optional)
+8. Run fedora.sh
+9. Move bootstrap directory to repos
+10. Reboot, finish setup using dotfiles repo
 
 ## Gentoo
 
