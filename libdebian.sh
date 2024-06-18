@@ -89,7 +89,7 @@ function InstallDotNetCore {
 }
 
 function EnableMultiarch {
-	echo "TASK: EnabledMultiarch"
+	echo "TASK: EnableMultiarch"
 
 	multiarchCheck=$(dpkg --print-foreign-architectures | grep i386)
 	if [ "$multiarchCheck" != "" ]; then
