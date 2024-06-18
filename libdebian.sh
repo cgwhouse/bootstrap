@@ -53,9 +53,9 @@ function InstallCoreUtilities {
 		"tmux"
 		"htop"
 		"unar"
-		"neofetch"
 		"aptitude"
 		"apt-transport-https"
+		"ntp"
 	)
 
 	for package in "${packages[@]}"; do
