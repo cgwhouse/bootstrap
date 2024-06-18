@@ -5,6 +5,7 @@ source ./libdebian.sh
 
 # Update this if doing a minimal bootstrap (no GUI)
 server=false
+work=false
 
 # Validate script arguments
 if [ $# -gt 1 ]; then
@@ -20,70 +21,73 @@ printf "\n"
 
 if [ $# -eq 1 ]; then
 	case $1 in
-	"CreateDirectories")
-		CreateDirectories
-		;;
-	"InstallCoreUtilities")
-		InstallCoreUtilities
-		;;
-	"ConfigureTmux")
-		ConfigureTmux
-		;;
-	"InstallDotNetCore")
-		InstallDotNetCore
-		;;
-	"InstallNvm")
-		InstallNvm
-		;;
-	"ConfigureZsh")
-		ConfigureZsh
-		;;
-	"EnableMultiarch")
-		EnableMultiarch
-		;;
-	"InstallProprietaryGraphics")
-		InstallProprietaryGraphics
-		;;
-	"InstallDesktopEnvironment")
-		InstallDesktopEnvironment
-		;;
-	"InstallMATE")
-		InstallMATE
-		;;
-	"InstallQtile")
-		InstallQtile
-		;;
-	"InstallPipewire")
-		InstallPipewire
-		;;
-	"InstallFonts")
-		InstallFonts
-		;;
-	"DownloadTheming")
-		DownloadTheming
-		;;
-	"InstallFlatpak")
-		InstallFlatpak
-		;;
-	"InstallWebBrowsers")
-		InstallWebBrowsers
-		;;
-	"InstallSpotify")
-		InstallSpotify
-		;;
-	"InstallVisualStudioCode")
-		InstallVisualStudioCode
-		;;
-	"InstallVirtManager")
-		InstallVirtManager
-		;;
-	"InstallAdditionalSoftware")
-		InstallAdditionalSoftware
-		;;
-	*)
-		printf "ERROR: Unknown task\n\n"
-		exit 1
-		;;
+		"CreateDirectories")
+			CreateDirectories
+			;;
+		"InstallCoreUtilities")
+			InstallCoreUtilities
+			;;
+		"ConfigureTmux")
+			ConfigureTmux
+			;;
+		"InstallDotNetCore")
+			InstallDotNetCore
+			;;
+		"InstallNvm")
+			InstallNvm
+			;;
+		"ConfigureZsh")
+			ConfigureZsh
+			;;
+		"EnableMultiarch")
+			EnableMultiarch
+			;;
+		"InstallProprietaryGraphics")
+			InstallProprietaryGraphics
+			;;
+		"InstallDesktopEnvironment")
+			InstallDesktopEnvironment
+			;;
+		"InstallMATE")
+			InstallMATE
+			;;
+		"InstallQtile")
+			InstallQtile
+			;;
+		"InstallPipewire")
+			InstallPipewire
+			;;
+		"InstallFonts")
+			InstallFonts
+			;;
+		"DownloadTheming")
+			DownloadTheming
+			;;
+		"InstallFlatpak")
+			InstallFlatpak
+			;;
+		"InstallWebBrowsers")
+			InstallWebBrowsers
+			;;
+		"InstallSpotify")
+			InstallSpotify
+			;;
+		"InstallVisualStudioCode")
+			InstallVisualStudioCode
+			;;
+		"InstallVirtManager")
+			InstallVirtManager
+			;;
+		"InstallAdditionalSoftware")
+			InstallAdditionalSoftware
+			;;
+		"InstallRecreationalSoftware")
+			InstallRecreationalSoftware
+			;;
+		*)
+			printf "ERROR: Unknown task\n\n"
+			exit 1
+			;;
 	esac
 
 	printf "\n"
@@ -167,6 +171,12 @@ fi
 
 if ! InstallAdditionalSoftware; then
 	exit 1
+fi
+
+if ! $work; then
+	if ! InstallRecreationalSoftware; then
+		exit 1
+	fi
 fi
 
 if ! ConfigureZsh; then
