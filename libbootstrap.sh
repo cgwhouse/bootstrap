@@ -1,5 +1,9 @@
 #!/bin/bash
 
+function WriteTaskName {
+	echo "TASK: ${FUNCNAME[1]}"
+}
+
 function CreateDirectories {
 	echo "TASK: CreateDirectories"
 
@@ -70,7 +74,7 @@ function InstallNvm {
 	echo "TASK: InstallNvm"
 
 	if [ ! -d "$HOME"/.nvm ]; then
-		wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash &>/dev/null
+		wget -O- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash &>/dev/null
 		echo "...nvm installed"
 	fi
 }
@@ -84,7 +88,7 @@ function ConfigureZsh {
 	fi
 }
 
-function InstallFontsCommon {
+function InstallNerdFonts {
 	if [ ! -d "$HOME/.local/share/fonts" ]; then
 		mkdir "$HOME"/.local/share/fonts
 		echo "...Fonts directory created"
@@ -124,7 +128,7 @@ function InstallFontsCommon {
 	fi
 }
 
-function DownloadThemingCommon {
+function DownloadCatppuccinTheme {
 	# GTK + icons
 	if [ ! -d "$HOME"/.themes ]; then
 		mkdir "$HOME"/.themes &>/dev/null
@@ -283,7 +287,7 @@ function EnableFlathubRepo {
 		return 0
 	fi
 
-	sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo &>/dev/null
+	sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 	echo "...Flathub repository added"
 }
 

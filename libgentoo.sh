@@ -155,8 +155,6 @@ function InstallCoreUtilities {
 function InstallFonts {
 	echo "TASK: InstallFonts"
 
-	# Nerd Fonts
-	InstallFontsCommon
 
 	if ! IsPackageInstalled "media-fonts/fonts-meta"; then
 		echo "...emerge media-fonts/fonts-meta"
@@ -182,6 +180,8 @@ function InstallFonts {
 		echo "...emerge media-fonts/noto-emoji"
 		return 1
 	fi
+
+	InstallNerdFonts
 }
 
 function InstallUlauncher {
@@ -196,12 +196,12 @@ function InstallUlauncher {
 function DownloadTheming {
 	echo "TASK: Download Theming"
 
-	DownloadThemingCommon
+	DownloadCatppuccinTheme
 
-	if ! IsPackageInstalled "x11-themes/gnome-themes-standard"; then
-		echo "...emerge x11-themes/gnome-themes-standard"
-		return 1
-	fi
+	#if ! IsPackageInstalled "x11-themes/gnome-themes-standard"; then
+	#	echo "...emerge x11-themes/gnome-themes-standard"
+	#	return 1
+	#fi
 }
 
 function InstallDotNetCore {

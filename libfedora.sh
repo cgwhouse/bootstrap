@@ -108,7 +108,7 @@ function InstallFonts {
 function DownloadTheming {
 	echo "TASK: DownloadTheming"
 
-	DownloadThemingCommon
+	DownloadCatppuccinTheme
 
 	# GTK + icons
 	InstallPackageIfMissing gnome-themes-extra
