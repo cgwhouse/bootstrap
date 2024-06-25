@@ -155,7 +155,6 @@ function InstallCoreUtilities {
 function InstallFonts {
 	echo "TASK: InstallFonts"
 
-
 	if ! IsPackageInstalled "media-fonts/fonts-meta"; then
 		echo "...emerge media-fonts/fonts-meta"
 		return 1

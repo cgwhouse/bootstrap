@@ -1,11 +1,9 @@
 #!/bin/bash
 
-source ./libbootstrap.sh
 source ./libdebian.sh
 
 # Update this if doing a minimal bootstrap (no GUI)
 server=false
-work=false
 
 # Validate script arguments
 if [ $# -gt 0 ]; then
@@ -66,38 +64,12 @@ if ! InstallFonts; then
 	exit 1
 fi
 
-if ! DownloadTheming; then
-	exit 1
-fi
-
 if ! InstallFlatpak; then
 	exit 1
 fi
 
 if ! InstallWebBrowsers; then
 	exit 1
-fi
-
-if ! InstallSpotify; then
-	exit 1
-fi
-
-if ! InstallVisualStudioCode; then
-	exit 1
-fi
-
-if ! InstallVirtManager; then
-	exit 1
-fi
-
-if ! InstallAdditionalSoftware; then
-	exit 1
-fi
-
-if ! $work; then
-	if ! InstallRecreationalSoftware; then
-		exit 1
-	fi
 fi
 
 if ! ConfigureZsh; then

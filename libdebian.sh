@@ -96,11 +96,6 @@ function InstallCoreUtilities {
 function InstallDotNetCore {
 	WriteTaskName
 
-	dotnetCheck=$(sudo apt list dotnet-sdk-8.0 2>/dev/null | grep installed)
-	if [ "$dotnetCheck" != "" ]; then
-		return 0
-	fi
-
 	# Setup source for .NET SDK packages if needed
 	if ! compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
 		echo "...Setting up .NET SDK package source"
@@ -260,125 +255,6 @@ EOF
 	if ! InstallListOfPackagesIfMissing "${browserPackages[@]}"; then
 		return 1
 	fi
-}
-
-# TODO: everything between this and the deprecated section needs moving to dotfiles
-function InstallSpotify {
-	WriteTaskName
-
-	# Setup source for Spotify package if needed
-	if ! compgen -G "/etc/apt/sources.list.d/spotify*" >/dev/null; then
-		echo "...Setting up Spotify package source"
-		curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-		echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-
-		UpdateAptSources
-	fi
-
-	if ! InstallPackageIfMissing spotify-client; then
-		return 1
-	fi
-}
-
-function InstallVisualStudioCode {
-	WriteTaskName
-
-	if ! compgen -G "/etc/apt/sources.list.d/vscode" >/dev/null; then
-		wget -O- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
-		sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-
-		echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
-		rm -f packages.microsoft.gpg
-
-		UpdateAptSources
-	fi
-
-	if ! InstallPackageIfMissing code; then
-		return 1
-	fi
-}
-
-function InstallVirtManager {
-	WriteTaskName
-
-	if ! VirtManagerCheck; then
-		return 0
-	fi
-
-	virtManagerPackages=(
-		"qemu-system-x86"
-		"libvirt-daemon-system"
-		"virtinst"
-		"virt-manager"
-		"virt-viewer"
-		"ovmf"
-		"swtpm"
-		"qemu-utils"
-		"guestfs-tools"
-		"libosinfo-bin"
-		"tuned"
-		"spice-client-gtk"
-	)
-
-	if ! InstallListOfPackagesIfMissing "${virtManagerPackages[@]}"; then
-		return 1
-	fi
-
-	ConfigureVirtManager
-}
-
-function InstallAdditionalSoftware {
-	WriteTaskName
-
-	additionalPackages=(
-		# NetworkManager
-		"network-manager-gnome"
-		"network-manager-openvpn-gnome"
-		# Doom Emacs
-		"emacs-gtk"
-		"elpa-ligature"
-		"ripgrep"
-		"fd-find"
-		# Media + Office
-		"vlc"
-		"obs-studio"
-		"libreoffice"
-		# Games
-		"aisleriot"
-		"gnome-mines"
-		# Misc
-		"gparted"
-		"copyq"
-		"awscli"
-		"sshpass"
-		"default-jdk"
-	)
-
-	if ! InstallListOfPackagesIfMissing "${additionalPackages[@]}"; then
-		return 1
-	fi
-}
-
-function InstallRecreationalSoftware {
-	WriteTaskName
-
-	recreationalPackages=(
-		"transmission-gtk"
-		"mgba-qt"
-		"lutris"
-		"dolphin-emu"
-		"qflipper"
-	)
-
-	if ! InstallListOfPackagesIfMissing "${recreationalPackages[@]}"; then
-		return 1
-	fi
-}
-
-function DownloadTheming {
-	WriteTaskName
-
-	DownloadCatppuccinTheme
 }
 
 ### BEGIN DEPRECATED ###

@@ -84,6 +84,7 @@ function CreateDirectories {
 		"$HOME/.local"
 		"$HOME/.local/bin"
 		"$HOME/.local/share"
+		"$HOME/.local/share/applications"
 		"$HOME/.local/share/fonts"
 		"$HOME/.local/share/icons"
 		"$HOME/.themes"
@@ -173,101 +174,6 @@ function InstallNerdFonts {
 		rm -r ubuntumono
 		rm ubuntumono.zip
 		echo "...UbuntuMono Nerd Font installed"
-	fi
-}
-
-function DownloadCatppuccinTheme {
-	WriteTaskName
-
-	# GTK + icons
-	accentColors=(
-		"blue"
-		"flamingo"
-		"green"
-		"lavender"
-		"maroon"
-		"mauve"
-		"peach"
-		"pink"
-		"red"
-		"rosewater"
-		"sapphire"
-		"sky"
-		"teal"
-		"yellow"
-	)
-
-	for accentColor in "${accentColors[@]}"; do
-
-		if [ ! -d "$HOME"/.themes/catppuccin-mocha-"$accentColor"-standard+default ]; then
-			wget https://github.com/catppuccin/gtk/releases/latest/download/catppuccin-mocha-"$accentColor"-standard+default.zip
-			unar -d catppuccin-mocha-"$accentColor"-standard+default.zip
-			mv catppuccin-mocha-"$accentColor"-standard+default/catppuccin-mocha-"$accentColor"-standard+default "$HOME"/.themes
-			rm -rf catppuccin-mocha-"$accentColor"-standard+default
-			rm -f catppuccin-mocha-"$accentColor"-standard+default.zip
-			echo "...Installed Catppuccin GTK Mocha $accentColor theme"
-		fi
-
-	done
-
-	if [ ! -d "$HOME"/.local/share/icons/Tela-circle-dark ]; then
-		mkdir "$HOME"/repos/theming/Tela-circle-dark
-		git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git "$HOME"/repos/theming/Tela-circle-dark
-		"$HOME"/repos/theming/Tela-circle-dark/install.sh -a -c -d "$HOME"/.local/share/icons
-		echo "...Installed Tela-circle icon themes"
-	fi
-
-	# Ulauncher
-	if ! compgen -G "$HOME/.config/ulauncher/user-themes/Catppuccin-Mocha*" >/dev/null; then
-		python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
-		echo "...Installed Ulauncher Catppuccin themes"
-	fi
-
-	# Grub
-	if [ ! -d /usr/share/grub/themes ]; then
-		sudo mkdir /usr/share/grub/themes
-		echo "...Created grub themes directory"
-	fi
-
-	if [ ! -d /usr/share/grub/themes/catppuccin-mocha-grub-theme ]; then
-		mkdir "$HOME"/repos/theming/catppuccin-grub
-		git clone https://github.com/catppuccin/grub.git "$HOME"/repos/theming/catppuccin-grub
-		sudo cp -r "$HOME"/repos/theming/catppuccin-grub/src/catppuccin-mocha-grub-theme /usr/share/grub/themes
-		echo "...Installed Catppuccin grub theme to themes directory"
-	fi
-
-	grubThemeCheck=$(grep "/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt" </etc/default/grub)
-	if [ "$grubThemeCheck" == "" ]; then
-		echo "...NOTE: Set grub theme by adding GRUB_THEME=\"/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt\" to /etc/default/grub, then running update-grub"
-	fi
-
-	# Wallpapers
-	if [ ! -d "$HOME"/Pictures/wallpapers/catppuccin ]; then
-		echo "...Installing Catppuccin wallpaper pack"
-		mkdir "$HOME"/Pictures/wallpapers/catppuccin
-		mkdir "$HOME"/repos/theming/catppuccin-wallpapers
-		git clone https://github.com/Gingeh/wallpapers.git "$HOME"/repos/theming/catppuccin-wallpapers
-		cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.png "$HOME"/Pictures/wallpapers/catppuccin
-		cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.jpg "$HOME"/Pictures/wallpapers/catppuccin
-		echo "...Catppuccin wallpaper pack installed"
-	fi
-
-	# Tmux
-	if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" "$HOME"/.tmux.conf.local; then
-		echo "NOTE: Set tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'catppuccin/tmux'"
-	fi
-}
-
-function InstallAws {
-	WriteTaskName
-
-	if [ ! -f "/usr/local/bin/aws" ]; then
-		curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-		unzip awscliv2.zip
-		sudo ./aws/install
-		rm -f awscliv2.zip
-		rm -rf aws
-		echo "...Installed AWS CLI"
 	fi
 }
 
