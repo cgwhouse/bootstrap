@@ -75,6 +75,7 @@ function InstallCoreUtilities {
 		"aptitude"
 		"apt-transport-https"
 		"ntp"
+		"gpg"
 		"gnupg"
 		"ca-certificates"
 	)
@@ -100,13 +101,15 @@ function InstallDotNetCore {
 		return 0
 	fi
 
-	# TODO: implement separate check for this package repo
-	echo "...Setting up Microsoft package repo"
-	wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-	sudo dpkg -i packages-microsoft-prod.deb
-	rm packages-microsoft-prod.deb
+	# Setup source for .NET SDK packages if needed
+	if ! compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
+		echo "...Setting up .NET SDK package source"
+		wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+		sudo dpkg -i packages-microsoft-prod.deb
+		rm packages-microsoft-prod.deb
 
-	UpdateAptSources
+		UpdateAptSources
+	fi
 
 	dotnetSdks=(
 		"dotnet-sdk-7.0"
@@ -136,7 +139,7 @@ function InstallProprietaryGraphics {
 	WriteTaskName
 
 	# Check for NVIDIA hardware, exit if not found
-	if ! PerformNvidiaHardwareCheck; then
+	if ! NvidiaCheck; then
 		return 0
 	fi
 
@@ -263,52 +266,46 @@ EOF
 function InstallSpotify {
 	WriteTaskName
 
-	spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
-	if [ "$spotifyCheck" != "" ]; then
-		return 0
+	# Setup source for Spotify package if needed
+	if ! compgen -G "/etc/apt/sources.list.d/spotify*" >/dev/null; then
+		echo "...Setting up Spotify package source"
+		curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+		echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+
+		UpdateAptSources
 	fi
 
-	# TODO: separate repo check for this
-	curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
-	echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
-
-	sudo apt update &>/dev/null
-	aptUpdated=true
-
-	InstallPackageIfMissing spotify-client
+	if ! InstallPackageIfMissing spotify-client; then
+		return 1
+	fi
 }
 
 function InstallVisualStudioCode {
-	echo "TASK: InstallVisualStudioCode"
+	WriteTaskName
 
-	vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
-	if [ "$vscodeCheck" != "" ]; then
-		return 0
+	if ! compgen -G "/etc/apt/sources.list.d/vscode" >/dev/null; then
+		wget -O- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
+		sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+
+		echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
+		rm -f packages.microsoft.gpg
+
+		UpdateAptSources
 	fi
 
-	InstallPackageIfMissing gpg
-
-	wget -O- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
-	sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
-
-	sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
-
-	rm -f packages.microsoft.gpg
-
-	sudo apt update &>/dev/null
-	aptUpdated=true
-
-	InstallPackageIfMissing code
+	if ! InstallPackageIfMissing code; then
+		return 1
+	fi
 }
 
 function InstallVirtManager {
-	echo "TASK: InstallVirtManager"
+	WriteTaskName
 
-	if ! CheckVirtManagerCompatibility; then
+	if ! VirtManagerCheck; then
 		return 0
 	fi
 
-	packages=(
+	virtManagerPackages=(
 		"qemu-system-x86"
 		"libvirt-daemon-system"
 		"virtinst"
@@ -323,17 +320,17 @@ function InstallVirtManager {
 		"spice-client-gtk"
 	)
 
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
+	if ! InstallListOfPackagesIfMissing "${virtManagerPackages[@]}"; then
+		return 1
+	fi
 
-	PerformCommonVirtManagerChecks
+	ConfigureVirtManager
 }
 
 function InstallAdditionalSoftware {
-	echo "TASK: InstallAdditionalSoftware"
+	WriteTaskName
 
-	packages=(
+	additionalPackages=(
 		# NetworkManager
 		"network-manager-gnome"
 		"network-manager-openvpn-gnome"
@@ -357,15 +354,15 @@ function InstallAdditionalSoftware {
 		"default-jdk"
 	)
 
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
+	if ! InstallListOfPackagesIfMissing "${additionalPackages[@]}"; then
+		return 1
+	fi
 }
 
 function InstallRecreationalSoftware {
-	echo "TASK: InstallRecreationalSoftware"
+	WriteTaskName
 
-	packages=(
+	recreationalPackages=(
 		"transmission-gtk"
 		"mgba-qt"
 		"lutris"
@@ -373,60 +370,59 @@ function InstallRecreationalSoftware {
 		"qflipper"
 	)
 
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
+	if ! InstallListOfPackagesIfMissing "${recreationalPackages[@]}"; then
+		return 1
+	fi
 }
 
 function DownloadTheming {
 	WriteTaskName
-
-	# Needed according to README
-	#InstallPackageIfMissing gnome-themes-extra
 
 	DownloadCatppuccinTheme
 }
 
 ### BEGIN DEPRECATED ###
 
-function InstallMATE {
-	echo "TASK: InstallMATE"
+#function InstallMATE {
+#	echo "TASK: InstallMATE"
+#
+#	# MATE + extras, and xscreensaver cause it adds those to MATE screensaver
+#	InstallPackageIfMissing mate-desktop-environment
+#	InstallPackageIfMissing mate-desktop-environment-extras
+#	InstallPackageIfMissing xscreensaver
+#
+#	# Plank
+#	InstallPackageIfMissing plank
+#
+#	DownloadPlankThemeCommon
+#}
+#
+#function InstallQtile {
+#	echo "TASK: InstallQtile"
+#
+#	packages=(
+#		# Tiling window manager
+#		"picom"
+#		"lxappearance"
+#		"lxsession"
+#		"nitrogen"
+#		"volumeicon-alsa"
+#		"arandr"
+#		# qtile specific
+#		"python-is-python3"
+#		"python3-pip"
+#		"pipx"
+#		"xserver-xorg"
+#		"xinit"
+#		"libpangocairo-1.0-0"
+#		"python3-xcffib"
+#		"python3-cairocffi"
+#		"python3-dbus-next"
+#	)
+#
+#	for package in "${packages[@]}"; do
+#		InstallPackageIfMissing "$package"
+#	done
+#}
 
-	# MATE + extras, and xscreensaver cause it adds those to MATE screensaver
-	InstallPackageIfMissing mate-desktop-environment
-	InstallPackageIfMissing mate-desktop-environment-extras
-	InstallPackageIfMissing xscreensaver
-
-	# Plank
-	InstallPackageIfMissing plank
-
-	DownloadPlankThemeCommon
-}
-
-function InstallQtile {
-	echo "TASK: InstallQtile"
-
-	packages=(
-		# Tiling window manager
-		"picom"
-		"lxappearance"
-		"lxsession"
-		"nitrogen"
-		"volumeicon-alsa"
-		"arandr"
-		# qtile specific
-		"python-is-python3"
-		"python3-pip"
-		"pipx"
-		"xserver-xorg"
-		"xinit"
-		"libpangocairo-1.0-0"
-		"python3-xcffib"
-		"python3-cairocffi"
-		"python3-dbus-next"
-	)
-
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
-}
+### END DEPRECATED ###

@@ -50,7 +50,7 @@ function InstallProprietaryGraphics {
 	echo "TASK: InstallProprietaryGraphics"
 
 	# Check for NVIDIA hardware using lspci, exit if not found
-	if ! PerformNvidiaHardwareCheck; then
+	if ! NvidiaCheck; then
 		return 0
 	fi
 
@@ -162,7 +162,7 @@ function InstallVisualStudioCode {
 function InstallVirtManager {
 	echo "TASK: InstallVirtManager"
 
-	if ! CheckVirtManagerCompatibility; then
+	if ! VirtManagerCheck; then
 		return 0
 	fi
 
@@ -184,7 +184,7 @@ function InstallVirtManager {
 		InstallPackageIfMissing "$package"
 	done
 
-	PerformCommonVirtManagerChecks
+	ConfigureVirtManager
 }
 
 function InstallAws {
