@@ -16,13 +16,11 @@ scripts for these two are basically just over-engineered checklists._
 1. Install via net installer, deselect all tasks for minimal installation
 2. If using Sid instead of Stable, update apt sources, then update system and reboot
 3. Install git and clone this repo
-4. Set optional flags in debian.sh:
+4. Set optional flag in debian.sh:
    - If headless environment is intended: `server=true`
-   - If work environment is intended: `work=true`
 5. Run debian.sh
-6. Edit /etc/network/interfaces to ensure NetworkManager gets control
-7. Move bootstrap directory to repos
-8. Reboot
+6. Move bootstrap directory to repos
+7. Reboot
 
 ## Fedora
 
