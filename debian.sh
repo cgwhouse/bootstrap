@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source ./libdebian.sh
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
-# Update this if doing a minimal bootstrap (no GUI)
+source "$SCRIPT_DIR"/libdebian.sh
+
 server=false
 
-# Validate script arguments
 if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
 	printf "# Runs all tasks\n"

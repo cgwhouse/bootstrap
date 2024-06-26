@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ./libbootstrap.sh
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+
+source "$SCRIPT_DIR"/libbootstrap.sh
 
 aptUpdated=false
 
