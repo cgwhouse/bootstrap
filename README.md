@@ -8,14 +8,27 @@ installation of one of the following:
 - Gentoo
 - Arch
 
+"Up and running" is defined as having in place:
+
+- Up-to-date base system
+- Core utilities (git, zsh, vim, htop, etc.)
+- Graphics driver
+- Desktop environment (currently Cinnamon)
+- Pipewire audio
+- Fonts
+- Web browser(s)
+- Alternative methods for installing software, e.g. Flatpak and AppImage
+
 _Because Arch and Gentoo are meant to be installed with care / manually, the
 scripts for these two are basically just over-engineered checklists._
 
 ## Debian
 
 1. Install via net installer, deselect all tasks for minimal installation
-2. If using on the desktop, update apt sources to Testing, then add Unstable
-   packages with lower priority. Update apt sources, then update system and reboot
+2. If using on the desktop:
+   - [Update apt sources to Testing](https://wiki.debian.org/DebianTesting)
+   - [Add Unstable packages with lower priority](https://wiki.debian.org/DebianUnstable)
+   - Update system and reboot
 3. Install git and clone this repo
 4. Set optional flag in debian.sh:
    - If headless environment is intended: `server=true`

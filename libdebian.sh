@@ -67,6 +67,7 @@ function InstallCoreUtilities {
 	WriteTaskName
 
 	corePackages=(
+		"vim"
 		"neovim"
 		"zsh"
 		"curl"
@@ -92,29 +93,6 @@ function InstallCoreUtilities {
 		if ! InstallPackageIfMissing spice-vdagent; then
 			return 1
 		fi
-	fi
-}
-
-function InstallDotNetCore {
-	WriteTaskName
-
-	# Setup source for .NET SDK packages if needed
-	if ! compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
-		echo "...Setting up .NET SDK package source"
-		wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-		sudo dpkg -i packages-microsoft-prod.deb
-		rm packages-microsoft-prod.deb
-
-		UpdateAptSources
-	fi
-
-	dotnetSdks=(
-		"dotnet-sdk-7.0"
-		"dotnet-sdk-8.0"
-	)
-
-	if ! InstallListOfPackagesIfMissing "${dotnetSdks[@]}"; then
-		return 1
 	fi
 }
 
@@ -145,6 +123,8 @@ function InstallProprietaryGraphics {
 		"firmware-misc-nonfree"
 		"nvidia-driver"
 		"nvidia-driver-libs:i386"
+		"nvidia-cuda-dev"
+		"nvidia-cuda-toolkit"
 	)
 
 	if ! InstallListOfPackagesIfMissing "${nvidiaPackages[@]}"; then
