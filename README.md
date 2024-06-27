@@ -10,7 +10,7 @@ installation of one of the following:
 
 "Up and running" is defined as having in place:
 
-- Up-to-date base system
+- Updated base system
 - Core utilities (git, zsh, vim, htop, etc.)
 - Graphics driver
 - Desktop environment (currently Cinnamon)
