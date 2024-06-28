@@ -1,7 +1,6 @@
 #!/bin/bash
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-
 source "$SCRIPT_DIR"/libbootstrap.sh
 
 aptUpdated=false
@@ -113,7 +112,6 @@ function EnableMultiarch {
 function InstallProprietaryGraphics {
 	WriteTaskName
 
-	# Check for NVIDIA hardware, exit if not found
 	if ! NvidiaCheck; then
 		return 0
 	fi
