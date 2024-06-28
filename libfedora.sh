@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source ./libbootstrap.sh
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+source "$SCRIPT_DIR"/libbootstrap.sh
 
 function InstallPackageIfMissing {
 	packageToCheck=$1
@@ -13,7 +14,7 @@ function InstallPackageIfMissing {
 	fi
 
 	echo "...Installing $1"
-	sudo dnf install -y "$1" &>/dev/null
+	sudo dnf install -y "$1"
 
 	# Ensure package was installed, return error if not
 	installCheck=$(sudo dnf list "$packageToCheck" 2>/dev/null | grep "$grepStr")
@@ -23,12 +24,28 @@ function InstallPackageIfMissing {
 	fi
 
 	echo "...Successfully installed $1"
+	return 0
+}
+
+function InstallListOfPackagesIfMissing {
+	packages=("$@")
+
+	for package in "${packages[@]}"; do
+
+		if ! InstallPackageIfMissing "$package"; then
+			return 1
+		fi
+
+	done
+
+	return 0
 }
 
 function InstallCoreUtilities {
-	echo "TASK: InstallCoreUtilities"
+	WriteTaskName
 
-	packages=(
+	corePackages=(
+		"vim"
 		"neovim"
 		"python3-neovim"
 		"zsh"
@@ -39,204 +56,107 @@ function InstallCoreUtilities {
 		"unar"
 		"fastfetch"
 		"python3-dnf-plugin-rpmconf"
+		"ulauncher"
 	)
 
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
+	if ! InstallListOfPackagesIfMissing "${corePackages[@]}"; then
+		return 1
+	fi
 }
 
 function InstallProprietaryGraphics {
-	echo "TASK: InstallProprietaryGraphics"
+	WriteTaskName
 
-	# Check for NVIDIA hardware using lspci, exit if not found
 	if ! NvidiaCheck; then
 		return 0
 	fi
 
-	# Main driver
-	InstallPackageIfMissing akmod-nvidia
+	nvidiaPackages=(
+		# Main driver
+		"akmod-nvidia"
+		# nvenc support
+		"xorg-x11-drv-nvidia-cuda"
+		"xorg-x11-drv-nvidia-cuda-libs"
+		# Video acceleration
+		"nvidia-vaapi-driver"
+		"libva-utils"
+		"vdpauinfo"
+		# Vulkan support
+		"vulkan"
+	)
 
-	# nvenc support
-	InstallPackageIfMissing xorg-x11-drv-nvidia-cuda
-	InstallPackageIfMissing xorg-x11-drv-nvidia-cuda-libs
-
-	# Video acceleration
-	InstallPackageIfMissing nvidia-vaapi-driver
-	InstallPackageIfMissing libva-utils
-	InstallPackageIfMissing vdpauinfo
-
-	# Vulkan support
-	InstallPackageIfMissing vulkan
+	if ! InstallListOfPackagesIfMissing "${nvidiaPackages[@]}"; then
+		return 1
+	fi
 }
 
 function InstallFonts {
-	echo "TASK: InstallFonts"
+	WriteTaskName
 
-	# Nerd Fonts
-	InstallFontsCommon
-
-	# Metapackages for default font set, and emojis
-	InstallPackageIfMissing default-fonts
-	InstallPackageIfMissing default-fonts-core-emoji
-
-	# FiraCode
-	InstallPackageIfMissing fira-code-fonts
-
-	# Ubuntu
+	# Repo for Ubuntu fonts
 	coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
 	if [ "$coprCheck" == "" ]; then
-		sudo dnf copr enable -y atim/ubuntu-fonts &>/dev/null
+		sudo dnf copr enable -y atim/ubuntu-fonts
 		echo "...ubuntu-fonts copr repository enabled"
 	fi
 
-	InstallPackageIfMissing ubuntu-family-fonts
+	fontPackages=(
+		"default-fonts"
+		"default-fonts-core-emoji"
+		"fira-code-fonts"
+		"ubuntu-family-fonts"
+		"cabextract"
+		"xorg-x11-font-utils"
+		"fontconfig"
+	)
 
-	# Microsoft fonts
-	InstallPackageIfMissing cabextract
-	InstallPackageIfMissing xorg-x11-font-utils
-	InstallPackageIfMissing fontconfig
-
-	if [ -d "/usr/share/fonts/msttcore" ]; then
-		return 0
+	if ! InstallListOfPackagesIfMissing "${fontPackages[@]}"; then
+		return 1
 	fi
 
-	sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm &>/dev/null
-	echo "...Installed MSFT fonts"
-}
+	InstallNerdFonts
 
-function DownloadTheming {
-	echo "TASK: DownloadTheming"
-
-	DownloadCatppuccinTheme
-
-	# GTK + icons
-	InstallPackageIfMissing gnome-themes-extra
+	# Microsoft fonts
+	if [ ! -d "/usr/share/fonts/msttcore" ]; then
+		sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
+		echo "...Installed MSFT fonts"
+	fi
 }
 
 function InstallFlatpak {
-	echo "TASK: InstallFlatpak"
+	WriteTaskName
 
-	InstallPackageIfMissing flatpak
+	if ! InstallPackageIfMissing flatpak; then
+		return 1
+	fi
 
 	EnableFlathubRepo
 }
 
 function InstallWebBrowsers {
-	echo "TASK: InstallWebBrowsers"
+	WriteTaskName
 
-	InstallPackageIfMissing firefox
-
-	# Ungoogled Chromium
+	# Repo for Ungoogled Chromium
 	coprCheck=$(sudo dnf copr list | grep "ungoogled-chromium")
 	if [ "$coprCheck" == "" ]; then
-		sudo dnf copr enable -y wojnilowicz/ungoogled-chromium &>/dev/null
+		sudo dnf copr enable -y wojnilowicz/ungoogled-chromium
 		echo "...ungoogled-chromium copr repository enabled"
 	fi
 
-	InstallPackageIfMissing ungoogled-chromium
-
-	# LibreWolf
+	# Repo for LibreWolf
 	librewolfRepoCheck=$(dnf repolist | grep "LibreWolf")
 	if [ "$librewolfRepoCheck" == "" ]; then
-		curl -fsSL https://rpm.librewolf.net/librewolf-repo.repo | pkexec tee /etc/yum.repos.d/librewolf.repo &>/dev/null
+		curl -fsSL https://rpm.librewolf.net/librewolf-repo.repo | pkexec tee /etc/yum.repos.d/librewolf.repo
 		echo "...LibreWolf repo enabled"
 	fi
 
-	InstallPackageIfMissing librewolf
-}
+	browserPackages=(
+		"firefox"
+		"ungoogled-chromium"
+		"librewolf"
+	)
 
-function InstallVisualStudioCode {
-	echo "TASK: InstallVisualStudioCode"
-
-	vscodeCheck=$(dnf repolist | grep "Visual Studio Code")
-	if [ "$vscodeCheck" == "" ]; then
-		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &>/dev/null
-		echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo >/dev/null
-		echo "...VS Code repo enabled"
+	if ! InstallListOfPackagesIfMissing "${browserPackages[@]}"; then
+		return 1
 	fi
-
-	InstallPackageIfMissing code
-}
-
-function InstallVirtManager {
-	echo "TASK: InstallVirtManager"
-
-	if ! VirtManagerCheck; then
-		return 0
-	fi
-
-	packages=(
-		"qemu-kvm"
-		"libvirt"
-		"virt-install"
-		"virt-manager"
-		"virt-viewer"
-		"edk2-ovmf"
-		"swtpm"
-		"qemu-img"
-		"guestfs-tools"
-		"libosinfo"
-		"tuned"
-	)
-
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
-
-	ConfigureVirtManager
-}
-
-function InstallAws {
-	echo "TASK: InstallAws"
-
-	InstallAwsCommon
-}
-
-function InstallAdditionalSoftware {
-	echo "TASK: InstallAdditionalSoftware"
-
-	packages=(
-		"doctl"
-		"ulauncher"
-		"dotnet-sdk-8.0"
-		"NetworkManager-openvpn"
-		"pavucontrol"
-		# Doom Emacs
-		"emacs"
-		"ripgrep"
-		"fd-find"
-		# Media + Office
-		"vlc"
-		"obs-studio"
-		"libreoffice"
-		# Games
-		"aisleriot"
-		"gnome-mines"
-		# Misc
-		"gparted"
-		"copyq"
-		"sshpass"
-		"java-17-openjdk"
-	)
-
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
-}
-
-function InstallRecreationalSoftware {
-	echo "TASK: InstallRecreationalSoftware"
-
-	packages=(
-		"transmission"
-		"libretro-mgba"
-		"lutris"
-		"dolphin-emu"
-		"qflipper"
-	)
-
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
 }
