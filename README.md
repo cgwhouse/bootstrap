@@ -19,9 +19,6 @@ installation of one of the following:
 - Web browser(s)
 - Alternative methods for installing software, e.g. Flatpak and AppImage
 
-_Because Arch and Gentoo are meant to be installed with care / manually, the
-scripts for these two are basically just over-engineered checklists._
-
 ## Debian
 
 1. Install via net installer, deselect all tasks for minimal installation
@@ -47,11 +44,9 @@ scripts for these two are basically just over-engineered checklists._
    - Fedora Gaming docs for Steam (just line that mentions OpenH264)
    - RPM Fusion docs for Multimedia
 5. Install git and clone this repo
-6. Set optional flag in fedora.sh:
-   - If work environment is intended: `work=true`
-7. Run fedora.sh
-8. Move bootstrap directory to repos
-9. Reboot
+6. Run fedora.sh
+7. Move bootstrap directory to repos
+8. Reboot
 
 ## Gentoo
 

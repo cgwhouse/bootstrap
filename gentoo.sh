@@ -3,109 +3,14 @@
 source ./libbootstrap.sh
 source ./libgentoo.sh
 
-# Validate script arguments
-if [ $# -gt 1 ]; then
+if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
 	printf "# Runs all tasks\n"
 	printf "./gentoo.sh\n\n"
-	printf "# Runs specified task only\n"
-	printf "./gentoo.sh TASK_NAME\n\n"
 	exit 1
 fi
 
 printf "\n"
-
-if [ $# -eq 1 ]; then
-	case $1 in
-		"InstallDesktopEnvironment")
-			InstallDesktopEnvironment
-			;;
-		"InstallFirefoxBin")
-			InstallFirefoxBin
-			;;
-		"InstallPipewire")
-			InstallPipewire
-			;;
-		"CreateDirectories")
-			CreateDirectories
-			;;
-		"InstallDiscord")
-			InstallDiscord
-			;;
-		"InstallMATE")
-			InstallMATE
-			;;
-		"InstallQtile")
-			InstallQtile
-			;;
-		"InstallZsh")
-			InstallZsh
-			;;
-		"InstallCoreUtilities")
-			InstallCoreUtilities
-			;;
-		"ConfigureTmux")
-			ConfigureTmux
-			;;
-		"ConfigureZsh")
-			ConfigureZsh
-			;;
-		"InstallNvm")
-			InstallNvm
-			;;
-		"InstallFonts")
-			InstallFonts
-			;;
-		"InstallUlauncher")
-			InstallUlauncher
-			;;
-		"DownloadTheming")
-			DownloadTheming
-			;;
-		"InstallDotNetCore")
-			InstallDotNetCore
-			;;
-		"InstallFlatpak")
-			InstallFlatpak
-			;;
-		"EnsureAppImage")
-			EnsureAppImage
-			;;
-		"InstallEmacs")
-			InstallEmacs
-			;;
-		"InstallObsStudio")
-			InstallObsStudio
-			;;
-		"InstallLibreOffice")
-			InstallLibreOffice
-			;;
-		"InstallVirtManager")
-			InstallVirtManager
-			;;
-		"InstallDBeaver")
-			InstallDBeaver
-			;;
-		"InstallAws")
-			InstallAws
-			;;
-		"InstallAdditionalSoftware")
-			InstallAdditionalSoftware
-			;;
-		"InstallWebBrowsers")
-			InstallWebBrowsers
-			;;
-		*)
-			printf "ERROR: Unknown task\n\n"
-			exit 1
-			;;
-	esac
-
-	printf "\n"
-	exit 0
-fi
-
-# Full run, exit if a task errors
 
 if ! InstallDesktopEnvironment; then
 	exit 1
@@ -115,6 +20,7 @@ if ! InstallFirefoxBin; then
 	exit 1
 fi
 
+# TODO: see if this works
 if [ "$USER" == "root" ]; then
 	echo "Need to login as regular user to continue the script"
 	exit 1
@@ -153,14 +59,6 @@ if ! InstallNvm; then
 fi
 
 if ! InstallFonts; then
-	exit 1
-fi
-
-if ! InstallUlauncher; then
-	exit 1
-fi
-
-if ! DownloadTheming; then
 	exit 1
 fi
 
