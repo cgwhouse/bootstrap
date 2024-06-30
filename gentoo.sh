@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source ./libbootstrap.sh
-source ./libgentoo.sh
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+source "$SCRIPT_DIR"/libgentoo.sh
 
 if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
@@ -21,6 +21,7 @@ if ! InstallFirefoxBin; then
 fi
 
 # TODO: see if this works
+# if it does, move createdirectories above pipewire and discord
 if [ "$USER" == "root" ]; then
 	echo "Need to login as regular user to continue the script"
 	exit 1
@@ -62,43 +63,11 @@ if ! InstallFonts; then
 	exit 1
 fi
 
-if ! InstallDotNetCore; then
-	exit 1
-fi
-
 if ! InstallFlatpak; then
 	exit 1
 fi
 
 if ! EnsureAppImage; then
-	exit 1
-fi
-
-if ! InstallEmacs; then
-	exit 1
-fi
-
-if ! InstallObsStudio; then
-	exit 1
-fi
-
-if ! InstallLibreOffice; then
-	exit 1
-fi
-
-if ! InstallVirtManager; then
-	exit 1
-fi
-
-if ! InstallDBeaver; then
-	exit 1
-fi
-
-if ! InstallAws; then
-	exit 1
-fi
-
-if ! InstallAdditionalSoftware; then
 	exit 1
 fi
 
