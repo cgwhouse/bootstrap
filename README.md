@@ -1,34 +1,35 @@
 # bootstrap
 
+Welcome to Flavortown
+
 ## Debian
 
-1. Ensure apt sources fit the use case
-2. Full update of base system to latest using apt
-3. Reboot
-4. Install git
-5. Clone bootstrap repo
-6. Edit server/work flags (optional)
-7. Run debian.sh
-8. Edit /etc/network/interfaces
-9. Move bootstrap directory to repos
-10. Reboot, finish setup using dotfiles
+1. Install via net installer, deselect all tasks for minimal installation
+2. If using on the desktop:
+   - [Update apt sources to Testing](https://wiki.debian.org/DebianTesting)
+   - [Add Unstable packages with lower priority](https://wiki.debian.org/DebianUnstable)
+   - Update system and reboot
+3. Install git and clone this repo
+4. Set optional flag in debian.sh:
+   - If headless environment is intended: `server=true`
+5. Run debian.sh
+6. Move bootstrap directory to repos
+7. Reboot
 
 ## Fedora
 
 1. Install via ISO of desired desktop environment
-2. Update system + autoremove + reboot
+2. Update system and reboot
 3. [Enable RPM Fusion repos](https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/)
 4. Install codecs + H264 using docs in the following order:
    - Fedora quick docs for Multimedia
    - Fedora quick docs for OpenH264
    - Fedora Gaming docs for Steam (just line that mentions OpenH264)
    - RPM Fusion docs for Multimedia
-5. Install git
-6. Clone bootstrap repo
-7. Edit work flag (optional)
-8. Run fedora.sh
-9. Move bootstrap directory to repos
-10. Reboot, finish setup using dotfiles repo
+5. Install git and clone this repo
+6. Run fedora.sh
+7. Move bootstrap directory to repos
+8. Reboot
 
 ## Gentoo
 
@@ -39,6 +40,10 @@
 4. Install and configure eix
 5. Install and configure NetworkManager
 6. Install git + vim + neovim, eselect editor, depclean
-7. Clone bootstrap repo
+7. Clone this repo
 8. Run gentoo.sh, proceed until desktop environment and web browser are installed
 9. Reboot, continue remaining setup via gentoo.sh
+
+## Arch
+
+1. Under construction

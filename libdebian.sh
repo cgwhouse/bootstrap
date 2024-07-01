@@ -1,8 +1,15 @@
 #!/bin/bash
 
-source ./libbootstrap.sh
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+source "$SCRIPT_DIR"/libbootstrap.sh
 
 aptUpdated=false
+
+function UpdateAptSources {
+	echo "...Updating sources"
+	sudo apt update
+	aptUpdated=true
+}
 
 function InstallPackageIfMissing {
 	packageToCheck=$1
@@ -24,13 +31,11 @@ function InstallPackageIfMissing {
 
 	# If apt update hasn't run yet, do that now
 	if [ $aptUpdated = false ]; then
-		echo "...Running apt update"
-		sudo apt update &>/dev/null
-		aptUpdated=true
+		UpdateAptSources
 	fi
 
 	echo "...Installing $1"
-	sudo apt install -y "$1" &>/dev/null
+	sudo apt install -y "$1"
 
 	# Ensure package was installed, return error if not
 	installCheck=$(sudo apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
@@ -40,12 +45,28 @@ function InstallPackageIfMissing {
 	fi
 
 	echo "...Successfully installed $1"
+	return 0
+}
+
+function InstallListOfPackagesIfMissing {
+	packages=("$@")
+
+	for package in "${packages[@]}"; do
+
+		if ! InstallPackageIfMissing "$package"; then
+			return 1
+		fi
+
+	done
+
+	return 0
 }
 
 function InstallCoreUtilities {
-	echo "TASK: InstallCoreUtilities"
+	WriteTaskName
 
-	packages=(
+	corePackages=(
+		"vim"
 		"neovim"
 		"zsh"
 		"curl"
@@ -56,210 +77,142 @@ function InstallCoreUtilities {
 		"aptitude"
 		"apt-transport-https"
 		"ntp"
+		"gpg"
+		"gnupg"
+		"ca-certificates"
 	)
 
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
+	if ! InstallListOfPackagesIfMissing "${corePackages[@]}"; then
+		return 1
+	fi
 
 	# If this is a VM, install spice guest agent
 	vmCheck=$(grep hypervisor </proc/cpuinfo)
 	if [ "$vmCheck" != "" ]; then
-		InstallPackageIfMissing spice-vdagent
+		if ! InstallPackageIfMissing spice-vdagent; then
+			return 1
+		fi
 	fi
-}
-
-function InstallDotNetCore {
-	echo "TASK: InstallDotNetCore"
-
-	dotnetCheck=$(sudo apt list dotnet-sdk-8.0 2>/dev/null | grep installed)
-	if [ "$dotnetCheck" != "" ]; then
-		return 0
-	fi
-
-	wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-	sudo dpkg -i packages-microsoft-prod.deb &>/dev/null
-	rm packages-microsoft-prod.deb &>/dev/null
-
-	sudo apt update &>/dev/null
-	aptUpdated=true
-
-	InstallPackageIfMissing dotnet-sdk-7.0
-	InstallPackageIfMissing dotnet-sdk-8.0
 }
 
 function EnableMultiarch {
-	echo "TASK: EnableMultiarch"
+	WriteTaskName
 
 	multiarchCheck=$(dpkg --print-foreign-architectures | grep i386)
 	if [ "$multiarchCheck" != "" ]; then
 		return 0
 	fi
 
-	sudo dpkg --add-architecture i386 &>/dev/null
-	echo "...Added i386 architecture"
-	sudo apt update &>/dev/null
-	echo "...Updated apt sources"
+	echo "...Adding i386 architecture"
+	sudo dpkg --add-architecture i386
+
+	UpdateAptSources
 }
 
 function InstallProprietaryGraphics {
-	echo "TASK: InstallProprietaryGraphics"
+	WriteTaskName
 
-	# Check for NVIDIA hardware using lspci, exit if not found
-	if ! PerformNvidiaHardwareCheck; then
+	if ! NvidiaCheck; then
 		return 0
 	fi
 
-	# Kernel headers
-	InstallPackageIfMissing linux-headers-amd64
+	nvidiaPackages=(
+		"linux-headers-amd64"
+		"firmware-misc-nonfree"
+		"nvidia-driver"
+		"nvidia-driver-libs:i386"
+		"nvidia-cuda-dev"
+		"nvidia-cuda-toolkit"
+	)
 
-	# non-free firmware
-	InstallPackageIfMissing firmware-misc-nonfree
-
-	# Main driver
-	InstallPackageIfMissing nvidia-driver
-
-	# 32-bit libs
-	InstallPackageIfMissing nvidia-driver-libs:i386
+	if ! InstallListOfPackagesIfMissing "${nvidiaPackages[@]}"; then
+		return 1
+	fi
 }
 
 function InstallDesktopEnvironment {
-	echo "TASK: InstallDesktopEnvironment"
+	WriteTaskName
 
-	# Display manager
-	InstallPackageIfMissing lightdm
+	# Setup source for ulauncher package if needed
+	if ! compgen -G "/etc/apt/sources.list.d/ulauncher*" >/dev/null; then
+		echo "...Setting up ulauncher package source"
+		gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176
+		gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
 
-	# DE
-	InstallPackageIfMissing cinnamon-desktop-environment
+		echo "deb [signed-by=/usr/share/keyrings/ulauncher-archive-keyring.gpg] \
+          http://ppa.launchpad.net/agornostal/ulauncher/ubuntu jammy main" |
+			sudo tee /etc/apt/sources.list.d/ulauncher-jammy.list
 
-	# App Launcher (requires extra setup)
-
-	# Exit if already installed
-	ulauncherCheck=$(apt list ulauncher 2>/dev/null | grep installed)
-	if [ "$ulauncherCheck" != "" ]; then
-		return 0
+		UpdateAptSources
 	fi
 
-	# Setup keyring using gnupg and export
-	InstallPackageIfMissing gnupg
-	gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176 &>/dev/null
-	gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
-
-	# Add source with exported keyring to sources
-	echo "deb [signed-by=/usr/share/keyrings/ulauncher-archive-keyring.gpg] \
-          http://ppa.launchpad.net/agornostal/ulauncher/ubuntu jammy main" |
-		sudo tee /etc/apt/sources.list.d/ulauncher-jammy.list &>/dev/null
-
-	# Do a manual apt update here so we can get the new source and install package
-	# Ensure flag is true if not already
-	sudo apt update &>/dev/null
-	aptUpdated=true
-
-	# Install now
-	InstallPackageIfMissing ulauncher
-}
-
-function InstallMATE {
-	echo "TASK: InstallMATE"
-
-	# MATE + extras, and xscreensaver cause it adds those to MATE screensaver
-	InstallPackageIfMissing mate-desktop-environment
-	InstallPackageIfMissing mate-desktop-environment-extras
-	InstallPackageIfMissing xscreensaver
-
-	# Plank
-	InstallPackageIfMissing plank
-
-	DownloadPlankThemeCommon
-}
-
-function InstallQtile {
-	echo "TASK: InstallQtile"
-
-	packages=(
-		# Tiling window manager
-		"picom"
-		"lxappearance"
-		"lxsession"
-		"nitrogen"
-		"volumeicon-alsa"
-		"arandr"
-		# qtile specific
-		"python-is-python3"
-		"python3-pip"
-		"pipx"
-		"xserver-xorg"
-		"xinit"
-		"libpangocairo-1.0-0"
-		"python3-xcffib"
-		"python3-cairocffi"
-		"python3-dbus-next"
+	desktopPackages=(
+		"lightdm"
+		"cinnamon-desktop-environment"
+		"ulauncher"
 	)
 
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
+	if ! InstallListOfPackagesIfMissing "${desktopPackages[@]}"; then
+		return 1
+	fi
 }
 
 function InstallPipewire {
-	echo "TASK: InstallPipewire"
+	WriteTaskName
 
-	InstallPackageIfMissing pipewire-audio
-	InstallPackageIfMissing pavucontrol
+	audioPackages=(
+		"pipewire-audio"
+		"pavucontrol"
+	)
+
+	if ! InstallListOfPackagesIfMissing "${audioPackages[@]}"; then
+		return 1
+	fi
 }
 
 function InstallFonts {
-	echo "TASK: InstallFonts"
+	WriteTaskName
 
-	# Nerd Fonts
-	InstallFontsCommon
+	fontPackages=(
+		"ttf-mscorefonts-installer"
+		"fonts-firacode"
+		"fonts-ubuntu"
+		"fonts-noto-color-emoji"
+	)
 
-	InstallPackageIfMissing ttf-mscorefonts-installer
-	InstallPackageIfMissing fonts-firacode
-	InstallPackageIfMissing fonts-ubuntu
-	InstallPackageIfMissing fonts-noto-color-emoji
-}
+	if ! InstallListOfPackagesIfMissing "${fontPackages[@]}"; then
+		return 1
+	fi
 
-function DownloadTheming {
-	echo "TASK: DownloadTheming"
-
-	DownloadThemingCommon
-
-	# GTK + icons
-	InstallPackageIfMissing gnome-themes-extra
+	InstallNerdFonts
 }
 
 function InstallFlatpak {
-	echo "TASK: InstallFlatpak"
+	WriteTaskName
 
-	InstallPackageIfMissing flatpak
+	if ! InstallPackageIfMissing flatpak; then
+		return 1
+	fi
 
 	EnableFlathubRepo
 }
 
 function InstallWebBrowsers {
-	echo "TASK: InstallWebBrowsers"
+	WriteTaskName
 
-	InstallPackageIfMissing firefox
-
-	# Ungoogled Chromium
-	chromiumCheck=$(sudo apt list ungoogled-chromium 2>/dev/null | grep installed)
-	if [ "$chromiumCheck" == "" ]; then
-		echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list &>/dev/null
+	# Setup source for Ungoogled Chromium package if needed
+	if ! compgen -G "/etc/apt/sources.list.d/home:ungoogled_chromium*" >/dev/null; then
+		echo "...Setting up Ungoogled Chromium package source"
+		echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list
 		curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
 
-		sudo apt update &>/dev/null
-		aptUpdated=true
-
-		InstallPackageIfMissing ungoogled-chromium
+		UpdateAptSources
 	fi
 
-	# LibreWolf
-	librewolfCheck=$(sudo apt list librewolf 2>/dev/null | grep installed)
-	if [ "$librewolfCheck" == "" ]; then
-		InstallPackageIfMissing ca-certificates
-
-		wget -qO- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg &>/dev/null
+	# Setup source for LibreWolf package if needed
+	if ! compgen -G "/etc/apt/sources.list.d/librewolf*" >/dev/null; then
+		echo "...Setting up LibreWolf package source"
+		wget -O- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg
 
 		sudo tee /etc/apt/sources.list.d/librewolf.sources <<EOF >/dev/null
 Types: deb
@@ -270,126 +223,62 @@ Architectures: amd64
 Signed-By: /usr/share/keyrings/librewolf.gpg
 EOF
 
-		sudo apt update &>/dev/null
-		aptUpdated=true
-
-		InstallPackageIfMissing librewolf
-	fi
-}
-
-function InstallSpotify {
-	echo "TASK: InstallSpotify"
-
-	spotifyCheck=$(sudo apt list spotify-client 2>/dev/null | grep installed)
-	if [ "$spotifyCheck" != "" ]; then
-		return 0
+		UpdateAptSources
 	fi
 
-	curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg &>/dev/null
-	echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list &>/dev/null
-
-	sudo apt update &>/dev/null
-	aptUpdated=true
-
-	InstallPackageIfMissing spotify-client
-}
-
-function InstallVisualStudioCode {
-	echo "TASK: InstallVisualStudioCode"
-
-	vscodeCheck=$(sudo apt list code 2>/dev/null | grep installed)
-	if [ "$vscodeCheck" != "" ]; then
-		return 0
-	fi
-
-	InstallPackageIfMissing gpg
-
-	wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
-	sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg &>/dev/null
-
-	sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' &>/dev/null
-
-	rm -f packages.microsoft.gpg
-
-	sudo apt update &>/dev/null
-	aptUpdated=true
-
-	InstallPackageIfMissing code
-}
-
-function InstallVirtManager {
-	echo "TASK: InstallVirtManager"
-
-	if ! CheckVirtManagerCompatibility; then
-		return 0
-	fi
-
-	packages=(
-		"qemu-system-x86"
-		"libvirt-daemon-system"
-		"virtinst"
-		"virt-manager"
-		"virt-viewer"
-		"ovmf"
-		"swtpm"
-		"qemu-utils"
-		"guestfs-tools"
-		"libosinfo-bin"
-		"tuned"
-		"spice-client-gtk"
+	browserPackages=(
+		"firefox"
+		"ungoogled-chromium"
+		"librewolf"
 	)
 
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
-
-	PerformCommonVirtManagerChecks
+	if ! InstallListOfPackagesIfMissing "${browserPackages[@]}"; then
+		return 1
+	fi
 }
 
-function InstallAdditionalSoftware {
-	echo "TASK: InstallAdditionalSoftware"
+### BEGIN DEPRECATED ###
 
-	packages=(
-		# NetworkManager
-		"network-manager-gnome"
-		"network-manager-openvpn-gnome"
-		# Doom Emacs
-		"emacs-gtk"
-		"elpa-ligature"
-		"ripgrep"
-		"fd-find"
-		# Media + Office
-		"vlc"
-		"obs-studio"
-		"libreoffice"
-		# Games
-		"aisleriot"
-		"gnome-mines"
-		# Misc
-		"gparted"
-		"copyq"
-		"awscli"
-		"sshpass"
-		"default-jdk"
-	)
+#function InstallMATE {
+#	echo "TASK: InstallMATE"
+#
+#	# MATE + extras, and xscreensaver cause it adds those to MATE screensaver
+#	InstallPackageIfMissing mate-desktop-environment
+#	InstallPackageIfMissing mate-desktop-environment-extras
+#	InstallPackageIfMissing xscreensaver
+#
+#	# Plank
+#	InstallPackageIfMissing plank
+#
+#	DownloadPlankThemeCommon
+#}
+#
+#function InstallQtile {
+#	echo "TASK: InstallQtile"
+#
+#	packages=(
+#		# Tiling window manager
+#		"picom"
+#		"lxappearance"
+#		"lxsession"
+#		"nitrogen"
+#		"volumeicon-alsa"
+#		"arandr"
+#		# qtile specific
+#		"python-is-python3"
+#		"python3-pip"
+#		"pipx"
+#		"xserver-xorg"
+#		"xinit"
+#		"libpangocairo-1.0-0"
+#		"python3-xcffib"
+#		"python3-cairocffi"
+#		"python3-dbus-next"
+#	)
+#
+#	for package in "${packages[@]}"; do
+#		InstallPackageIfMissing "$package"
+#	done
+#}
 
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
-}
-
-function InstallRecreationalSoftware {
-	echo "TASK: InstallRecreationalSoftware"
-
-	packages=(
-		"transmission-gtk"
-		"mgba-qt"
-		"lutris"
-		"dolphin-emu"
-		"qflipper"
-	)
-
-	for package in "${packages[@]}"; do
-		InstallPackageIfMissing "$package"
-	done
-}
+### END DEPRECATED ###

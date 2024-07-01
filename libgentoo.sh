@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source ./libbootstrap.sh
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+source "$SCRIPT_DIR"/libbootstrap.sh
 
 function IsPackageInstalled {
 	if [ "$2" == "inOverlay" ]; then
@@ -17,11 +18,12 @@ function IsPackageInstalled {
 }
 
 function InstallDesktopEnvironment {
-	echo "TASK: InstallDesktopEnvironment"
+	WriteTaskName
 
 	if ! IsPackageInstalled "gnome-extra/cinnamon"; then
 		echo "...Add the following global USE flags, then update system: elogind gtk vaapi vdpau vulkan wayland X -kde -plasma -qt5 -qt6 -systemd -telemetry"
 		echo "...Visit the wiki pages for Cinnamon and elogind and follow the instructions"
+		echo "...Don't forget to ensure a terminal emulator, not always packaged by default with Cinnamon"
 		return 1
 	fi
 
@@ -29,10 +31,15 @@ function InstallDesktopEnvironment {
 		echo "...emerge x11-misc/lightdm, visit the LightDM wiki page for instructions on the display manager startup script"
 		return 1
 	fi
+
+	if ! IsPackageInstalled "x11-misc/ulauncher" inOverlay; then
+		echo "...emerge x11-misc/ulauncher, only available via overlay"
+		return 1
+	fi
 }
 
 function InstallFirefoxBin {
-	echo "TASK: InstallFirefoxBin"
+	WriteTaskName
 
 	if ! IsPackageInstalled "www-client/firefox" && ! IsPackageInstalled "www-client/firefox-bin"; then
 		echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
@@ -41,7 +48,7 @@ function InstallFirefoxBin {
 }
 
 function InstallPipewire {
-	echo "TASK: InstallPipewire"
+	WriteTaskName
 
 	if ! IsPackageInstalled "media-video/pipewire"; then
 		echo "...Add the following global USE flags: pulseaudio screencast"
@@ -56,7 +63,7 @@ function InstallPipewire {
 }
 
 function InstallDiscord {
-	echo "TASK: InstallDiscord"
+	WriteTaskName
 
 	if ! IsPackageInstalled "net-im/discord"; then
 		echo "...emerge net-im/discord"
@@ -64,49 +71,8 @@ function InstallDiscord {
 	fi
 }
 
-function InstallMATE {
-	echo "TASK: InstallMATE"
-
-	if ! IsPackageInstalled "mate-base/mate"; then
-		echo "...Add the following global USE flags, then update system: elogind gtk wayland X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry"
-		echo "...Visit the wiki pages for MATE and elogind and follow the instructions"
-		return 1
-	fi
-
-	# Plank
-	if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
-		echo "...emerge x11-misc/plank, only available via overlay"
-		return 1
-	fi
-
-	DownloadPlankThemeCommon
-}
-
-function InstallQtile {
-	echo "TASK: InstallQtile"
-
-	packages=(
-		# Tiling WM
-		"x11-misc/picom"
-		"lxde-base/lxappearance"
-		"lxde-base/lxsession"
-		"x11-misc/nitrogen"
-		"media-sound/volumeicon"
-		"x11-misc/arandr"
-		# For qtile
-		"dev-python/pip"
-	)
-
-	for package in "${packages[@]}"; do
-		if ! IsPackageInstalled "$package"; then
-			echo "...emerge $package"
-			return 1
-		fi
-	done
-}
-
 function InstallZsh {
-	echo "TASK: InstallZsh"
+	WriteTaskName
 
 	if ! IsPackageInstalled "app-shells/zsh"; then
 		echo "...Add the following global USE flag, then emerge zsh: zsh-completion"
@@ -115,9 +81,14 @@ function InstallZsh {
 }
 
 function InstallCoreUtilities {
-	echo "TASK: InstallCoreUtilities"
+	WriteTaskName
 
 	if ! IsPackageInstalled "app-portage/gentoolkit"; then
+		echo "...emerge app-portage/gentoolkit"
+		return 1
+	fi
+
+	if ! IsPackageInstalled "app-admin/eclean-kernel"; then
 		echo "...emerge app-portage/gentoolkit"
 		return 1
 	fi
@@ -153,10 +124,7 @@ function InstallCoreUtilities {
 }
 
 function InstallFonts {
-	echo "TASK: InstallFonts"
-
-	# Nerd Fonts
-	InstallFontsCommon
+	WriteTaskName
 
 	if ! IsPackageInstalled "media-fonts/fonts-meta"; then
 		echo "...emerge media-fonts/fonts-meta"
@@ -182,39 +150,12 @@ function InstallFonts {
 		echo "...emerge media-fonts/noto-emoji"
 		return 1
 	fi
-}
 
-function InstallUlauncher {
-	echo "TASK: InstallUlauncher"
-
-	if ! IsPackageInstalled "x11-misc/ulauncher" inOverlay; then
-		echo "...emerge x11-misc/ulauncher, only available via overlay"
-		return 1
-	fi
-}
-
-function DownloadTheming {
-	echo "TASK: Download Theming"
-
-	DownloadThemingCommon
-
-	if ! IsPackageInstalled "x11-themes/gnome-themes-standard"; then
-		echo "...emerge x11-themes/gnome-themes-standard"
-		return 1
-	fi
-}
-
-function InstallDotNetCore {
-	echo "TASK: InstallDotNetCore"
-
-	if ! IsPackageInstalled "virtual/dotnet-sdk"; then
-		echo "...emerge virtual/dotnet-sdk, may need multiple versions"
-		return 1
-	fi
+	InstallNerdFonts
 }
 
 function InstallFlatpak {
-	echo "TASK: InstallFlatpak"
+	WriteTaskName
 
 	if ! IsPackageInstalled "sys-apps/flatpak"; then
 		echo "...emerge sys-apps/flatpak"
@@ -235,7 +176,7 @@ function InstallFlatpak {
 }
 
 function EnsureAppImage {
-	echo "TASK: EnsureAppImage"
+	WriteTaskName
 
 	# Fancy fuse check
 	packageCheck=$(eix -I --exact sys-fs/fuse --installed-slot 0 | grep "No matches found")
@@ -245,103 +186,8 @@ function EnsureAppImage {
 	fi
 }
 
-function InstallEmacs {
-	echo "TASK: InstallEmacs"
-
-	if ! IsPackageInstalled "app-editors/emacs"; then
-		echo "...Add global USE flag: emacs"
-		echo "...emerge app-editors/emacs, refer to the wiki and Doom Emacs docs for USE flags"
-		return 1
-	fi
-}
-
-function InstallObsStudio {
-	echo "TASK: InstallObsStudio"
-
-	if ! IsPackageInstalled "media-video/obs-studio"; then
-		echo "...emerge media-video/obs-studio, check wiki for USE flags"
-		return 1
-	fi
-}
-
-function InstallLibreOffice {
-	echo "TASK: InstallLibreOffice"
-
-	if ! IsPackageInstalled "app-office/libreoffice"; then
-		echo "...emerge app-office/libreoffice, ensure the java USE flag is enabled"
-		return 1
-	fi
-}
-
-function InstallVirtManager {
-	echo "TASK: InstallVirtManager"
-
-	if ! IsPackageInstalled "app-emulation/virt-manager"; then
-		echo "...Visit the wiki for QEMU, libvirt, and then virt-manager"
-		echo "...Once USE flags and setup are complete, emerge app-emulation/virt-manager"
-		return 1
-	fi
-
-	if ! IsPackageInstalled "sys-apps/tuned"; then
-		echo "...emerge sys-apps/tuned"
-		return 1
-	fi
-}
-
-function InstallDBeaver {
-	echo "TASK: InstallDBeaver"
-
-	if ! IsPackageInstalled "dev-db/dbeaver-bin" inOverlay; then
-		echo "...emerge dev-db/dbeaver-bin, only available via overlay"
-		return 1
-	fi
-}
-
-function InstallAws {
-	echo "TASK: InstallAws"
-
-	InstallAwsCommon
-}
-
-function InstallAdditionalSoftware {
-	echo "TASK: InstallAdditionalSoftware"
-
-	packages=(
-		# Dev stuff
-		"sys-apps/ripgrep"
-		"sys-apps/fd"
-		"app-editors/vscode"
-		"dev-util/android-studio"
-		# Work
-		"net-vpn/networkmanager-openvpn"
-		"net-im/slack"
-		"net-im/zoom"
-		# Media + Office
-		"media-video/vlc"
-		"net-p2p/transmission"
-		# Games
-		"games-board/gnome-mines"
-		"games-emulation/mgba"
-		"games-util/lutris"
-		"games-emulation/dolphin"
-		# Misc
-		"app-admin/doctl"
-		"sys-block/gparted"
-		"x11-misc/copyq"
-		"net-misc/sshpass"
-		"virtual/jdk"
-	)
-
-	for package in "${packages[@]}"; do
-		if ! IsPackageInstalled "$package"; then
-			echo "...emerge $package"
-			return 1
-		fi
-	done
-}
-
 function InstallWebBrowsers {
-	echo "TASK: InstallWebBrowsers"
+	WriteTaskName
 
 	# Librewolf
 	if ! IsPackageInstalled "www-client/librewolf" inOverlay; then
@@ -363,3 +209,46 @@ function InstallWebBrowsers {
 		return 1
 	fi
 }
+
+### BEGIN DEPRECATED ###
+
+#function InstallMATE {
+#	echo "TASK: InstallMATE"
+#
+#	if ! IsPackageInstalled "mate-base/mate"; then
+#		echo "...Add the following global USE flags, then update system: elogind gtk wayland X xinerama -kde -plasma -qt5 -qt6 -systemd -telemetry"
+#		echo "...Visit the wiki pages for MATE and elogind and follow the instructions"
+#		return 1
+#	fi
+#
+#	# Plank
+#	if ! IsPackageInstalled "x11-misc/plank" inOverlay; then
+#		echo "...emerge x11-misc/plank, only available via overlay"
+#		return 1
+#	fi
+#
+#	DownloadPlankThemeCommon
+#}
+#
+#function InstallQtile {
+#	echo "TASK: InstallQtile"
+#
+#	packages=(
+#		# Tiling WM
+#		"x11-misc/picom"
+#		"lxde-base/lxappearance"
+#		"lxde-base/lxsession"
+#		"x11-misc/nitrogen"
+#		"media-sound/volumeicon"
+#		"x11-misc/arandr"
+#		# For qtile
+#		"dev-python/pip"
+#	)
+#
+#	for package in "${packages[@]}"; do
+#		if ! IsPackageInstalled "$package"; then
+#			echo "...emerge $package"
+#			return 1
+#		fi
+#	done
+#}
