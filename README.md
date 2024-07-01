@@ -1,23 +1,6 @@
 # bootstrap
 
-The goal of these scripts is to quickly get up and running on a fresh
-installation of one of the following:
-
-- Debian
-- Fedora
-- Gentoo
-- Arch
-
-"Up and running" is defined as having in place:
-
-- Updated base system
-- Core utilities (git, zsh, vim, htop, etc.)
-- Graphics driver
-- Desktop environment (currently Cinnamon)
-- Pipewire audio
-- Fonts
-- Web browser(s)
-- Alternative methods for installing software, e.g. Flatpak and AppImage
+Welcome to Flavortown
 
 ## Debian
 
