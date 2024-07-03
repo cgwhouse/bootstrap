@@ -47,11 +47,13 @@ Welcome to Flavortown
 ## Arch
 
 1. Follow the Installation Guide:
-   - When partitioning the disks, can use suggested layout on Arch wiki, but use Gentoo wiki for fdisk step-by-step
+   - When partitioning the disks, can use suggested layout on Arch wiki, but use
+     Gentoo wiki for fdisk step-by-step
    - After creating btrfs filesystem, temporarily mount root to create subvolumes:
      - TODO use the Italian guy's blog post for commands
    - TODO reflector command maybe if the wiki page sucks
-   - Make list of base packages, mainly just include anything interesting from Italian guy relevant to btrfs
+   - Make list of base packages, mainly just include anything interesting from Italian
+     guy relevant to btrfs
    - Remember to update hooks before mkinitcpio
    - Probably just reboot when it says to, since this is already painful
    - Follow each of the post-install things as far as they go, no farther
