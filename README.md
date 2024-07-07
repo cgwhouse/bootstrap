@@ -19,17 +19,18 @@ Welcome to Flavortown
 ## Fedora
 
 1. Install via ISO of desired desktop environment
-2. Update system and reboot
-3. [Enable RPM Fusion repos](https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/)
-4. Install codecs + H264 using docs in the following order:
+2. Configure dnf parallel downloads and fastest mirror
+3. Update system and reboot
+4. [Enable RPM Fusion repos](https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/)
+5. Install codecs + H264 using docs in the following order:
    - Fedora quick docs for Multimedia
    - Fedora quick docs for OpenH264
    - Fedora Gaming docs for Steam (just line that mentions OpenH264)
    - RPM Fusion docs for Multimedia
-5. Install git and clone this repo
-6. Run fedora.sh
-7. Move bootstrap directory to repos
-8. Reboot
+6. Install git and clone this repo
+7. Run fedora.sh
+8. Move bootstrap directory to repos
+9. Reboot
 
 ## Gentoo
 
