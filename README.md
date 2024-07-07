@@ -48,7 +48,7 @@ Welcome to Flavortown
 ## Arch
 
 1. Follow the Installation Guide:
-   - When partitioning the disks, can use suggested layout on Arch wiki, but use
+   - When partitioning the disks, use suggested layout on Arch wiki, but use
      Gentoo wiki for fdisk step-by-step
    - After creating btrfs filesystem, temporarily mount root to create subvolumes:
      - TODO use the Italian guy's blog post for commands
