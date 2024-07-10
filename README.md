@@ -112,4 +112,5 @@ After finishing the Installation Guide and Post-installation sections:
 
 - Remove subvolid sections from fstab
 - Install `snapper-support` and `btrfs-assistant` from AUR
-- put `PRUNE_BIND_MOUNTS = “no”` in `/etc/updatedb.conf`
+- put `PRUNE_BIND_MOUNTS = “no”` in `/etc/updatedb.conf`,
+  also add `.snapshots` to `PRUNENAMES` in that file
