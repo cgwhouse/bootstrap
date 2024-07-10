@@ -47,16 +47,53 @@ Welcome to Flavortown
 
 ## Arch
 
-1. Follow the Installation Guide:
-   - When partitioning the disks, use suggested layout on Arch wiki, but use
-     Gentoo wiki for fdisk step-by-step
-   - After creating btrfs filesystem, temporarily mount root to create subvolumes:
-     - TODO use the Italian guy's blog post for commands
-   - TODO reflector command maybe if the wiki page sucks
-   - Make list of base packages, mainly just include anything interesting from Italian
-     guy relevant to btrfs
-   - Remember to update hooks before mkinitcpio
-   - Probably just reboot when it says to, since this is already painful
-   - Follow each of the post-install things as far as they go, no farther
-   - Finish the btrfs setup from the guy
-   - Determine where we stand for a setup script now
+To have the GUI of another computer to aid with install:
+
+1. Boot installation media
+2. Set root password via `passwd`
+3. Do `PermitRootLogin yes` in `etc/ssh/sshd_config`
+4. `systemctl start sshd`
+5. Get IP via `ip addr`
+6. ssh via other machine
+
+Follow the Installation Guide:
+
+1. When partitioning the disks, use suggested layout on Arch wiki,
+   but use Gentoo wiki for fdisk step-by-step
+2. After creating all filesystems and activating swap,
+   temporarily mount root to create btrfs subvolumes:
+   - `mount /dev/sda3 /mnt`
+   - `btrfs su cr /mnt/@`
+   - `btrfs su cr /mnt/@home`
+   - `btrfs su cr /mnt/@cache`
+   - `btrfs su cr /mnt/@log`
+   - `umount /mnt`
+3. Now, actually mount the subvolumes:
+
+   - `mount -o subvol=/@,defaults,noatime,compress=zstd /dev/sda3 /mnt`
+   - `mount -o subvol=/@home,defaults,noatime,compress=zstd -m /dev/sda3 /mnt/home`
+   - `mount -o subvol=/@cache,defaults,noatime,compress=zstd -m /dev/sda3 /mnt/var/cache`
+   - `mount -o subvol=/@log,defaults,noatime,compress=zstd -m /dev/sda3 /mnt/var/log`
+
+4. Reflector:
+
+```bash
+reflector \
+    --country United States \
+    --age 12 \
+    --protocol https \
+    --fastest 5 \
+    --latest 20 \
+    --sort rate \
+    --save /etc/pacman.d/mirrorlist
+```
+
+**NOTE: Remember to configure the systemd service for reflector later.**
+
+- Make list of base packages, mainly just include anything interesting from Italian
+  guy relevant to btrfs
+- Remember to update hooks before mkinitcpio
+- Probably just reboot when it says to, since this is already painful
+- Follow each of the post-install things as far as they go, no farther
+- Finish the btrfs setup from the guy
+- Determine where we stand for a setup script now
