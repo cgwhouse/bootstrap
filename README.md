@@ -85,7 +85,7 @@ Follow the Installation Guide:
 
    ```bash
    reflector \
-       --country United States \
+       --country "United States" \
        --age 12 \
        --protocol https \
        --fastest 5 \
