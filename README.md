@@ -47,4 +47,70 @@ Welcome to Flavortown
 
 ## Arch
 
-1. Under construction
+To have the GUI of another computer to aid with install:
+
+1. Boot installation media
+2. Set root password via `passwd`
+3. Do `PermitRootLogin yes` in `etc/ssh/sshd_config`
+4. `systemctl start sshd`
+5. Get IP via `ip addr`
+6. ssh via other machine
+
+Follow the Installation Guide:
+
+1. When partitioning the disks, use suggested layout on Arch wiki,
+   but use Gentoo wiki for fdisk step-by-step, otherwise cfdisk
+2. After creating all filesystems and activating swap,
+   temporarily mount root to create btrfs subvolumes:
+
+   ```bash
+   mount /dev/sda3 /mnt
+   btrfs su cr /mnt/@
+   btrfs su cr /mnt/@home
+   btrfs su cr /mnt/@cache
+   btrfs su cr /mnt/@log
+   umount /mnt
+   ```
+
+3. Now, actually mount the subvolumes:
+
+   ```bash
+   mount -o subvol=/@,defaults,noatime,compress=zstd /dev/sda3 /mnt
+   mount -o subvol=/@home,defaults,noatime,compress=zstd -m /dev/sda3 /mnt/home
+   mount -o subvol=/@cache,defaults,noatime,compress=zstd -m /dev/sda3 /mnt/var/cache
+   mount -o subvol=/@log,defaults,noatime,compress=zstd -m /dev/sda3 /mnt/var/log
+   ```
+
+4. Reflector / mirrors step:
+
+   ```bash
+   reflector \
+       --country "United States" \
+       --age 12 \
+       --protocol https \
+       --fastest 5 \
+       --latest 20 \
+       --sort rate \
+       --save /etc/pacman.d/mirrorlist
+   ```
+
+   **NOTE: Remember to configure the systemd service for reflector later.**
+
+5. Create hosts file:
+
+   ```plaintext
+   127.0.0.1 localhost
+   ::1       localhost
+   127.0.1.1 myhostname.localdomain myhostname
+   ```
+
+6. Before generating initramfs:
+
+   - Add `crc32c-intel btrfs` to `MODULES=()` parentheses
+
+After finishing the Installation Guide and Post-installation sections:
+
+- Remove subvolid sections from fstab
+- Install `snapper-support` and `btrfs-assistant` from AUR
+- put `PRUNE_BIND_MOUNTS = “no”` in `/etc/updatedb.conf`,
+  also add `.snapshots` to `PRUNENAMES` in that file
