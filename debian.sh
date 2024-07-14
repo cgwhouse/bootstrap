@@ -4,6 +4,7 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 source "$SCRIPT_DIR"/libdebian.sh
 
 server=false
+desktop="gnome"
 
 if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
@@ -47,7 +48,7 @@ if ! InstallProprietaryGraphics; then
 	exit 1
 fi
 
-if ! InstallDesktopEnvironment; then
+if ! InstallDesktopEnvironment $desktop; then
 	exit 1
 fi
 
