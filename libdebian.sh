@@ -80,6 +80,7 @@ function InstallCoreUtilities {
 		"gpg"
 		"gnupg"
 		"ca-certificates"
+    "fastfetch"
 	)
 
 	if ! InstallListOfPackagesIfMissing "${corePackages[@]}"; then
