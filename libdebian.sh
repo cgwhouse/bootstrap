@@ -80,6 +80,7 @@ function InstallCoreUtilities {
 		"gpg"
 		"gnupg"
 		"ca-certificates"
+    "fastfetch"
 	)
 
 	if ! InstallListOfPackagesIfMissing "${corePackages[@]}"; then
@@ -146,11 +147,48 @@ function InstallDesktopEnvironment {
 		UpdateAptSources
 	fi
 
-	desktopPackages=(
-		"lightdm"
-		"cinnamon-desktop-environment"
-		"ulauncher"
-	)
+	desktop=$1
+	if [ "$desktop" == "gnome" ]; then
+		desktopPackages=(
+			"task-gnome-desktop"
+			"ulauncher"
+		)
+	elif [ "$desktop" == "cinnamon" ]; then
+		desktopPackages=(
+			"lightdm"
+			"task-cinnamon-desktop"
+			"ulauncher"
+		)
+	elif [ "$desktop" == "mate" ]; then
+		desktopPackages=(
+			"lightdm"
+			"task-mate-desktop"
+			"mate-desktop-environment-extras"
+			"xscreensaver"
+			"ulauncher"
+		)
+	elif [ "$desktop" == "qtile" ]; then
+		desktopPackages=(
+			"lightdm"
+			"xserver-xorg"
+			"xinit"
+			"xscreensaver"
+			"picom"
+			"lxappearance"
+			"lxsession"
+			"nitrogen"
+			"volumeicon-alsa"
+			"arandr"
+			"python-is-python3"
+			"python3-pip"
+			"pipx"
+			"libpangocairo-1.0-0"
+			"python3-xcffib"
+			"python3-cairocffi"
+			"python3-dbus-next"
+			"ulauncher"
+		)
+	fi
 
 	if ! InstallListOfPackagesIfMissing "${desktopPackages[@]}"; then
 		return 1
@@ -236,49 +274,3 @@ EOF
 		return 1
 	fi
 }
-
-### BEGIN DEPRECATED ###
-
-#function InstallMATE {
-#	echo "TASK: InstallMATE"
-#
-#	# MATE + extras, and xscreensaver cause it adds those to MATE screensaver
-#	InstallPackageIfMissing mate-desktop-environment
-#	InstallPackageIfMissing mate-desktop-environment-extras
-#	InstallPackageIfMissing xscreensaver
-#
-#	# Plank
-#	InstallPackageIfMissing plank
-#
-#	DownloadPlankThemeCommon
-#}
-#
-#function InstallQtile {
-#	echo "TASK: InstallQtile"
-#
-#	packages=(
-#		# Tiling window manager
-#		"picom"
-#		"lxappearance"
-#		"lxsession"
-#		"nitrogen"
-#		"volumeicon-alsa"
-#		"arandr"
-#		# qtile specific
-#		"python-is-python3"
-#		"python3-pip"
-#		"pipx"
-#		"xserver-xorg"
-#		"xinit"
-#		"libpangocairo-1.0-0"
-#		"python3-xcffib"
-#		"python3-cairocffi"
-#		"python3-dbus-next"
-#	)
-#
-#	for package in "${packages[@]}"; do
-#		InstallPackageIfMissing "$package"
-#	done
-#}
-
-### END DEPRECATED ###

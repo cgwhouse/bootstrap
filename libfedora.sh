@@ -45,7 +45,7 @@ function InstallCoreUtilities {
 	WriteTaskName
 
 	corePackages=(
-		"vim"
+		"vim-enhanced"
 		"neovim"
 		"python3-neovim"
 		"zsh"
@@ -147,7 +147,8 @@ function InstallWebBrowsers {
 	librewolfRepoCheck=$(dnf repolist | grep "LibreWolf")
 	if [ "$librewolfRepoCheck" == "" ]; then
 		curl -fsSL https://rpm.librewolf.net/librewolf-repo.repo | pkexec tee /etc/yum.repos.d/librewolf.repo
-		echo "...LibreWolf repo enabled"
+		echo "...LibreWolf repo enabled. Do a manual distro-sync to accept the GPG key, then continue the script."
+		return 1
 	fi
 
 	browserPackages=(
