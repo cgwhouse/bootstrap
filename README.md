@@ -42,7 +42,7 @@ Welcome to Flavortown
    - audio
    - desktop environment
      (`gnome gtk vaapi vdpau vulkan wayland X
- -gnome-online-accounts -kde -plasma -telemetry`)
+-gnome-online-accounts -kde -plasma -telemetry`)
    - web browser
 3. Reboot from live environment and spot check the above items, then clone this repo
 4. Run gentoo.sh
@@ -58,7 +58,9 @@ To have the GUI of another computer to aid with install:
 5. Get IP via `ip addr`
 6. ssh via other machine
 
-Follow the Installation Guide:
+### Installation Guide
+
+Follow the Installation Guide on the wiki.
 
 1. When partitioning the disks, use suggested layout on Arch wiki,
    but use Gentoo wiki for fdisk step-by-step, otherwise cfdisk
@@ -110,20 +112,26 @@ Follow the Installation Guide:
 
    - Add `crc32c-intel btrfs` to `MODULES=()` parentheses
 
-After finishing the Installation Guide:
+### Post-Install
+
+Prioritize the following first:
 
 - Create new user
 - Ensure proprietary graphics
-- Install and configure the following using Arch Wiki:
+- Install and configure:
   - audio
   - desktop environment
   - web browser
-- Complete Post-Installation section rebooted into desktop environment
 
-After the Post-installation sections:
+Reboot into desktop environment as regular user
+and complete remaining post-installation sections on the wiki.
 
-- Remove subvolid sections from fstab
-- Install `snapper-support` and `btrfs-assistant` from AUR
-- put `PRUNE_BIND_MOUNTS = “no”` in `/etc/updatedb.conf`,
-  also add `.snapshots` to `PRUNENAMES` in that file
-- Regenerate initramfs afterwards
+### Snapper
+
+1. Remove subvolid sections from fstab
+2. Install `snapper-support` and `btrfs-assistant` from AUR
+3. put `PRUNE_BIND_MOUNTS = “no”` in `/etc/updatedb.conf`,
+   also add `.snapshots` to `PRUNENAMES` in that file
+4. Regenerate initramfs
+
+After all sections above are complete, run arch.sh
