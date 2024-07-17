@@ -62,9 +62,7 @@ To have the GUI of another computer to aid with install:
 
 Follow the Installation Guide on the wiki.
 
-1. When partitioning the disks, use suggested layout on Arch wiki,
-   but use Gentoo wiki for fdisk step-by-step, otherwise cfdisk
-2. After creating all filesystems and activating swap,
+1. After creating all filesystems and activating swap,
    temporarily mount root to create btrfs subvolumes:
 
    ```bash
@@ -76,7 +74,7 @@ Follow the Installation Guide on the wiki.
    umount /mnt
    ```
 
-3. Now, actually mount the subvolumes:
+2. Now, actually mount the subvolumes:
 
    ```bash
    mount -o subvol=/@,defaults,noatime,compress=zstd /dev/sda3 /mnt
@@ -85,7 +83,7 @@ Follow the Installation Guide on the wiki.
    mount -o subvol=/@log,defaults,noatime,compress=zstd -m /dev/sda3 /mnt/var/log
    ```
 
-4. Reflector / mirrors step:
+3. Reflector / mirrors step:
 
    ```bash
    reflector \
@@ -100,7 +98,7 @@ Follow the Installation Guide on the wiki.
 
    **NOTE: Remember to configure the systemd service for reflector later.**
 
-5. Create hosts file:
+4. Create hosts file:
 
    ```plaintext
    127.0.0.1 localhost
@@ -108,7 +106,7 @@ Follow the Installation Guide on the wiki.
    127.0.1.1 myhostname.localdomain myhostname
    ```
 
-6. Before generating initramfs:
+5. Before generating initramfs:
 
    - Add `crc32c-intel btrfs` to `MODULES=()` parentheses
 
