@@ -71,7 +71,7 @@ function InstallCoreUtilities {
 	fi
 
 	if ! IsPackageInstalled "app-admin/eclean-kernel"; then
-		echo "...emerge app-portage/gentoolkit"
+		echo "...emerge app-admin/eclean-kernel"
 		return 1
 	fi
 
