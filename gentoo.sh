@@ -3,8 +3,6 @@
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 source "$SCRIPT_DIR"/libgentoo.sh
 
-desktop="gnome"
-
 if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
 	printf "# Runs all tasks\n"
@@ -14,22 +12,10 @@ fi
 
 printf "\n"
 
-if ! InstallDesktopEnvironment $desktop; then
-	exit 1
-fi
-
-if ! InstallFirefoxBin; then
-	exit 1
-fi
-
 # TODO: see if this works
 # if it does, move createdirectories above pipewire and discord
 if [ "$USER" == "root" ]; then
 	echo "Need to login as regular user to continue the script"
-	exit 1
-fi
-
-if ! InstallPipewire; then
 	exit 1
 fi
 
