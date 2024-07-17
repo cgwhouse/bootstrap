@@ -39,12 +39,11 @@ Welcome to Flavortown
 2. While still booted into the live environment and chrooted into the new system,
    install and configure the following in order, using Gentoo Wiki:
    - eix
-   - audio
-   - desktop environment
-     (`gnome gtk vaapi vdpau vulkan wayland X
--gnome-online-accounts -kde -plasma -telemetry`)
+   - desktop environment (`vaapi vdpau -gnome-online-accounts -kde -plasma -telemetry`)
+   - audio (`pipewire`)
    - web browser
-3. Reboot from live environment and spot check the above items, then clone this repo
+3. Reboot from live environment and spot check / finish installing the above items,
+   then clone this repo
 4. Run gentoo.sh
 
 ## Arch
