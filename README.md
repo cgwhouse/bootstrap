@@ -34,16 +34,17 @@ Welcome to Flavortown
 
 ## Gentoo
 
-1. Follow the Handbook, but do not reboot when it says to
-2. Continue through post-reboot portion of handbook and complete remaining steps
-3. Make note of anything that shouldn't be done ahead of time (removing
+1. Follow the Handbook, but do not reboot when it says to, complete all remaining steps
+2. Make note of anything that shouldn't be done ahead of time (removing
    stage3 tarball, disabling root user, etc.) so we can do it later
-4. Install and configure eix
-5. Install and configure NetworkManager
-6. Install git + vim + neovim, eselect editor, depclean
-7. Clone this repo
-8. Run gentoo.sh, proceed until desktop environment and web browser are installed
-9. Reboot, continue remaining setup via gentoo.sh
+3. Install and configure the following using Gentoo Wiki:
+   - eix
+   - audio
+   - desktop environment (TODO: add USE flags to remember to this before removing from script)
+   - web browser
+4. Clone this repo
+5. Run gentoo.sh, proceed until desktop environment and web browser are installed
+6. Reboot, continue remaining setup via gentoo.sh
 
 ## Arch
 
@@ -108,7 +109,17 @@ Follow the Installation Guide:
 
    - Add `crc32c-intel btrfs` to `MODULES=()` parentheses
 
-After finishing the Installation Guide and Post-installation sections:
+After finishing the Installation Guide:
+
+- Create new user
+- Ensure proprietary graphics
+- Install and configure the following using Arch Wiki:
+  - audio
+  - desktop environment
+  - web browser
+- Complete Post-Installation section rebooted into desktop environment
+
+After the Post-installation sections:
 
 - Remove subvolid sections from fstab
 - Install `snapper-support` and `btrfs-assistant` from AUR
