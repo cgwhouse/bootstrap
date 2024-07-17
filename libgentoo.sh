@@ -17,94 +17,96 @@ function IsPackageInstalled {
 	return 0
 }
 
-function InstallDesktopEnvironment {
+function InstallQtile {
 	WriteTaskName
 
-	standardGlobalUseFlags="...Standard global USE flags (update system after setting): gtk vaapi vdpau vulkan wayland X -kde -plasma -telemetry"
-	elogindReminder="...Remember to deal with elogind via global USE if not using systemd"
+	#standardGlobalUseFlags="...Standard global USE flags (update system after setting): gtk vaapi vdpau vulkan wayland X -kde -plasma -telemetry"
+	#elogindReminder="...Remember to deal with elogind via global USE if not using systemd"
 
-	desktop=$1
+	#desktop=$1
 
-	if [ "$desktop" == "gnome" ]; then
-		if ! IsPackageInstalled "gnome-base/gnome"; then
-			echo "$standardGlobalUseFlags"
-			echo "$elogindReminder"
-			echo "...Visit the wiki page for GNOME and follow the instructions. Remember the gnome global USE flag"
-			return 1
-		fi
-	elif [ "$desktop" == "cinnamon" ]; then
-		if ! IsPackageInstalled "gnome-extra/cinnamon"; then
-			echo "$standardGlobalUseFlags"
-			echo "$elogindReminder"
-			echo "...Visit the wiki page for Cinnamon and follow the instructions"
-			echo "...Don't forget to ensure a terminal emulator, not always packaged by default with Cinnamon"
-			return 1
-		fi
-	elif [ "$desktop" == "mate" ]; then
-		if ! IsPackageInstalled "mate-base/mate"; then
-			echo "$standardGlobalUseFlags"
-			echo "$elogindReminder"
-			echo "...Visit the wiki page for MATE and follow the instructions. Remember the xinerama global USE flag"
-			return 1
-		fi
-	elif [ "$desktop" == "qtile" ]; then
-		if ! IsPackageInstalled "x11-wm/qtile"; then
-			packages=(
-				# Tiling WM
-				"x11-misc/picom"
-				"lxde-base/lxappearance"
-				"lxde-base/lxsession"
-				"x11-misc/nitrogen"
-				"media-sound/volumeicon"
-				"x11-misc/arandr"
-				# For qtile
-				"dev-python/pip"
-				"x11-wm/qtile"
-			)
+	#if [ "$desktop" == "gnome" ]; then
+	#	if ! IsPackageInstalled "gnome-base/gnome"; then
+	#		echo "$standardGlobalUseFlags"
+	#		echo "$elogindReminder"
+	#		echo "...Visit the wiki page for GNOME and follow the instructions. Remember the gnome global USE flag"
+	#		return 1
+	#	fi
+	#elif [ "$desktop" == "cinnamon" ]; then
+	#	if ! IsPackageInstalled "gnome-extra/cinnamon"; then
+	#		echo "$standardGlobalUseFlags"
+	#		echo "$elogindReminder"
+	#		echo "...Visit the wiki page for Cinnamon and follow the instructions"
+	#		echo "...Don't forget to ensure a terminal emulator, not always packaged by default with Cinnamon"
+	#		return 1
+	#	fi
+	#elif [ "$desktop" == "mate" ]; then
+	#	if ! IsPackageInstalled "mate-base/mate"; then
+	#		echo "$standardGlobalUseFlags"
+	#		echo "$elogindReminder"
+	#		echo "...Visit the wiki page for MATE and follow the instructions. Remember the xinerama global USE flag"
+	#		return 1
+	#	fi
+	#if [ "$desktop" == "qtile" ]; then
+	if ! IsPackageInstalled "x11-wm/qtile"; then
+		packages=(
+			# Tiling WM
+			"x11-misc/picom"
+			"lxde-base/lxappearance"
+			"lxde-base/lxsession"
+			"x11-misc/nitrogen"
+			"media-sound/volumeicon"
+			"x11-misc/arandr"
+			# For qtile
+			"dev-python/pip"
+			"x11-wm/qtile"
+		)
 
-			for package in "${packages[@]}"; do
-				if ! IsPackageInstalled "$package"; then
-					echo "...emerge $package"
-					return 1
-				fi
-			done
-		fi
+		for package in "${packages[@]}"; do
+			if ! IsPackageInstalled "$package"; then
+				echo "...emerge $package"
+				return 1
+			fi
+		done
 	fi
+	#fi
 
-	if $desktop != "gnome" && ! IsPackageInstalled "x11-misc/lightdm"; then
-		echo "...emerge x11-misc/lightdm, visit the LightDM wiki page for instructions on the display manager startup script"
-		return 1
-	fi
+	#if $desktop != "gnome" && ! IsPackageInstalled "x11-misc/lightdm"; then
+	#	echo "...emerge x11-misc/lightdm, visit the LightDM wiki page for instructions on the display manager startup script"
+	#	return 1
+	#fi
 
+	# FIXME: needs a new home
 	if ! IsPackageInstalled "x11-misc/ulauncher" inOverlay; then
 		echo "...emerge x11-misc/ulauncher, only available via overlay"
 		return 1
 	fi
 }
 
-function InstallFirefoxBin {
-	WriteTaskName
+#function InstallFirefoxBin {
+#	WriteTaskName
+#
+#	if ! IsPackageInstalled "www-client/firefox" && ! IsPackageInstalled "www-client/firefox-bin"; then
+#		echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
+#		return 1
+#	fi
+#}
 
-	if ! IsPackageInstalled "www-client/firefox" && ! IsPackageInstalled "www-client/firefox-bin"; then
-		echo "...emerge www-client/firefox-bin, web browser will help us finish setup. Will replace with source version later"
-		return 1
-	fi
-}
-
-function InstallPipewire {
-	WriteTaskName
-
-	if ! IsPackageInstalled "media-video/pipewire"; then
-		echo "...Add the following global USE flags: pulseaudio screencast"
-		echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
-		return 1
-	fi
-
-	if ! IsPackageInstalled "media-sound/pavucontrol"; then
-		echo "emerge media-sound/pavucontrol"
-		return 1
-	fi
-}
+#function InstallPipewire {
+#	WriteTaskName
+#
+#	if ! IsPackageInstalled "media-video/pipewire"; then
+#		echo "...Add the following global USE flags: pulseaudio screencast"
+#		echo "...Visit the Pipewire Gentoo wiki page for remaining instructions"
+#		return 1
+#	fi
+#
+# FIXME: needs a new home
+if ! IsPackageInstalled "media-sound/pavucontrol"; then
+	echo "emerge media-sound/pavucontrol"
+	return 1
+fi
+#}
 
 function InstallDiscord {
 	WriteTaskName

@@ -34,17 +34,17 @@ Welcome to Flavortown
 
 ## Gentoo
 
-1. Follow the Handbook, but do not reboot when it says to, complete all remaining steps
+1. Follow the Handbook, but do not reboot when it says to,
+   complete all remaining steps
 2. Make note of anything that shouldn't be done ahead of time (removing
    stage3 tarball, disabling root user, etc.) so we can do it later
-3. Install and configure the following using Gentoo Wiki:
+3. Install and configure the following in order, using Gentoo Wiki:
    - eix
    - audio
-   - desktop environment (TODO: add USE flags to remember to this before removing from script)
+   - desktop environment (`gnome gtk vaapi vdpau vulkan wayland X -kde -plasma -telemetry`)
    - web browser
-4. Clone this repo
-5. Run gentoo.sh, proceed until desktop environment and web browser are installed
-6. Reboot, continue remaining setup via gentoo.sh
+4. Reboot from live environment and spot check the above items, then clone this repo
+5. Run gentoo.sh
 
 ## Arch
 
