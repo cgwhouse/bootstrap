@@ -34,17 +34,18 @@ Welcome to Flavortown
 
 ## Gentoo
 
-1. Follow the Handbook, but do not reboot when it says to,
-   complete all remaining steps
-2. Make note of anything that shouldn't be done ahead of time (removing
-   stage3 tarball, disabling root user, etc.) so we can do it later
-3. Install and configure the following in order, using Gentoo Wiki:
+1. Follow the Handbook. Do not reboot when it says to, and
+   complete all remaining steps and note anything that needs to be deferred
+2. While still booted into the live environment and chrooted into the new system,
+   install and configure the following in order, using Gentoo Wiki:
    - eix
    - audio
-   - desktop environment (`gnome gtk vaapi vdpau vulkan wayland X -kde -plasma -telemetry`)
+   - desktop environment
+     (`gnome gtk vaapi vdpau vulkan wayland X
+ -gnome-online-accounts -kde -plasma -telemetry`)
    - web browser
-4. Reboot from live environment and spot check the above items, then clone this repo
-5. Run gentoo.sh
+3. Reboot from live environment and spot check the above items, then clone this repo
+4. Run gentoo.sh
 
 ## Arch
 
