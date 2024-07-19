@@ -34,16 +34,17 @@ Welcome to Flavortown
 
 ## Gentoo
 
-1. Follow the Handbook, but do not reboot when it says to
-2. Continue through post-reboot portion of handbook and complete remaining steps
-3. Make note of anything that shouldn't be done ahead of time (removing
-   stage3 tarball, disabling root user, etc.) so we can do it later
-4. Install and configure eix
-5. Install and configure NetworkManager
-6. Install git + vim + neovim, eselect editor, depclean
-7. Clone this repo
-8. Run gentoo.sh, proceed until desktop environment and web browser are installed
-9. Reboot, continue remaining setup via gentoo.sh
+1. Follow the Handbook. Do not reboot when it says to, and
+   complete all remaining steps and note anything that needs to be deferred
+2. While still booted into the live environment and chrooted into the new system,
+   install and configure the following in order, using Gentoo Wiki:
+   - eix
+   - desktop environment (`vaapi vdpau -gnome-online-accounts -kde -plasma -telemetry`)
+   - audio (`pipewire`)
+   - web browser
+3. Reboot from live environment and spot check / finish installing the above items,
+   then clone this repo
+4. Run gentoo.sh
 
 ## Arch
 
@@ -56,11 +57,11 @@ To have the GUI of another computer to aid with install:
 5. Get IP via `ip addr`
 6. ssh via other machine
 
-Follow the Installation Guide:
+### Installation Guide
 
-1. When partitioning the disks, use suggested layout on Arch wiki,
-   but use Gentoo wiki for fdisk step-by-step, otherwise cfdisk
-2. After creating all filesystems and activating swap,
+Follow the Installation Guide on the wiki.
+
+1. After creating all filesystems and activating swap,
    temporarily mount root to create btrfs subvolumes:
 
    ```bash
@@ -72,7 +73,7 @@ Follow the Installation Guide:
    umount /mnt
    ```
 
-3. Now, actually mount the subvolumes:
+2. Now, actually mount the subvolumes:
 
    ```bash
    mount -o subvol=/@,defaults,noatime,compress=zstd /dev/sda3 /mnt
@@ -81,7 +82,7 @@ Follow the Installation Guide:
    mount -o subvol=/@log,defaults,noatime,compress=zstd -m /dev/sda3 /mnt/var/log
    ```
 
-4. Reflector / mirrors step:
+3. Reflector / mirrors step:
 
    ```bash
    reflector \
@@ -96,7 +97,7 @@ Follow the Installation Guide:
 
    **NOTE: Remember to configure the systemd service for reflector later.**
 
-5. Create hosts file:
+4. Create hosts file:
 
    ```plaintext
    127.0.0.1 localhost
@@ -104,14 +105,30 @@ Follow the Installation Guide:
    127.0.1.1 myhostname.localdomain myhostname
    ```
 
-6. Before generating initramfs:
+5. Before generating initramfs:
 
    - Add `crc32c-intel btrfs` to `MODULES=()` parentheses
 
-After finishing the Installation Guide and Post-installation sections:
+### Post-Install
 
-- Remove subvolid sections from fstab
-- Install `snapper-support` and `btrfs-assistant` from AUR
-- put `PRUNE_BIND_MOUNTS = “no”` in `/etc/updatedb.conf`,
-  also add `.snapshots` to `PRUNENAMES` in that file
-- Regenerate initramfs afterwards
+Prioritize the following first:
+
+- Create new user
+- Ensure proprietary graphics
+- Install and configure:
+  - audio
+  - desktop environment
+  - web browser
+
+Reboot into desktop environment as regular user
+and complete remaining post-installation sections on the wiki.
+
+### Snapper
+
+1. Remove subvolid sections from fstab
+2. Install `snapper-support` and `btrfs-assistant` from AUR
+3. put `PRUNE_BIND_MOUNTS = “no”` in `/etc/updatedb.conf`,
+   also add `.snapshots` to `PRUNENAMES` in that file
+4. Regenerate initramfs
+
+After all sections above are complete, run arch.sh
