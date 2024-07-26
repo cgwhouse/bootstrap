@@ -5,20 +5,20 @@ source "$SCRIPT_DIR"/libbootstrap.sh
 
 function InstallPackageIfMissing {
 	packageToCheck=$1
-	grepStr="Installed Packages"
+	grepStr="No matching items found."
 
-	# Check for package using dnf list
-	packageCheck=$(sudo dnf list "$packageToCheck" 2>/dev/null | grep "$grepStr")
-	if [ "$packageCheck" != "" ]; then
+	# Check for package using zypper se
+	packageCheck=$(sudo zypper se --installed-only "$packageToCheck" 2>/dev/null | grep "$grepStr")
+	if [ "$packageCheck" == "" ]; then
 		return 0
 	fi
 
 	echo "...Installing $1"
-	sudo dnf install -y "$1"
+	sudo zypper install -y "$1"
 
 	# Ensure package was installed, return error if not
 	installCheck=$(sudo dnf list "$packageToCheck" 2>/dev/null | grep "$grepStr")
-	if [ "$installCheck" == "" ]; then
+	if [ "$installCheck" != "" ]; then
 		echo "ERROR: Failed to install $1"
 		return 1
 	fi
@@ -45,18 +45,18 @@ function InstallCoreUtilities {
 	WriteTaskName
 
 	corePackages=(
-		"vim-enhanced"
-		"neovim"
-		"python3-neovim"
-		"zsh"
-		"curl"
-		"wget2"
-		"tmux"
-		"htop"
-		"unar"
+		#		"vim-enhanced"
+		#		"neovim"
+		#		"python3-neovim"
+		#		"zsh"
+		#		"curl"
+		#		"wget2"
+		#		"tmux"
+		#		"htop"
+		#		"unar"
 		"fastfetch"
-		"python3-dnf-plugin-rpmconf"
-		"ulauncher"
+		#		"python3-dnf-plugin-rpmconf"
+		#		"ulauncher"
 	)
 
 	if ! InstallListOfPackagesIfMissing "${corePackages[@]}"; then

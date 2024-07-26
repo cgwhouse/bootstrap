@@ -6,7 +6,7 @@ source "$SCRIPT_DIR"/libfedora.sh
 if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
 	printf "# Runs all tasks\n"
-	printf "./fedora.sh\n\n"
+	printf "./tw.sh\n\n"
 	exit 1
 fi
 
@@ -19,6 +19,9 @@ fi
 if ! InstallCoreUtilities; then
 	exit 1
 fi
+
+# DEBUG
+exit 1
 
 if ! ConfigureTmux; then
 	exit 1
