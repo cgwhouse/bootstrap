@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-source "$SCRIPT_DIR"/libfedora.sh
+source "$SCRIPT_DIR"/libtw.sh
 
 if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
