@@ -54,7 +54,13 @@ Welcome to Flavortown
 ## Fedora
 
 1. Install via ISO of desired desktop environment
-2. Configure dnf parallel downloads and fastest mirror
+2. Configure dnf parallel downloads and fastest mirror:
+
+   ```text
+   max_parallel_downloads=10
+   fastestmirror=True
+   ```
+
 3. Update system and reboot
 4. [Enable RPM Fusion repos](https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/)
 5. Install codecs + H264 using docs in the following order:
