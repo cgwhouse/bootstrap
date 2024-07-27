@@ -20,9 +20,6 @@ if ! InstallCoreUtilities; then
 	exit 1
 fi
 
-# DEBUG
-exit 1
-
 if ! ConfigureTmux; then
 	exit 1
 fi
