@@ -20,6 +20,8 @@ if ! InstallCoreUtilities; then
 	exit 1
 fi
 
+exit 1
+
 if ! ConfigureTmux; then
 	exit 1
 fi
