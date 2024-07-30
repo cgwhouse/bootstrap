@@ -72,6 +72,7 @@ function InstallCoreUtilities {
 
 	ulauncherCheck=$(zypper se --installed-only ulauncher | grep "No matching items found.")
 	if [ "$ulauncherCheck" != "" ]; then
+    # TODO: this is fine but requires manual intervention, try -n
 		sudo zypper addrepo https://download.opensuse.org/repositories/home:Dead_Mozay/openSUSE_Tumbleweed/home:Dead_Mozay.repo
 		UpdateZypperSources
 
