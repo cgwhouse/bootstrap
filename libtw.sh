@@ -85,10 +85,8 @@ function InstallProprietaryGraphics {
 		return 0
 	fi
 
-	grepStr="No matching items found."
-
 	# Check for nvidia package, if missing do the recommended command from wiki
-	packageCheck=$(zypper se --installed-only "nvidia-gl" 2>/dev/null | grep "$grepStr")
+	packageCheck=$(zypper se --installed-only "nvidia-gl" 2>/dev/null | grep "No matching items found.")
 	if [ "$packageCheck" == "" ]; then
 		return 0
 	fi
@@ -100,13 +98,6 @@ function InstallProprietaryGraphics {
 function InstallFonts {
 	WriteTaskName
 
-	# Repo for Ubuntu fonts
-	#coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
-	#if [ "$coprCheck" == "" ]; then
-	#	sudo dnf copr enable -y atim/ubuntu-fonts
-	#	echo "...ubuntu-fonts copr repository enabled"
-	#fi
-
 	fontPackages=(
 		"ubuntu-fonts"
 		"google-noto-coloremoji-fonts"
@@ -114,27 +105,11 @@ function InstallFonts {
 		"fetchmsttfonts"
 	)
 
-	#fontPackages=(
-	#		"default-fonts"
-	#		"default-fonts-core-emoji"
-	#		"fira-code-fonts"
-	#		"ubuntu-family-fonts"
-	#		"cabextract"
-	#		"xorg-x11-font-utils"
-	#		"fontconfig"
-	#	)
-
 	if ! InstallListOfPackagesIfMissing "${fontPackages[@]}"; then
 		return 1
 	fi
 
 	InstallNerdFonts
-
-	## Microsoft fonts
-	#if [ ! -d "/usr/share/fonts/msttcore" ]; then
-	#	sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
-	#	echo "...Installed MSFT fonts"
-	#fi
 }
 
 function InstallFlatpak {
@@ -150,28 +125,5 @@ function InstallFlatpak {
 function InstallWebBrowsers {
 	WriteTaskName
 
-	# Repo for Ungoogled Chromium
-	coprCheck=$(sudo dnf copr list | grep "ungoogled-chromium")
-	if [ "$coprCheck" == "" ]; then
-		sudo dnf copr enable -y wojnilowicz/ungoogled-chromium
-		echo "...ungoogled-chromium copr repository enabled"
-	fi
-
-	# Repo for LibreWolf
-	librewolfRepoCheck=$(dnf repolist | grep "LibreWolf")
-	if [ "$librewolfRepoCheck" == "" ]; then
-		curl -fsSL https://rpm.librewolf.net/librewolf-repo.repo | pkexec tee /etc/yum.repos.d/librewolf.repo
-		echo "...LibreWolf repo enabled. Do a manual distro-sync to accept the GPG key, then continue the script."
-		return 1
-	fi
-
-	browserPackages=(
-		"firefox"
-		"ungoogled-chromium"
-		"librewolf"
-	)
-
-	if ! InstallListOfPackagesIfMissing "${browserPackages[@]}"; then
-		return 1
-	fi
+	InstallPackageIfMissing MozillaFirefox
 }

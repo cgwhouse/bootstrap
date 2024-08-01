@@ -36,8 +36,6 @@ if ! InstallFonts; then
 	exit 1
 fi
 
-exit 1
-
 if ! InstallFlatpak; then
 	exit 1
 fi
