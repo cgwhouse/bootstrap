@@ -20,8 +20,6 @@ if ! InstallCoreUtilities; then
 	exit 1
 fi
 
-exit 1
-
 if ! ConfigureTmux; then
 	exit 1
 fi
@@ -37,6 +35,8 @@ fi
 if ! InstallFonts; then
 	exit 1
 fi
+
+exit 1
 
 if ! InstallFlatpak; then
 	exit 1

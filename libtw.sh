@@ -72,9 +72,7 @@ function InstallCoreUtilities {
 
 	ulauncherCheck=$(zypper se --installed-only ulauncher | grep "No matching items found.")
 	if [ "$ulauncherCheck" != "" ]; then
-    # TODO: this is fine but requires manual intervention, try -n
 		sudo zypper addrepo https://download.opensuse.org/repositories/home:Dead_Mozay/openSUSE_Tumbleweed/home:Dead_Mozay.repo
-		UpdateZypperSources
 
 		InstallPackageIfMissing ulauncher
 	fi
@@ -87,44 +85,44 @@ function InstallProprietaryGraphics {
 		return 0
 	fi
 
-	nvidiaPackages=(
-		# Main driver
-		"akmod-nvidia"
-		# nvenc support
-		"xorg-x11-drv-nvidia-cuda"
-		"xorg-x11-drv-nvidia-cuda-libs"
-		# Video acceleration
-		"nvidia-vaapi-driver"
-		"libva-utils"
-		"vdpauinfo"
-		# Vulkan support
-		"vulkan"
-	)
+	grepStr="No matching items found."
 
-	if ! InstallListOfPackagesIfMissing "${nvidiaPackages[@]}"; then
-		return 1
+	# Check for nvidia package, if missing do the recommended command from wiki
+	packageCheck=$(zypper se --installed-only "nvidia-gl" 2>/dev/null | grep "$grepStr")
+	if [ "$packageCheck" == "" ]; then
+		return 0
 	fi
+
+	sudo zypper install -y openSUSE-repos-Tumbleweed-NVIDIA
+	sudo zypper install-new-recommends --repo repo-non-free
 }
 
 function InstallFonts {
 	WriteTaskName
 
 	# Repo for Ubuntu fonts
-	coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
-	if [ "$coprCheck" == "" ]; then
-		sudo dnf copr enable -y atim/ubuntu-fonts
-		echo "...ubuntu-fonts copr repository enabled"
-	fi
+	#coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
+	#if [ "$coprCheck" == "" ]; then
+	#	sudo dnf copr enable -y atim/ubuntu-fonts
+	#	echo "...ubuntu-fonts copr repository enabled"
+	#fi
 
 	fontPackages=(
-		"default-fonts"
-		"default-fonts-core-emoji"
+		"ubuntu-fonts"
+		"google-noto-coloremoji-fonts"
 		"fira-code-fonts"
-		"ubuntu-family-fonts"
-		"cabextract"
-		"xorg-x11-font-utils"
-		"fontconfig"
+		"fetchmsttfonts"
 	)
+
+	#fontPackages=(
+	#		"default-fonts"
+	#		"default-fonts-core-emoji"
+	#		"fira-code-fonts"
+	#		"ubuntu-family-fonts"
+	#		"cabextract"
+	#		"xorg-x11-font-utils"
+	#		"fontconfig"
+	#	)
 
 	if ! InstallListOfPackagesIfMissing "${fontPackages[@]}"; then
 		return 1
@@ -132,11 +130,11 @@ function InstallFonts {
 
 	InstallNerdFonts
 
-	# Microsoft fonts
-	if [ ! -d "/usr/share/fonts/msttcore" ]; then
-		sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
-		echo "...Installed MSFT fonts"
-	fi
+	## Microsoft fonts
+	#if [ ! -d "/usr/share/fonts/msttcore" ]; then
+	#	sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
+	#	echo "...Installed MSFT fonts"
+	#fi
 }
 
 function InstallFlatpak {
