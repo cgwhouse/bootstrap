@@ -92,6 +92,9 @@ function InstallProprietaryGraphics {
 	fi
 
 	sudo zypper install -y openSUSE-repos-Tumbleweed-NVIDIA
+
+	UpdateZypperSources
+
 	sudo zypper install-new-recommends --repo repo-non-free
 }
 
