@@ -16,7 +16,7 @@ function InstallPackageIfMissing {
 	grepStr="No matching items found."
 
 	# Check for package using zypper se
-	packageCheck=$(zypper se --installed-only "$packageToCheck" 2>/dev/null | grep "$grepStr")
+	packageCheck=$(zypper se --installed-only --match-words "$packageToCheck" 2>/dev/null | grep "$grepStr")
 	if [ "$packageCheck" == "" ]; then
 		return 0
 	fi
@@ -30,7 +30,7 @@ function InstallPackageIfMissing {
 	sudo zypper install -y "$1"
 
 	# Ensure package was installed, return error if not
-	installCheck=$(zypper se --installed-only "$packageToCheck" 2>/dev/null | grep "$grepStr")
+	installCheck=$(zypper se --installed-only --match-words "$packageToCheck" 2>/dev/null | grep "$grepStr")
 	if [ "$installCheck" != "" ]; then
 		echo "ERROR: Failed to install $1"
 		return 1
@@ -70,7 +70,7 @@ function InstallCoreUtilities {
 		return 1
 	fi
 
-	ulauncherCheck=$(zypper se --installed-only ulauncher | grep "No matching items found.")
+	ulauncherCheck=$(zypper se --installed-only --match-words ulauncher | grep "No matching items found.")
 	if [ "$ulauncherCheck" != "" ]; then
 		sudo zypper addrepo https://download.opensuse.org/repositories/home:Dead_Mozay/openSUSE_Tumbleweed/home:Dead_Mozay.repo
 
@@ -86,7 +86,7 @@ function InstallProprietaryGraphics {
 	fi
 
 	# Check for nvidia package, if missing do the recommended command from wiki
-	packageCheck=$(zypper se --installed-only "nvidia-gl" 2>/dev/null | grep "No matching items found.")
+	packageCheck=$(zypper se --installed-only --match-words "nvidia-gl" 2>/dev/null | grep "No matching items found.")
 	if [ "$packageCheck" == "" ]; then
 		return 0
 	fi
@@ -128,5 +128,7 @@ function InstallFlatpak {
 function InstallWebBrowsers {
 	WriteTaskName
 
-	InstallPackageIfMissing MozillaFirefox
+	if ! InstallPackageIfMissing MozillaFirefox; then
+		return 1
+	fi
 }

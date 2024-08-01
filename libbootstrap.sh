@@ -1,7 +1,5 @@
 #!/bin/bash
 
-### BEGIN HELPERS ###
-
 function WriteTaskName {
 	echo "TASK: ${FUNCNAME[1]}"
 }
@@ -22,55 +20,6 @@ function EnableFlathubRepo {
 	sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 	echo "...Flathub repository added"
 }
-
-function VirtManagerCheck {
-	lscpuCheck=$(lscpu | grep VT-x)
-	if [ "$lscpuCheck" == "" ]; then
-		return 1
-	fi
-
-	uname=$(uname -r)
-	zgrepCheck=$(zgrep CONFIG_KVM /boot/config-"$uname" | grep "CONFIG_KVM_GUEST=y")
-	if [ "$zgrepCheck" == "" ]; then
-		return 1
-	fi
-}
-
-function ConfigureVirtManager {
-	# Ensure libvirtd and tuned services are enabled
-	# This service will not stay running if in a VM, so only do this part if no VM detected
-	vmCheck=$(grep hypervisor </proc/cpuinfo)
-
-	libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
-	if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
-		sudo systemctl enable --now libvirtd.service
-		echo "...libvirtd service enabled"
-	fi
-
-	tunedCheck=$(sudo systemctl is-active tuned.service)
-	if [ "$tunedCheck" == "inactive" ]; then
-		sudo systemctl enable --now tuned.service
-		echo "...tuned service enabled"
-	fi
-
-	# Set autostart on virtual network
-	virshNetworkCheck=$(sudo virsh net-list --all --autostart | grep default)
-	if [ "$virshNetworkCheck" == "" ]; then
-		sudo virsh net-autostart default
-		echo "...Virtual network set to autostart"
-	fi
-
-	# Add regular user to libvirt group
-	groupCheck=$(groups "$USER" | grep libvirt)
-	if [ "$groupCheck" == "" ]; then
-		sudo usermod -aG libvirt "$USER"
-		echo "...User added to libvirt group"
-	fi
-}
-
-### END HELPERS ###
-
-### BEGIN TASKS ###
 
 function CreateDirectories {
 	WriteTaskName
@@ -176,8 +125,6 @@ function InstallNerdFonts {
 		echo "...UbuntuMono Nerd Font installed"
 	fi
 }
-
-### END TASKS ###
 
 ### BEGIN DEPRECATED ###
 
