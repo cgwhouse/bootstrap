@@ -128,5 +128,7 @@ function InstallFlatpak {
 function InstallWebBrowsers {
 	WriteTaskName
 
-	InstallPackageIfMissing MozillaFirefox
+	if ! InstallPackageIfMissing MozillaFirefox; then
+		return 1
+	fi
 }
