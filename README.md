@@ -5,7 +5,7 @@ Welcome to Flavortown
 ## Debian
 
 1. Install via net installer, deselect all tasks for minimal installation
-2. If using on the desktop:
+2. If we need newer packages than current stable:
    - [Update apt sources to Testing](https://wiki.debian.org/DebianTesting)
    - [Add Unstable packages with lower priority](https://wiki.debian.org/DebianUnstable)
    - Update system and reboot
@@ -16,10 +16,51 @@ Welcome to Flavortown
 6. Move bootstrap directory to repos
 7. Reboot
 
+## Gentoo
+
+1. Follow the Handbook.
+   When it says to reboot, before doing so, install and configure eix.
+2. After completing the Handbook, do the following in order using Gentoo Wiki:
+   - desktop environment (`vaapi vdpau -gnome-online-accounts -kde -plasma -telemetry`)
+   - audio (`pipewire`)
+   - web browser
+3. After installing and spot-checking the above items, clone this repo
+4. Run gentoo.sh
+
+## Tumbleweed
+
+1. Install via ISO
+2. Configure zypper concurrent connections and download speed:
+
+   ```text
+   download.max_concurrent_connections=10
+   download.min_download_speed=20000
+   ```
+
+3. Install codecs and update system for good measure:
+
+   ```bash
+   sudo zypper install codecs
+   opi codecs
+   sudo zypper refresh
+   sudo zypper dup --allow-vendor-change
+   ```
+
+4. Install git and clone this repo
+5. Run tw.sh
+6. Move bootstrap directory to repos
+7. Reboot
+
 ## Fedora
 
 1. Install via ISO of desired desktop environment
-2. Configure dnf parallel downloads and fastest mirror
+2. Configure dnf parallel downloads and fastest mirror:
+
+   ```text
+   max_parallel_downloads=10
+   fastestmirror=True
+   ```
+
 3. Update system and reboot
 4. [Enable RPM Fusion repos](https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/)
 5. Install codecs + H264 using docs in the following order:
@@ -31,20 +72,6 @@ Welcome to Flavortown
 7. Run fedora.sh
 8. Move bootstrap directory to repos
 9. Reboot
-
-## Gentoo
-
-1. Follow the Handbook. Do not reboot when it says to, and
-   complete all remaining steps and note anything that needs to be deferred
-2. While still booted into the live environment and chrooted into the new system,
-   install and configure the following in order, using Gentoo Wiki:
-   - eix
-   - desktop environment (`vaapi vdpau -gnome-online-accounts -kde -plasma -telemetry`)
-   - audio (`pipewire`)
-   - web browser
-3. Reboot from live environment and spot check / finish installing the above items,
-   then clone this repo
-4. Run gentoo.sh
 
 ## Arch
 

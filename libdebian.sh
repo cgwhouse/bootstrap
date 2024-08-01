@@ -80,7 +80,7 @@ function InstallCoreUtilities {
 		"gpg"
 		"gnupg"
 		"ca-certificates"
-    "fastfetch"
+		"fastfetch"
 	)
 
 	if ! InstallListOfPackagesIfMissing "${corePackages[@]}"; then
@@ -238,13 +238,33 @@ function InstallFlatpak {
 function InstallWebBrowsers {
 	WriteTaskName
 
-	# Setup source for Ungoogled Chromium package if needed
-	if ! compgen -G "/etc/apt/sources.list.d/home:ungoogled_chromium*" >/dev/null; then
-		echo "...Setting up Ungoogled Chromium package source"
-		echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list
-		curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
+	bookwormCheck=$(grep "bookworm main" </etc/apt/sources.list)
+	if [ "$bookwormCheck" != "" ]; then
+		# Setup Mozilla repo for firefox if needed
+		if ! compgen -G "/etc/apt/sources.list.d/mozilla*" >/dev/null; then
+			echo "...Setting up Mozilla Firefox package source"
 
-		UpdateAptSources
+			sudo install -d -m 0755 /etc/apt/keyrings
+			wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc >/dev/null
+			echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list >/dev/null
+
+			echo '
+Package: *
+Pin: origin packages.mozilla.org
+Pin-Priority: 1000
+' | sudo tee /etc/apt/preferences.d/mozilla
+
+			UpdateAptSources
+		fi
+	else
+		# Setup source for Ungoogled Chromium package if needed
+		if ! compgen -G "/etc/apt/sources.list.d/home:ungoogled_chromium*" >/dev/null; then
+			echo "...Setting up Ungoogled Chromium package source"
+			echo 'deb http://download.opensuse.org/repositories/home:/ungoogled_chromium/Debian_Sid/ /' | sudo tee /etc/apt/sources.list.d/home:ungoogled_chromium.list
+			curl -fsSL https://download.opensuse.org/repositories/home:ungoogled_chromium/Debian_Sid/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_ungoogled_chromium.gpg >/dev/null
+
+			UpdateAptSources
+		fi
 	fi
 
 	# Setup source for LibreWolf package if needed
@@ -264,11 +284,18 @@ EOF
 		UpdateAptSources
 	fi
 
-	browserPackages=(
-		"firefox"
-		"ungoogled-chromium"
-		"librewolf"
-	)
+	if [ "$bookwormCheck" != "" ]; then
+		browserPackages=(
+			"firefox"
+			"librewolf"
+		)
+	else
+		browserPackages=(
+			"firefox"
+			"ungoogled-chromium"
+			"librewolf"
+		)
+	fi
 
 	if ! InstallListOfPackagesIfMissing "${browserPackages[@]}"; then
 		return 1
