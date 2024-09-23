@@ -4,6 +4,8 @@ Welcome to Flavortown
 
 ## Debian
 
+`bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/bootstrap2/bootstrap2.sh)`
+
 1. Install via net installer, deselect all tasks for minimal installation
 2. If we need newer packages than current stable:
    - [Update apt sources to Testing](https://wiki.debian.org/DebianTesting)

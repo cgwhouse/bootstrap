@@ -1,10 +1,10 @@
 #!/bin/bash
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-source "$SCRIPT_DIR"/libdebian.sh
+#SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+#source "$SCRIPT_DIR"/libdebian.sh
 
-server=false
-desktop="gnome"
+#server=false
+#desktop="gnome"
 
 if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
