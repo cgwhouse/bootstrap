@@ -8,69 +8,31 @@
 
 if [ $# -gt 0 ]; then
 	printf "\nUsage:\n\n"
-	printf "./bootstrap2.sh\n\n"
+	printf "./bootstrap2.sh\n"
 	exit 1
 fi
 
-printf "\n"
+printf "\nWelcome to boostrap2!\n"
 
-printf "Hello, bootstrap!"
+printf "Select a workflow:\n\n"
 
-#if ! CreateDirectories; then
-#	exit 1
-#fi
-#
-#if ! InstallCoreUtilities; then
-#	exit 1
-#fi
-#
-#if ! ConfigureTmux; then
-#	exit 1
-#fi
-#
-#if ! InstallNvm; then
-#	exit 1
-#fi
-#
-## Exit with minimal workload if server bootstrap
-#if [ $server == true ]; then
-#	if ! ConfigureZsh; then
-#		exit 1
-#	fi
-#
-#	exit 0
-#fi
-#
-#if ! EnableMultiarch; then
-#	exit 1
-#fi
-#
-#if ! InstallProprietaryGraphics; then
-#	exit 1
-#fi
-#
-#if ! InstallDesktopEnvironment $desktop; then
-#	exit 1
-#fi
-#
-#if ! InstallPipewire; then
-#	exit 1
-#fi
-#
-#if ! InstallFonts; then
-#	exit 1
-#fi
-#
-#if ! InstallFlatpak; then
-#	exit 1
-#fi
-#
-#if ! InstallWebBrowsers; then
-#	exit 1
-#fi
-#
-#if ! ConfigureZsh; then
-#	exit 1
-#fi
+select workflow in "Fedora" "Debian VM" "Exit"; do
+	case $workflow in
+	"Fedora")
+		break
+		;;
+	"Debian VM")
+		break
+		;;
+	"Exit")
+		exit
+		;;
+	*)
+		echo "Use the numbers in the list to make a selection"
+		;;
+	esac
+done
+
+echo "$workflow"
 
 printf "\n"
