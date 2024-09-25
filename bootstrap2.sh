@@ -99,14 +99,13 @@ function GetMissingPackagesFromList {
 	packages=("$@")
 	result=()
 
+	# Get list of installed packages
+	installed=$(apt list --installed)
+
 	for package in "${packages[@]}"; do
-
-		packageCheck=$(apt list --installed 2>/dev/null | grep "$package")
-
-		if [ "$packageCheck" == "" ]; then
+		if [ "$("$installed" | grep "$package")" == "" ]; then
 			result+=("$package")
 		fi
-
 	done
 
 	return "${result[@]}"
@@ -155,24 +154,29 @@ function BootstrapDebianVM {
 
 	#CreateDirectories
 
+	#packages=(
+	#	"git"
+	#	"vim"
+	#	#"neovim"
+	#	"zsh"
+	#	"curl"
+	#	"wget"
+	#	"tmux"
+	#	"htop"
+	#	"unar"
+	#	"aptitude"
+	#	"apt-transport-https"
+	#	#"ntp"
+	#	"gpg"
+	#	"gnupg"
+	#	"ca-certificates"
+	#	"neofetch"
+	#	"spice-vdagent"
+	#)
+
 	packages=(
-		"git"
-		"vim"
-		#"neovim"
-		"zsh"
-		"curl"
-		"wget"
-		"tmux"
-		"htop"
-		"unar"
-		"aptitude"
-		"apt-transport-https"
-		#"ntp"
-		"gpg"
-		"gnupg"
-		"ca-certificates"
 		"neofetch"
-		"spice-vdagent"
+		"libreoffice"
 	)
 
 	missing=$(GetMissingPackagesFromList "${packages[@]}")
