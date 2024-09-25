@@ -95,6 +95,21 @@ function InstallListOfAptPackages {
 	return 0
 }
 
+function AptPackageIsInstalled {
+	package=$1
+
+	# Get list of installed packages
+	installed=$(apt list --installed 2>/dev/null)
+
+	packageCheck=$(echo "$installed" | grep "$1")
+
+	if [ "$packageCheck" != "" ]; then
+		return 0
+	fi
+
+	return 1
+}
+
 function GetMissingPackagesFromList {
 	packages=("$@")
 	result=()
@@ -181,11 +196,14 @@ function BootstrapDebianVM {
 		"libreoffice"
 	)
 
-	missing=$(GetMissingPackagesFromList "${packages[@]}")
+	#missing=$(GetMissingPackagesFromList "${packages[@]}")
 
-	for test in "${missing[@]}"; do
+	for package in "${packages[@]}"; do
 
-		echo "$test"
+		if ! AptPackageIsInstalled "$package"; then
+			echo "Would be installing $package"
+			#sudo apt install -y "$package"
+		fi
 
 		#packageCheck=$(apt list --installed 2>/dev/null | grep "$package")
 
