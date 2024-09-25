@@ -175,11 +175,11 @@ function BootstrapDebianVM {
 		"spice-vdagent"
 	)
 
-	#missing=GetMissingPackagesFromList "${packages[@]}"
+	missing=$(GetMissingPackagesFromList "${packages[@]}")
 
-	for missing in GetMissingPackagesFromList "${packages[@]}"; do
+	for test in "${missing[@]}"; do
 
-		echo "$missing"
+		echo "$test"
 
 		#packageCheck=$(apt list --installed 2>/dev/null | grep "$package")
 
