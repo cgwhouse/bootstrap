@@ -36,65 +36,6 @@ function CreateDirectories {
 
 #region DEBIAN
 
-function UpdateAptSources {
-	echo "...Updating sources"
-	sudo apt update
-}
-
-function InstallPackageIfMissingViaApt {
-	packageToCheck=$1
-	grepStr="installed"
-
-	# Handle 32-bit
-	# TODO: may not need 32-bit pkgs for VM
-	# should we have separate routines for determining which packages are missing if any?
-
-	if [[ "$packageToCheck" == *":i386"* ]]; then
-		# Strip i386 from the package name that was provided
-		packageToCheck="${packageToCheck/:i386/""}"
-		# Update the string used by grep to check if installed
-		grepStr="i386 \[installed\]"
-	fi
-
-	# Check for package using apt list
-	packageCheck=$(apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
-	if [ "$packageCheck" != "" ]; then
-		return 0
-	fi
-
-	# If apt update hasn't run yet, do that now
-	#if [ $aptUpdated = false ]; then
-	#	UpdateAptSources
-	#fi
-
-	echo "...Installing $1"
-	sudo apt install -y "$1"
-
-	# Ensure package was installed, return error if not
-	installCheck=$(apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
-	if [ "$installCheck" == "" ]; then
-		echo "ERROR: Failed to install $1"
-		return 1
-	fi
-
-	echo "...Successfully installed $1"
-	return 0
-}
-
-function InstallListOfAptPackages {
-	packages=("$@")
-
-	for package in "${packages[@]}"; do
-
-		if ! InstallPackageIfMissingViaApt "$package"; then
-			return 1
-		fi
-
-	done
-
-	return 0
-}
-
 function AptPackageIsInstalled {
 	package=$1
 
@@ -110,44 +51,23 @@ function AptPackageIsInstalled {
 	return 1
 }
 
-function GetMissingPackagesFromList {
+function AptInstallMissingPackages {
 	packages=("$@")
-	result=()
-
-	# Get list of installed packages
-	installed=$(apt list --installed 2>/dev/null)
 
 	for package in "${packages[@]}"; do
-		packageCheck=$(echo "$installed" | grep "$package")
+		if ! AptPackageIsInstalled "$package"; then
+			echo "DEBUG: Would be installing $package"
+			#sudo apt install -y "$package"
 
-		if [ "$packageCheck" == "" ]; then
-			result+=("$package")
+			# Check again, error if not installed
+			if ! AptPackageIsInstalled "$package"; then
+				echo "ERROR: Failed to install $package"
+				return 1
+			fi
 		fi
 	done
 
-	return "${result[@]}"
-
-	#echo "hello"
-
-	#packageToCheck=$1
-	#grepStr="installed"
-
-	# Handle 32-bit
-	# TODO: may not need 32-bit pkgs for VM
-	# should we have separate routines for determining which packages are missing if any?
-
-	#if [[ "$packageToCheck" == *":i386"* ]]; then
-	#	# Strip i386 from the package name that was provided
-	#	packageToCheck="${packageToCheck/:i386/""}"
-	#	# Update the string used by grep to check if installed
-	#	grepStr="i386 \[installed\]"
-	#fi
-
-	# Check for package using apt list
-	#packageCheck=$(apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
-	#if [ "$packageCheck" != "" ]; then
-	#	return 0
-	#fi
+	return 0
 }
 
 function BootstrapDebianVM {
@@ -191,31 +111,16 @@ function BootstrapDebianVM {
 	#	"spice-vdagent"
 	#)
 
+	# DEBUG
 	packages=(
 		"neofetch"
 		"libreoffice"
 	)
 
-	#missing=$(GetMissingPackagesFromList "${packages[@]}")
-
-	for package in "${packages[@]}"; do
-
-		if ! AptPackageIsInstalled "$package"; then
-			echo "Would be installing $package"
-			#sudo apt install -y "$package"
-		fi
-
-		#packageCheck=$(apt list --installed 2>/dev/null | grep "$package")
-
-		#if [ "$packageCheck" == "" ]; then
-		#	result+=("$package")
-		#fi
-
-	done
-
-	#if ! InstallListOfPackagesIfMissing "${packages[@]}"; then
-	#	return 1
-	#fi
+	if ! AptInstallMissingPackages "${packages[@]}"; then
+		echo "Failed to install initial packages"
+		return 1
+	fi
 }
 
 #endregion
