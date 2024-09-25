@@ -79,6 +79,96 @@ function EnableFlathubRepo {
 	echo "...Flathub repository added"
 }
 
+function InstallDoomEmacs {
+
+	if [ -d "$HOME"/.config/emacs ]; then
+		return 0
+	fi
+
+	git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
+	~/.config/emacs/bin/doom install
+	echo "...Doom Emacs installed"
+}
+
+function InstallStudio3t {
+
+	# TODO: maybe take another pass at trying to automate this
+	if [ ! -d "$HOME"/studio3t ]; then
+		echo "...NOTE: Install Studio3T here: https://studio3t.com/download/"
+	fi
+}
+
+function DownloadNordTheme {
+	if [ ! -d "$HOME"/.themes/Nordic-darker ]; then
+		wget https://github.com/EliverLara/Nordic/releases/latest/download/Nordic-darker.tar.xz
+		unar -d Nordic-darker.tar.xz
+		mv Nordic-darker/Nordic-darker "$HOME"/.themes
+		rm -rf Nordic-darker
+		rm -f Nordic-darker.tar.xz
+		echo "...Installed Nord theme"
+	fi
+
+	if [ ! -d "$HOME"/.local/share/icons/Nordzy-dark ]; then
+		mkdir "$HOME"/repos/theming/Nordzy-icon
+		git clone https://github.com/alvatip/Nordzy-icon.git "$HOME"/repos/theming/Nordzy-icon
+		"$HOME"/repos/theming/Nordzy-icon/install.sh -d "$HOME"/.local/share/icons
+		echo "...Installed Nordzy icon themes"
+	fi
+
+	# Ulauncher
+	if [ ! -d "$HOME/.config/ulauncher/user-themes/nord" ]; then
+		git clone https://github.com/KiranWells/ulauncher-nord/ "$HOME"/.config/ulauncher/user-themes/nord
+		echo "...Installed Ulauncher Nord theme"
+	fi
+
+	# Grub
+	#if [ ! -d /usr/share/grub/themes ]; then
+	#	sudo mkdir /usr/share/grub/themes
+	#	echo "...Created grub themes directory"
+	#fi
+
+	# Currently no good Nord theme for Grub, so just clone distro-grub-themes
+	if [ ! -d "$HOME"/repos/theming/distro-grub-themes ]; then
+		mkdir "$HOME"/repos/theming/distro-grub-themes
+		git clone https://github.com/AdisonCavani/distro-grub-themes.git "$HOME"/repos/theming/distro-grub-themes
+		echo "...Cloned distro-grub-themes"
+	fi
+
+	# Wallpapers
+	if [ ! -d "$HOME"/Pictures/wallpapers/nordic ]; then
+		echo "...Installing Nordic wallpaper pack"
+		mkdir "$HOME"/Pictures/wallpapers/nordic
+		mkdir "$HOME"/repos/theming/nordic-wallpapers
+		git clone https://github.com/linuxdotexe/nordic-wallpapers.git "$HOME"/repos/theming/nordic-wallpapers
+		cp -r "$HOME"/repos/theming/nordic-wallpapers/wallpapers/*.png "$HOME"/Pictures/wallpapers/nordic
+		cp -r "$HOME"/repos/theming/nordic-wallpapers/wallpapers/*.jpg "$HOME"/Pictures/wallpapers/nordic
+		echo "...Nordic wallpaper pack installed"
+	fi
+
+	# Tmux
+	if ! grep -Fxq "set -g @plugin 'arcticicestudio/nord-tmux'" "$HOME"/.tmux.conf.local; then
+		echo "NOTE: Set Nord tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'arcticicestudio/nord-tmux'"
+	fi
+}
+
+function InstallDBeaverFlatpak {
+	dbeaverCheck=$(flatpak list | grep dbeaver)
+	if [ "$dbeaverCheck" == "" ]; then
+		echo "...Installing DBeaver"
+		flatpak install -y flathub io.dbeaver.DBeaverCommunity
+		echo "...DBeaver installed"
+	fi
+}
+
+function InstallPostmanFlatpak {
+	postmanCheck=$(flatpak list | grep Postman)
+	if [ "$postmanCheck" == "" ]; then
+		echo "...Installing Postman"
+		sudo flatpak install -y flathub com.getpostman.Postman
+		echo "...Postman installed"
+	fi
+}
+
 #endregion
 
 #region DEBIAN
@@ -166,7 +256,7 @@ function BootstrapDebianVM {
 
 	# .NET
 	if ! compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
-		echo "DEBUG: would have added firefox source"
+		echo "DEBUG: would have added .NET source"
 
 		#echo "...Setting up .NET SDK package source"
 		#wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -176,22 +266,37 @@ function BootstrapDebianVM {
 		#aptUpdateNeeded=true
 	fi
 
+	# VS Code
+	if ! compgen -G "/etc/apt/sources.list.d/vscode*" >/dev/null; then
+		echo "DEBUG: would have added VSCode source"
+		#wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
+		#sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+
+		#echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
+		#rm -f packages.microsoft.gpg
+
+		#aptUpdateNeeded=true
+	fi
+
 	if $aptUpdateNeeded; then
 		echo "...Updating sources"
 		sudo apt update
 	fi
 
-	# Now that we have proper Firefox source setup, remove the ESR version
-	# that came packaged
+	# Now that we have proper Firefox source setup, replace the ESR version
+	# that came packaged with the new one
 	if AptPackageIsInstalled "firefox-esr"; then
 		sudo apt remove -y firefox-esr && sudo apt autopurge && sudo apt-get autoclean -y
+	fi
+
+	if ! AptPackageIsInstalled "firefox"; then
+		sudo apt install -y "firefox"
 	fi
 
 	packages=(
 		"git"
 		"vim"
 		"zsh"
-		"curl"
 		"wget"
 		"tmux"
 		"htop"
@@ -211,9 +316,20 @@ function BootstrapDebianVM {
 		"fonts-ubuntu"
 		"fonts-noto-color-emoji"
 		"flatpak"
-		"firefox"
+		#"firefox"
 		"dotnet-sdk-7.0"
 		"dotnet-sdk-8.0"
+		"code"
+		"emacs-gtk"
+		"ripgrep"
+		"fd-find"
+		"elpa-ligature"
+		"vlc"
+		"gparted"
+		"awscli"
+		"sshpass"
+		"default-jdk"
+		"tuned"
 	)
 
 	# DEBUG
@@ -230,6 +346,15 @@ function BootstrapDebianVM {
 	#CreateDirectories
 	#InstallNerdFonts
 	#EnableFlathubRepo
+	#InstallDoomEmacs
+	#InstallStudio3t
+	#DownloadNordTheme
+	#InstallDBeaverFlatpak
+	#InstallPostmanFlatpak
+	#
+	# TODO: install libssl1.1 directly from Debian
+	# install git credential manager
+	# clone dotfiles?
 }
 
 #endregion
