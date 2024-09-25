@@ -96,27 +96,42 @@ function InstallListOfAptPackages {
 }
 
 function GetMissingPackagesFromList {
-	echo "hello"
+	packages=("$@")
+	result=()
 
-	packageToCheck=$1
-	grepStr="installed"
+	for package in "${packages[@]}"; do
+
+		packageCheck=$(apt list --installed 2>/dev/null | grep "$package")
+
+		if [ "$packageCheck" == "" ]; then
+			result+=("$package")
+		fi
+
+	done
+
+	return "${result[@]}"
+
+	#echo "hello"
+
+	#packageToCheck=$1
+	#grepStr="installed"
 
 	# Handle 32-bit
 	# TODO: may not need 32-bit pkgs for VM
 	# should we have separate routines for determining which packages are missing if any?
 
-	if [[ "$packageToCheck" == *":i386"* ]]; then
-		# Strip i386 from the package name that was provided
-		packageToCheck="${packageToCheck/:i386/""}"
-		# Update the string used by grep to check if installed
-		grepStr="i386 \[installed\]"
-	fi
+	#if [[ "$packageToCheck" == *":i386"* ]]; then
+	#	# Strip i386 from the package name that was provided
+	#	packageToCheck="${packageToCheck/:i386/""}"
+	#	# Update the string used by grep to check if installed
+	#	grepStr="i386 \[installed\]"
+	#fi
 
 	# Check for package using apt list
-	packageCheck=$(apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
-	if [ "$packageCheck" != "" ]; then
-		return 0
-	fi
+	#packageCheck=$(apt list "$packageToCheck" 2>/dev/null | grep "$grepStr")
+	#if [ "$packageCheck" != "" ]; then
+	#	return 0
+	#fi
 }
 
 function BootstrapDebianVM {
@@ -160,7 +175,19 @@ function BootstrapDebianVM {
 		"spice-vdagent"
 	)
 
-	missing=GetMissingPackagesFromList "${packages[@]}"
+	#missing=GetMissingPackagesFromList "${packages[@]}"
+
+	for missing in GetMissingPackagesFromList "${packages[@]}"; do
+
+		echo "$missing"
+
+		#packageCheck=$(apt list --installed 2>/dev/null | grep "$package")
+
+		#if [ "$packageCheck" == "" ]; then
+		#	result+=("$package")
+		#fi
+
+	done
 
 	#if ! InstallListOfPackagesIfMissing "${packages[@]}"; then
 	#	return 1
