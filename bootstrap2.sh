@@ -100,10 +100,16 @@ function GetMissingPackagesFromList {
 	result=()
 
 	# Get list of installed packages
-	installed=$(apt list --installed)
+	installed=$(apt list --installed 2>/dev/null)
+
+	echo "$installed"
 
 	for package in "${packages[@]}"; do
-		if [ "$("$installed" | grep "$package")" == "" ]; then
+		packageCheck=$($installed | grep "$package")
+
+		echo "$packageCheck"
+
+		if [ "$packageCheck" == "" ]; then
 			result+=("$package")
 		fi
 	done
