@@ -173,8 +173,7 @@ function BootstrapDebianVM {
 		#sudo dpkg -i packages-microsoft-prod.deb
 		#rm packages-microsoft-prod.deb
 
-		aptUpdateNeeded=true
-		#UpdateAptSources
+		#aptUpdateNeeded=true
 	fi
 
 	if $aptUpdateNeeded; then
