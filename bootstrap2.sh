@@ -286,7 +286,7 @@ function BootstrapDebianVM {
 
 	# Now that we have proper Firefox source setup, replace the ESR version
 	if AptPackageIsInstalled "firefox-esr"; then
-		sudo apt remove -y firefox-esr && sudo apt autopurge && sudo apt-get autoclean -y
+		sudo apt remove -y firefox-esr && sudo apt autopurge -y && sudo apt-get autoclean -y
 	fi
 
 	if ! AptPackageIsInstalled "firefox"; then
@@ -340,7 +340,7 @@ function BootstrapDebianVM {
 	#DownloadNordTheme
 	#InstallDBeaverFlatpak
 	#InstallPostmanFlatpak
-	#
+
 	# TODO: install libssl1.1 directly from Debian
 	# install git credential manager
 	# clone dotfiles?
