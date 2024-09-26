@@ -491,7 +491,7 @@ function BootstrapDebianServer {
 		"dotnet-sdk-7.0"
 		"dotnet-sdk-8.0"
 		"awscli"
-		"default-jdk"
+		"default-jdk-headless"
 	)
 
 	echo "...Checking for and installing missing packages"
