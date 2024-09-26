@@ -198,10 +198,11 @@ function AptInstallMissingPackages {
 			#sudo apt install -y "$package"
 
 			# Check again, error if not installed
-			if ! AptPackageIsInstalled "$package"; then
-				echo "ERROR: Failed to install $package"
-				return 1
-			fi
+			# DEBUG
+			#if ! AptPackageIsInstalled "$package"; then
+			#	echo "ERROR: Failed to install $package"
+			#	return 1
+			#fi
 		fi
 	done
 
@@ -225,7 +226,6 @@ function BootstrapDebianVM {
 		#aptUpdateNeeded=true
 	fi
 
-	# TODO: maybe we should do all sources right at the start?
 	# Setup source for ulauncher package if needed
 	if ! compgen -G "/etc/apt/sources.list.d/ulauncher*" >/dev/null; then
 		echo "DEBUG: would have added ulauncher source"
