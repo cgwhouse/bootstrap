@@ -180,7 +180,12 @@ function AptPackageIsInstalled {
 	# Get list of installed packages
 	installed=$(apt list --installed 2>/dev/null)
 
-	packageCheck=$(echo "$installed" | grep "$1/")
+	# Exclude pkgs known to have naming conflicts with the ones we actually want to check for
+	# Packages we don't care about:
+	# - intel-microcode
+	# - dmidecode
+	# - thunar
+	packageCheck=$(echo "$installed" | grep "$1/" | grep -v "intel-microcode" | grep -v "dmidecode" | grep -v "thunar")
 
 	if [ "$packageCheck" != "" ]; then
 		return 0
@@ -300,21 +305,21 @@ function BootstrapDebianVM {
 		"git"
 		"vim"
 		"zsh"
-		"wget"
+		#"wget"
 		"tmux"
 		"htop"
-		"unar"
+		"unar" # problem w thunar
 		"aptitude"
 		"apt-transport-https"
-		"gpg" # TODO: might break out if not included in default, so we can frontload apt sources
-		"gnupg"
-		"ca-certificates"
+		#"gpg" # TODO: might break out if not included in default, so we can frontload apt sources
+		#"gnupg"
+		#"ca-certificates"
 		"neofetch"
 		"spice-vdagent"
 		"ulauncher"
 		"plank"
 		"pipewire-audio"
-		"pavucontrol"
+		#"pavucontrol"
 		"ttf-mscorefonts-installer"
 		"fonts-firacode"
 		"fonts-ubuntu"
@@ -322,7 +327,7 @@ function BootstrapDebianVM {
 		"flatpak"
 		"dotnet-sdk-7.0"
 		"dotnet-sdk-8.0"
-		"code"
+		"code" # problem w intel-microcode and dmidecode
 		"emacs-gtk"
 		"ripgrep"
 		"fd-find"
