@@ -8,6 +8,13 @@ fi
 
 #region SHARED
 
+function ConfigureZsh {
+	if [ ! -d "$HOME/.oh-my-zsh" ]; then
+		echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
+		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+	fi
+}
+
 function CreateDirectories {
 	directories=(
 		"$HOME/repos"
@@ -120,12 +127,6 @@ function DownloadNordTheme {
 		git clone https://github.com/KiranWells/ulauncher-nord/ "$HOME"/.config/ulauncher/user-themes/nord
 		echo "...Installed Ulauncher Nord theme"
 	fi
-
-	# Grub
-	#if [ ! -d /usr/share/grub/themes ]; then
-	#	sudo mkdir /usr/share/grub/themes
-	#	echo "...Created grub themes directory"
-	#fi
 
 	# Currently no good Nord theme for Grub, so just clone distro-grub-themes
 	if [ ! -d "$HOME"/repos/theming/distro-grub-themes ]; then
@@ -309,6 +310,7 @@ function BootstrapDebianVM {
 		"neofetch"
 		"spice-vdagent"
 		"ulauncher"
+		"plank"
 		"pipewire-audio"
 		"pavucontrol"
 		"ttf-mscorefonts-installer"
@@ -316,7 +318,6 @@ function BootstrapDebianVM {
 		"fonts-ubuntu"
 		"fonts-noto-color-emoji"
 		"flatpak"
-		#"firefox"
 		"dotnet-sdk-7.0"
 		"dotnet-sdk-8.0"
 		"code"
@@ -330,12 +331,6 @@ function BootstrapDebianVM {
 		"sshpass"
 		"default-jdk"
 		"tuned"
-	)
-
-	# DEBUG
-	packages=(
-		"neofetch"
-		"libreoffice"
 	)
 
 	if ! AptInstallMissingPackages "${packages[@]}"; then
@@ -355,6 +350,11 @@ function BootstrapDebianVM {
 	# TODO: install libssl1.1 directly from Debian
 	# install git credential manager
 	# clone dotfiles?
+	# ConfigureZsh
+}
+
+function BootstrapDebianServer {
+	echo "Bootstrapping Debian Server..."
 }
 
 #endregion
@@ -363,6 +363,18 @@ function BootstrapDebianVM {
 
 function BootstrapFedora {
 	echo "Bootstrapping Fedora..."
+
+	#max_parallel_downloads=10
+	#fastestmirror=True
+
+}
+
+#endregion
+
+#region GENTOO
+
+function BootstrapGentoo {
+	echo "Bootstrapping Gentoo..."
 }
 
 #endregion
@@ -371,14 +383,22 @@ function Main {
 	printf "\nWelcome to boostrap2!\n\n"
 	printf "Select a workflow:\n\n"
 
-	select workflow in "Fedora" "Debian VM" "Exit"; do
+	select workflow in "Debian (Server)" "Debian (VM)" "Fedora" "Gentoo" "Exit"; do
 		case $workflow in
+		"Debian (Server)")
+			BootstrapDebianServer
+			break
+			;;
+		"Debian (VM)")
+			BootstrapDebianVM
+			break
+			;;
 		"Fedora")
 			BootstrapFedora
 			break
 			;;
-		"Debian VM")
-			BootstrapDebianVM
+		"Gentoo")
+			BootstrapGentoo
 			break
 			;;
 		"Exit")
