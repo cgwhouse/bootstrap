@@ -3,10 +3,10 @@
 Welcome to Flavortown
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/bootstrap2/bootstrap2.sh)
+bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/bootstrap2/bootstrap.sh)
 ```
 
-## Pre-Bootstrap Checklist
+## Pre-Bootstrap Checklists
 
 ### Debian
 
