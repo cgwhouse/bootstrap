@@ -177,7 +177,6 @@ function InstallPostmanFlatpak {
 function AptPackageIsInstalled {
 	package=$1
 
-	# Get list of installed packages
 	installed=$(apt list --installed 2>/dev/null)
 
 	# Exclude pkgs known to have naming conflicts with the ones we actually want to check for
@@ -199,15 +198,13 @@ function AptInstallMissingPackages {
 
 	for package in "${packages[@]}"; do
 		if ! AptPackageIsInstalled "$package"; then
-			echo "DEBUG: Would be installing $package"
-			#sudo apt install -y "$package"
+			sudo apt install -y "$package"
 
 			# Check again, error if not installed
-			# DEBUG
-			#if ! AptPackageIsInstalled "$package"; then
-			#	echo "ERROR: Failed to install $package"
-			#	return 1
-			#fi
+			if ! AptPackageIsInstalled "$package"; then
+				echo "ERROR: Failed to install $package"
+				return 1
+			fi
 		fi
 	done
 
