@@ -14,8 +14,8 @@ bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/b
 
 ### Fedora
 
-1. Update system and reboot
-2. Enable RPM Fusion repos:
+1. Update system with `sudo dnf distro-sync --refresh && sudo dnf autoremove` and reboot
+2. Enable and configure RPM Fusion repos:
 
    ```bash
    sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
@@ -23,17 +23,27 @@ bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/b
    sudo dnf config-manager --enable fedora-cisco-openh264
    ```
 
-3. Enable proprietary codecs:
+3. Enable proprietary codecs, then apply [Firefox config changes](https://docs.fedoraproject.org/en-US/quick-docs/openh264/#_firefox_config_changes):
 
    ```bash
    sudo dnf group install Multimedia
    sudo dnf install gstreamer1-plugin-openh264 mozilla-openh264
+   sudo dnf swap ffmpeg-free ffmpeg --allowerasing
+   sudo dnf update @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
+   sudo dnf update @sound-and-video
+
+   # Intel
+   sudo dnf install intel-media-driver
+
+   # AMD
+   sudo dnf swap mesa-va-drivers mesa-va-drivers-freeworld
+   sudo dnf swap mesa-vdpau-drivers mesa-vdpau-drivers-freeworld
+   sudo dnf swap mesa-va-drivers.i686 mesa-va-drivers-freeworld.i686
+   sudo dnf swap mesa-vdpau-drivers.i686 mesa-vdpau-drivers-freeworld.i686
+
+   # NVIDIA
+   sudo dnf install libva-nvidia-driver.{i686,x86_64}
    ```
-
-   Apply [Firefox config changes](https://docs.fedoraproject.org/en-US/quick-docs/openh264/#_firefox_config_changes)
-
-- Fedora quick docs for OpenH264
-- RPM Fusion docs for Multimedia
 
 ### Gentoo
 
