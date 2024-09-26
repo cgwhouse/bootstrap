@@ -180,11 +180,14 @@ function AptPackageIsInstalled {
 	installed=$(apt list --installed 2>/dev/null)
 
 	# Exclude pkgs known to have naming conflicts with the ones we actually want to check for
-	# Packages we don't care about:
-	# - intel-microcode
-	# - dmidecode
-	# - thunar
-	packageCheck=$(echo "$installed" | grep "$1/" | grep -v "intel-microcode" | grep -v "dmidecode" | grep -v "thunar")
+	# Conflicts exist currently for unar and VSCode
+	if [ "$package" == "code" ]; then
+		packageCheck=$(echo "$installed" | grep "$1/" | grep -v "intel-microcode" | grep -v "dmidecode" | grep -v "fonts-firacode")
+	elif [ "$package" == "unar" ]; then
+		packageCheck=$(echo "$installed" | grep "$1/" | grep -v "thunar")
+	else
+		packageCheck=$(echo "$installed" | grep "$1/")
+	fi
 
 	if [ "$packageCheck" != "" ]; then
 		return 0
@@ -332,19 +335,19 @@ function BootstrapDebianVM {
 		return 1
 	fi
 
-	#CreateDirectories
-	#InstallNerdFonts
-	#EnableFlathubRepo
-	#InstallDoomEmacs
-	#InstallStudio3t
-	#DownloadNordTheme
-	#InstallDBeaverFlatpak
-	#InstallPostmanFlatpak
+	CreateDirectories
+	InstallNerdFonts
+	EnableFlathubRepo
+	InstallDoomEmacs
+	InstallDBeaverFlatpak
+	InstallPostmanFlatpak
+	DownloadNordTheme
+	InstallStudio3t
 
 	# TODO: install libssl1.1 directly from Debian
 	# install git credential manager
 	# clone dotfiles?
-	# ConfigureZsh
+	ConfigureZsh
 }
 
 function BootstrapDebianServer {
