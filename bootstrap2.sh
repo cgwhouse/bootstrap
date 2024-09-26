@@ -180,7 +180,7 @@ function AptPackageIsInstalled {
 	# Get list of installed packages
 	installed=$(apt list --installed 2>/dev/null)
 
-	packageCheck=$(echo "$installed" | grep "$1")
+	packageCheck=$(echo "$installed" | grep "$1/")
 
 	if [ "$packageCheck" != "" ]; then
 		return 0
@@ -287,11 +287,13 @@ function BootstrapDebianVM {
 	# Now that we have proper Firefox source setup, replace the ESR version
 	# that came packaged with the new one
 	if AptPackageIsInstalled "firefox-esr"; then
-		sudo apt remove -y firefox-esr && sudo apt autopurge && sudo apt-get autoclean -y
+		echo "DEBUG: would have uninstalled firefox-esr"
+		#sudo apt remove -y firefox-esr && sudo apt autopurge && sudo apt-get autoclean -y
 	fi
 
 	if ! AptPackageIsInstalled "firefox"; then
-		sudo apt install -y "firefox"
+		echo "DEBUG: would have installed regular firefox"
+		#sudo apt install -y "firefox"
 	fi
 
 	packages=(
