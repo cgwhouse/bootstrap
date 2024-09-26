@@ -8,6 +8,16 @@ fi
 
 #region SHARED
 
+function IsCommandAvailable {
+	cmdCheck=$($1 >/dev/null || echo "not found")
+
+	if [ "$cmdCheck" == "not found" ]; then
+		return 1
+	fi
+
+	return 0
+}
+
 function ConfigureZsh {
 	if [ ! -d "$HOME/.oh-my-zsh" ]; then
 		echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
@@ -170,6 +180,23 @@ function InstallPostmanFlatpak {
 	fi
 }
 
+function InstallGitCredentialManager {
+	# Global config
+	configCheck=$(git config --list | grep credential.credentialstore=secretservice)
+	if [ "$configCheck" == "" ]; then
+		git config --global credential.credentialStore secretservice
+		echo "...Updated git credentialStore config"
+	fi
+
+	if ! IsCommandAvailable "git-credential-manager"; then
+		echo "DEBUG: git-credential-manager not available"
+		#curl -L https://aka.ms/gcm/linux-install-source.sh | sh
+		#git-credential-manager configure
+	else
+		echo "DEBUG: git-credential-manager is available"
+	fi
+}
+
 #endregion
 
 #region DEBIAN
@@ -328,6 +355,7 @@ function BootstrapDebianVM {
 		"sshpass"
 		"default-jdk"
 		"tuned"
+		"systemd-resolved"
 	)
 
 	if ! AptInstallMissingPackages "${packages[@]}"; then
@@ -342,11 +370,25 @@ function BootstrapDebianVM {
 	InstallDBeaverFlatpak
 	InstallPostmanFlatpak
 	DownloadNordTheme
+	InstallGitCredentialManager
 	InstallStudio3t
 
-	# TODO: install libssl1.1 directly from Debian
-	# install git credential manager
+	# Install old libssl (for AWS VPN)
+	if ! AptPackageIsInstalled "libssl1.1"; then
+		wget http://http.us.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb -O libssl.deb
+		sudo dpkg -i libssl.deb
+
+		if ! AptPackageIsInstalled "libssl1.1"; then
+			echo "ERROR: Failed to install libssl"
+			return 1
+		fi
+
+		rm -f libssl.deb
+		echo "...Installed libssl"
+	fi
+
 	# clone dotfiles?
+
 	ConfigureZsh
 }
 

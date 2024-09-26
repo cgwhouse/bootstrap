@@ -2,7 +2,15 @@
 
 Welcome to Flavortown
 
+```bash
+bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/bootstrap2/bootstrap2.sh)
+```
+
 ## Pre-Bootstrap Checklist
+
+### Debian
+
+1. Install `curl`
 
 ### Fedora
 
@@ -27,25 +35,7 @@ Welcome to Flavortown
 - Fedora quick docs for OpenH264
 - RPM Fusion docs for Multimedia
 
-5. Install git and clone this repo
-6. Run fedora.sh
-7. Move bootstrap directory to repos
-8. Reboot
-
-```bash
-bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/bootstrap2/bootstrap2.sh)
-```
-
-## Post-Bootstrap Reminder List
-
-(probably want to link to this as another document, we could copy one onto the desktop for ourselves)
-
-- Re-run script if needed to pick up any remaining tasks
-- After getting clean output, reboot
-- First thing
-- Another thing
-
-## Gentoo
+### Gentoo
 
 1. Follow the Handbook.
    When it says to reboot, before doing so, install and configure eix.
@@ -56,4 +46,10 @@ bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/b
 3. After installing and spot-checking the above items, clone this repo
 4. Run gentoo.sh
 
-## Fedora
+## Post-Bootstrap Checklist
+
+(probably want to link to this as another document, we could copy one onto the desktop for ourselves)
+this is the new CONFIG.md
+
+- Re-run script if needed to pick up any remaining tasks
+- After getting clean output, reboot
