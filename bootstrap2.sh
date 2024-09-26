@@ -213,6 +213,13 @@ function InstallGitCredentialManager {
 	fi
 }
 
+function InstallNvm {
+	if [ ! -d "$HOME"/.nvm ]; then
+		wget -O- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+		echo "...nvm installed"
+	fi
+}
+
 #endregion
 
 #region DEBIAN
@@ -405,6 +412,7 @@ function BootstrapDebianVM {
 	InstallPostmanFlatpak
 	DownloadNordTheme
 	InstallGitCredentialManager
+	InstallNvm
 	InstallStudio3t
 
 	# Install old libssl (for AWS VPN)
@@ -482,6 +490,7 @@ function BootstrapDebianServer {
 
 	CreateDirectories
 	ConfigureTmux
+	InstallNvm
 	ConfigureZsh
 }
 
