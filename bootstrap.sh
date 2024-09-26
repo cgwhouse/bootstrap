@@ -18,6 +18,30 @@ function IsCommandAvailable {
 	return 0
 }
 
+function CreateDirectories {
+	directories=(
+		"$HOME/repos"
+		"$HOME/repos/theming"
+		"$HOME/Pictures"
+		"$HOME/Pictures/wallpapers"
+		"$HOME/.cache"
+		"$HOME/.local"
+		"$HOME/.local/bin"
+		"$HOME/.local/share"
+		"$HOME/.local/share/applications"
+		"$HOME/.local/share/fonts"
+		"$HOME/.local/share/icons"
+		"$HOME/.themes"
+	)
+
+	for directory in "${directories[@]}"; do
+		if [ ! -d "$directory" ]; then
+			mkdir "$directory"
+			echo "...Created $directory"
+		fi
+	done
+}
+
 function ConfigureTmux {
 	ohMyTmuxPath="$HOME/.tmux"
 	if [ ! -d "$ohMyTmuxPath" ]; then
@@ -42,30 +66,6 @@ function ConfigureZsh {
 		echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
 		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 	fi
-}
-
-function CreateDirectories {
-	directories=(
-		"$HOME/repos"
-		"$HOME/repos/theming"
-		"$HOME/Pictures"
-		"$HOME/Pictures/wallpapers"
-		"$HOME/.cache"
-		"$HOME/.local"
-		"$HOME/.local/bin"
-		"$HOME/.local/share"
-		"$HOME/.local/share/applications"
-		"$HOME/.local/share/fonts"
-		"$HOME/.local/share/icons"
-		"$HOME/.themes"
-	)
-
-	for directory in "${directories[@]}"; do
-		if [ ! -d "$directory" ]; then
-			mkdir "$directory"
-			echo "...Created $directory"
-		fi
-	done
 }
 
 function InstallNerdFonts {
@@ -264,6 +264,36 @@ function AptInstallMissingPackages {
 	return 0
 }
 
+function AllDebianSourcesAreEnabled {
+	aptSourcesCheck=$(grep "contrib non-free" </etc/apt/sources.list)
+
+	if [ "$aptSourcesCheck" == "" ]; then
+		return 0
+	fi
+
+	return 1
+}
+
+function EnableAllDebianSources {
+	sudo sed -i 's/main non-free-firmware/main contrib non-free non-free-firmware/g' /etc/apt/sources.list
+	echo "...Added 'contrib non-free' to Debian sources"
+}
+
+function DotNetAptSourceIsEnabled {
+	if compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
+		return 0
+	fi
+
+	return 1
+}
+
+function EnableDotNetAptSource {
+	wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+	sudo dpkg -i packages-microsoft-prod.deb
+	rm packages-microsoft-prod.deb
+	echo "...Added .NET SDK package source"
+}
+
 function BootstrapDebianVM {
 	echo "Bootstrapping Debian VM..."
 	echo "NOTE: You may be prompted multiple times for input"
@@ -273,13 +303,15 @@ function BootstrapDebianVM {
 
 	# Ensure apt sources include contrib and non-free,
 	# default netinstall only has main and non-free-firmware
-	aptSourcesCheck=$(grep "contrib non-free" </etc/apt/sources.list)
-
-	if [ "$aptSourcesCheck" == "" ]; then
-		sudo sed -i 's/main non-free-firmware/main contrib non-free non-free-firmware/g' /etc/apt/sources.list
-
+	if ! AllDebianSourcesAreEnabled; then
+		EnableAllDebianSources
 		aptUpdateNeeded=true
-		echo "...Added 'contrib non-free' to Debian sources"
+	fi
+
+	# .NET
+	if ! DotNetAptSourceIsEnabled; then
+		EnableDotNetAptSource
+		aptUpdateNeeded=true
 	fi
 
 	# Ulauncher
@@ -310,16 +342,6 @@ function BootstrapDebianVM {
 
 		aptUpdateNeeded=true
 		echo "...Added up-to-date Firefox package source"
-	fi
-
-	# .NET
-	if ! compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
-		wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-		sudo dpkg -i packages-microsoft-prod.deb
-		rm packages-microsoft-prod.deb
-
-		aptUpdateNeeded=true
-		echo "...Added .NET SDK package source"
 	fi
 
 	# VS Code
@@ -434,30 +456,21 @@ function BootstrapDebianVM {
 
 function BootstrapDebianServer {
 	echo "Bootstrapping Debian Server..."
-	echo "NOTE: You may be prompted multiple times for input"
 
 	# Check various package sources first, if any need updating we will run apt update after
 	aptUpdateNeeded=false
 
 	# Ensure apt sources include contrib and non-free,
 	# default netinstall only has main and non-free-firmware
-	aptSourcesCheck=$(grep "contrib non-free" </etc/apt/sources.list)
-
-	if [ "$aptSourcesCheck" == "" ]; then
-		sudo sed -i 's/main non-free-firmware/main contrib non-free non-free-firmware/g' /etc/apt/sources.list
-
+	if ! AllDebianSourcesAreEnabled; then
+		EnableAllDebianSources
 		aptUpdateNeeded=true
-		echo "...Added 'contrib non-free' to Debian sources"
 	fi
 
 	# .NET
-	if ! compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
-		wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-		sudo dpkg -i packages-microsoft-prod.deb
-		rm packages-microsoft-prod.deb
-
+	if ! DotNetAptSourceIsEnabled; then
+		EnableDotNetAptSource
 		aptUpdateNeeded=true
-		echo "...Added .NET SDK package source"
 	fi
 
 	if $aptUpdateNeeded; then
