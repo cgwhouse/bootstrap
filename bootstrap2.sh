@@ -18,6 +18,25 @@ function IsCommandAvailable {
 	return 0
 }
 
+function ConfigureTmux {
+	ohMyTmuxPath="$HOME/.tmux"
+	if [ ! -d "$ohMyTmuxPath" ]; then
+		echo "...Installing Oh My Tmux"
+
+		git clone https://github.com/gpakosz/.tmux.git "$ohMyTmuxPath"
+		ln -sf "$ohMyTmuxPath"/.tmux.conf "$HOME"/.tmux.conf
+		cp "$ohMyTmuxPath"/.tmux.conf.local "$HOME"/
+
+		echo "...Successfully installed Oh My Tmux"
+	fi
+
+	# Ensure Tmux is fully configured, exit if not
+	# Check for commented out mouse mode as the check, the default config has this
+	if grep -Fxq "#set -g mouse on" "$HOME"/.tmux.conf.local; then
+		echo "...WARNING: Oh My Tmux still needs to be configured"
+	fi
+}
+
 function ConfigureZsh {
 	if [ ! -d "$HOME/.oh-my-zsh" ]; then
 		echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
@@ -189,9 +208,8 @@ function InstallGitCredentialManager {
 	fi
 
 	if ! IsCommandAvailable "git-credential-manager"; then
-		echo "DEBUG: git-credential-manager not available"
-		#curl -L https://aka.ms/gcm/linux-install-source.sh | sh
-		#git-credential-manager configure
+		curl -L https://aka.ms/gcm/linux-install-source.sh | sh
+		git-credential-manager configure
 	else
 		echo "DEBUG: git-credential-manager is available"
 	fi
@@ -355,12 +373,25 @@ function BootstrapDebianVM {
 		"sshpass"
 		"default-jdk"
 		"tuned"
-		"systemd-resolved"
 	)
 
 	if ! AptInstallMissingPackages "${packages[@]}"; then
-		echo "Failed to install initial packages"
+		echo "Failed to install packages"
 		return 1
+	fi
+
+	# Do systemd-resolved separately, because reboot required
+	# for internet to work again after install
+	if ! AptPackageIsInstalled "systemd-resolved"; then
+		sudo apt install -y systemd-resolved
+
+		if ! AptPackageIsInstalled "systemd-resolved"; then
+			echo "ERROR: Failed to install systemd-resolved"
+			return 1
+		else
+			echo "...Successfully installed systemd-resolved, reboot and run script again to continue"
+			return 0
+		fi
 	fi
 
 	CreateDirectories
