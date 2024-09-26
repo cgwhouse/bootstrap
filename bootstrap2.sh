@@ -217,7 +217,7 @@ function AptInstallMissingPackages {
 function BootstrapDebianVM {
 	echo "Bootstrapping Debian VM..."
 
-	# Check package sources first, if any need updating we will run apt update after
+	# Check various package sources first, if any need updating we will run apt update after
 	aptUpdateNeeded=false
 
 	# Ensure apt sources include contrib and non-free,
@@ -225,63 +225,61 @@ function BootstrapDebianVM {
 	aptSourcesCheck=$(grep "contrib non-free" </etc/apt/sources.list)
 
 	if [ "$aptSourcesCheck" == "" ]; then
-		echo "DEBUG: would have updated apt sources"
-		#sudo sed -i 's/main non-free-firmware/main contrib non-free non-free-firmware/g' /etc/apt/sources.list
+		sudo sed -i 's/main non-free-firmware/main contrib non-free non-free-firmware/g' /etc/apt/sources.list
 
-		#aptUpdateNeeded=true
+		aptUpdateNeeded=true
+		echo "...Added 'contrib non-free' to Debian sources"
 	fi
 
-	# Setup source for ulauncher package if needed
+	# Ulauncher
 	if ! compgen -G "/etc/apt/sources.list.d/ulauncher*" >/dev/null; then
-		echo "DEBUG: would have added ulauncher source"
-		#gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176
-		#gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
+		gpg --keyserver keyserver.ubuntu.com --recv 0xfaf1020699503176
+		gpg --export 0xfaf1020699503176 | sudo tee /usr/share/keyrings/ulauncher-archive-keyring.gpg >/dev/null
 
-		#echo "deb [signed-by=/usr/share/keyrings/ulauncher-archive-keyring.gpg] \
-		#    http://ppa.launchpad.net/agornostal/ulauncher/ubuntu jammy main" |
-		#	sudo tee /etc/apt/sources.list.d/ulauncher-jammy.list
+		echo "deb [signed-by=/usr/share/keyrings/ulauncher-archive-keyring.gpg] \
+		    http://ppa.launchpad.net/agornostal/ulauncher/ubuntu jammy main" |
+			sudo tee /etc/apt/sources.list.d/ulauncher-jammy.list
 
-		#aptUpdateNeeded=true
+		aptUpdateNeeded=true
+		echo "...Added ulauncher package source"
 	fi
 
 	if ! compgen -G "/etc/apt/sources.list.d/mozilla*" >/dev/null; then
-		echo "DEBUG: would have added firefox source"
+		sudo install -d -m 0755 /etc/apt/keyrings
+		wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc >/dev/null
 
-		#		sudo install -d -m 0755 /etc/apt/keyrings
-		#		wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc >/dev/null
-		#		echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list >/dev/null
-		#
-		#		echo '
-		#	Package: *
-		#	Pin: origin packages.mozilla.org
-		#	Pin-Priority: 1000
-		#	' | sudo tee /etc/apt/preferences.d/mozilla
+		echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list >/dev/null
 
-		#aptUpdateNeeded=true
+		echo '
+			Package: *
+			Pin: origin packages.mozilla.org
+			Pin-Priority: 1000
+			' | sudo tee /etc/apt/preferences.d/mozilla
+
+		aptUpdateNeeded=true
+		echo "...Added up-to-date Firefox package source"
 	fi
 
 	# .NET
 	if ! compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
-		echo "DEBUG: would have added .NET source"
+		wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+		sudo dpkg -i packages-microsoft-prod.deb
+		rm packages-microsoft-prod.deb
 
-		#echo "...Setting up .NET SDK package source"
-		#wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-		#sudo dpkg -i packages-microsoft-prod.deb
-		#rm packages-microsoft-prod.deb
-
-		#aptUpdateNeeded=true
+		aptUpdateNeeded=true
+		echo "...Added .NET SDK package source"
 	fi
 
 	# VS Code
 	if ! compgen -G "/etc/apt/sources.list.d/vscode*" >/dev/null; then
-		echo "DEBUG: would have added VSCode source"
-		#wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
-		#sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+		wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
+		sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
 
-		#echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
-		#rm -f packages.microsoft.gpg
+		echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
+		rm -f packages.microsoft.gpg
 
-		#aptUpdateNeeded=true
+		aptUpdateNeeded=true
+		echo "...Added VSCode package source"
 	fi
 
 	if $aptUpdateNeeded; then
@@ -290,36 +288,28 @@ function BootstrapDebianVM {
 	fi
 
 	# Now that we have proper Firefox source setup, replace the ESR version
-	# that came packaged with the new one
 	if AptPackageIsInstalled "firefox-esr"; then
-		echo "DEBUG: would have uninstalled firefox-esr"
-		#sudo apt remove -y firefox-esr && sudo apt autopurge && sudo apt-get autoclean -y
+		sudo apt remove -y firefox-esr && sudo apt autopurge && sudo apt-get autoclean -y
 	fi
 
 	if ! AptPackageIsInstalled "firefox"; then
-		echo "DEBUG: would have installed regular firefox"
-		#sudo apt install -y "firefox"
+		sudo apt install -y "firefox"
 	fi
 
 	packages=(
 		"git"
 		"vim"
 		"zsh"
-		#"wget"
 		"tmux"
 		"htop"
-		"unar" # problem w thunar
+		"unar"
 		"aptitude"
 		"apt-transport-https"
-		#"gpg" # TODO: might break out if not included in default, so we can frontload apt sources
-		#"gnupg"
-		#"ca-certificates"
 		"neofetch"
 		"spice-vdagent"
 		"ulauncher"
 		"plank"
 		"pipewire-audio"
-		#"pavucontrol"
 		"ttf-mscorefonts-installer"
 		"fonts-firacode"
 		"fonts-ubuntu"
@@ -327,7 +317,7 @@ function BootstrapDebianVM {
 		"flatpak"
 		"dotnet-sdk-7.0"
 		"dotnet-sdk-8.0"
-		"code" # problem w intel-microcode and dmidecode
+		"code"
 		"emacs-gtk"
 		"ripgrep"
 		"fd-find"
