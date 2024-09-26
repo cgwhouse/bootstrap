@@ -375,6 +375,8 @@ function BootstrapDebianVM {
 		"tuned"
 	)
 
+	echo "...Checking for and installing missing packages"
+
 	if ! AptInstallMissingPackages "${packages[@]}"; then
 		echo "Failed to install packages"
 		return 1
@@ -395,6 +397,7 @@ function BootstrapDebianVM {
 	fi
 
 	CreateDirectories
+	ConfigureTmux
 	InstallNerdFonts
 	EnableFlathubRepo
 	InstallDoomEmacs
