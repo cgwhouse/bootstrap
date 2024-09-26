@@ -9,7 +9,7 @@ fi
 #region SHARED
 
 function IsCommandAvailable {
-	cmdCheck=$($1 >/dev/null || echo "not found")
+	cmdCheck=$($1 2>/dev/null || echo "not found")
 
 	if [ "$cmdCheck" == "not found" ]; then
 		return 1
@@ -207,8 +207,8 @@ function InstallGitCredentialManager {
 		echo "...Updated git credentialStore config"
 	fi
 
-	if ! IsCommandAvailable "git-credential-manager"; then
-		curl -L https://aka.ms/gcm/linux-install-source.sh | sh
+	if ! IsCommandAvailable "git-credential-manager --help"; then
+		curl -L https://aka.ms/gcm/linux-install-source.sh | bash
 		git-credential-manager configure
 	else
 		echo "DEBUG: git-credential-manager is available"
