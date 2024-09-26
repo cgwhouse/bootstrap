@@ -177,7 +177,7 @@ function DownloadNordTheme {
 
 	# Tmux
 	if ! grep -Fxq "set -g @plugin 'arcticicestudio/nord-tmux'" "$HOME"/.tmux.conf.local; then
-		echo "NOTE: Set Nord tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'arcticicestudio/nord-tmux'"
+		echo "...NOTE: Set Nord tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'arcticicestudio/nord-tmux'"
 	fi
 }
 
@@ -194,7 +194,7 @@ function InstallPostmanFlatpak {
 	postmanCheck=$(flatpak list | grep Postman)
 	if [ "$postmanCheck" == "" ]; then
 		echo "...Installing Postman"
-		sudo flatpak install -y flathub com.getpostman.Postman
+		flatpak install -y flathub com.getpostman.Postman
 		echo "...Postman installed"
 	fi
 }
@@ -210,8 +210,6 @@ function InstallGitCredentialManager {
 	if ! IsCommandAvailable "git-credential-manager --help"; then
 		curl -L https://aka.ms/gcm/linux-install-source.sh | bash
 		git-credential-manager configure
-	else
-		echo "DEBUG: git-credential-manager is available"
 	fi
 }
 
@@ -261,6 +259,7 @@ function AptInstallMissingPackages {
 
 function BootstrapDebianVM {
 	echo "Bootstrapping Debian VM..."
+	echo "NOTE: You may be prompted multiple times for input"
 
 	# Check various package sources first, if any need updating we will run apt update after
 	aptUpdateNeeded=false
@@ -289,6 +288,7 @@ function BootstrapDebianVM {
 		echo "...Added ulauncher package source"
 	fi
 
+	# Firefox (from Mozilla repo)
 	if ! compgen -G "/etc/apt/sources.list.d/mozilla*" >/dev/null; then
 		sudo install -d -m 0755 /etc/apt/keyrings
 		wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc >/dev/null
@@ -421,13 +421,68 @@ function BootstrapDebianVM {
 		echo "...Installed libssl"
 	fi
 
-	# clone dotfiles?
-
 	ConfigureZsh
 }
 
 function BootstrapDebianServer {
 	echo "Bootstrapping Debian Server..."
+	echo "NOTE: You may be prompted multiple times for input"
+
+	# Check various package sources first, if any need updating we will run apt update after
+	aptUpdateNeeded=false
+
+	# Ensure apt sources include contrib and non-free,
+	# default netinstall only has main and non-free-firmware
+	aptSourcesCheck=$(grep "contrib non-free" </etc/apt/sources.list)
+
+	if [ "$aptSourcesCheck" == "" ]; then
+		sudo sed -i 's/main non-free-firmware/main contrib non-free non-free-firmware/g' /etc/apt/sources.list
+
+		aptUpdateNeeded=true
+		echo "...Added 'contrib non-free' to Debian sources"
+	fi
+
+	# .NET
+	if ! compgen -G "/etc/apt/sources.list.d/microsoft-prod*" >/dev/null; then
+		wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+		sudo dpkg -i packages-microsoft-prod.deb
+		rm packages-microsoft-prod.deb
+
+		aptUpdateNeeded=true
+		echo "...Added .NET SDK package source"
+	fi
+
+	if $aptUpdateNeeded; then
+		echo "...Updating sources"
+		sudo apt update
+	fi
+
+	packages=(
+		"git"
+		"vim"
+		"zsh"
+		"tmux"
+		"htop"
+		"unar"
+		"aptitude"
+		"apt-transport-https"
+		"neofetch"
+		"dotnet-sdk-7.0"
+		"dotnet-sdk-8.0"
+		"awscli"
+		"default-jdk"
+	)
+
+	echo "...Checking for and installing missing packages"
+
+	if ! AptInstallMissingPackages "${packages[@]}"; then
+		echo "Failed to install packages"
+		return 1
+	fi
+
+	CreateDirectories
+	ConfigureTmux
+	ConfigureZsh
 }
 
 #endregion
@@ -483,7 +538,7 @@ function Main {
 		esac
 	done
 
-	printf "\n"
+	printf "\nDone!\n"
 }
 
 Main
