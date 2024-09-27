@@ -3,7 +3,7 @@
 Welcome to Flavortown
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/bootstrap2/bootstrap.sh)
+bash <(curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/bootstrap2/bootstrap.sh)
 ```
 
 ## Pre-Bootstrap Checklists
