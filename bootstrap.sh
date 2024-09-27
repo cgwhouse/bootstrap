@@ -810,7 +810,7 @@ function BootstrapFedora {
 		"net.pcsx2.PCSX2"
 		"net.rpcs3.RPCS3"
 		"net.kuribo64.melonDS"
-		"flathub io.mgba.mGBA"
+		"io.mgba.mGBA"
 		"io.dbeaver.DBeaverCommunity"
 		"com.getpostman.Postman"
 	)
