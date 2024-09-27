@@ -111,7 +111,7 @@ function EnableFlathubRepo {
 		return 0
 	fi
 
-	flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+	flatpak --user remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 	echo "...Flathub repository added"
 }
 

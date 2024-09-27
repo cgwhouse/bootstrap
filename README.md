@@ -54,13 +54,3 @@ bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/b
    - audio (`pipewire`)
    - Firefox bin
 
-## Post-Bootstrap Checklist
-
-(probably want to link to this as another document, we could copy one onto the desktop for ourselves)
-this is the new CONFIG.md
-
-- Re-run script if needed to pick up any remaining tasks
-- After getting clean output, reboot
-- Alacritty config to `$HOME/.config/alacritty/alacritty.toml`
-- Ulauncher on startup
-- Look at `appimages` directory + browser bookmarks to get any manual / additional stuff
