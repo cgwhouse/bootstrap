@@ -27,7 +27,7 @@ bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/b
 
    ```bash
    sudo dnf group install Multimedia
-   sudo dnf install gstreamer1-plugin-openh264 mozilla-openh264
+   #sudo dnf install gstreamer1-plugin-openh264 mozilla-openh264
    sudo dnf swap ffmpeg-free ffmpeg --allowerasing
    sudo dnf update @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
    sudo dnf update @sound-and-video
