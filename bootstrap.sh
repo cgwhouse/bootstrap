@@ -1016,13 +1016,13 @@ function Main {
 	printf "\nWelcome to bootstrap2!\n\n"
 	printf "Select a workflow:\n\n"
 
-	select workflow in "Debian (Server)" "Debian (VM)" "Fedora" "Gentoo" "Exit"; do
+	select workflow in "Debian Server" "Debian VM" "Fedora" "Gentoo" "Exit"; do
 		case $workflow in
-		"Debian (Server)")
+		"Debian Server")
 			BootstrapDebianServer
 			break
 			;;
-		"Debian (VM)")
+		"Debian VM")
 			BootstrapDebianVM
 			break
 			;;
