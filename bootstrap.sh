@@ -268,7 +268,7 @@ function FlatpakInstallMissingPackages {
 
 	for package in "${packages[@]}"; do
 		if ! FlatpakPackageIsInstalled "$package"; then
-			flatpak install --user -y flathub "$package"
+			flatpak install --user -y "$package"
 
 			# Check again, error if not installed
 			if ! FlatpakPackageIsInstalled "$package"; then
