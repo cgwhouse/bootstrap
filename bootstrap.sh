@@ -199,6 +199,33 @@ function InstallPostmanFlatpak {
 	fi
 }
 
+function InstallTeamsFlatpak {
+	teamsCheck=$(flatpak list | grep teams)
+	if [ "$teamsCheck" == "" ]; then
+		echo "...Installing Teams"
+		flatpak install -y flathub com.github.IsmaelMartinez.teams_for_linux
+		echo "...Teams installed"
+	fi
+}
+
+function InstallDiscordFlatpak {
+	discordCheck=$(flatpak list | grep Discord)
+	if [ "$discordCheck" == "" ]; then
+		echo "...Installing Discord"
+		flatpak install -y flathub com.discordapp.Discord
+		echo "...Discord installed"
+	fi
+}
+
+function InstallSpotifyFlatpak {
+	spotifyCheck=$(flatpak list | grep spotify)
+	if [ "$spotifyCheck" == "" ]; then
+		echo "...Installing Spotify"
+		flatpak install -y flathub com.spotify.Client
+		echo "...Spotify installed"
+	fi
+}
+
 function InstallGitCredentialManager {
 	# Global config
 	configCheck=$(git config --list | grep credential.credentialstore=secretservice)
@@ -232,11 +259,11 @@ function AptPackageIsInstalled {
 	# Exclude pkgs known to have naming conflicts with the ones we actually want to check for
 	# Conflicts exist currently for unar and VSCode
 	if [ "$package" == "code" ]; then
-		packageCheck=$(echo "$installed" | grep "$1/" | grep -v "intel-microcode" | grep -v "dmidecode" | grep -v "fonts-firacode")
+		packageCheck=$(echo "$installed" | grep "$package/" | grep -v "intel-microcode" | grep -v "dmidecode" | grep -v "fonts-firacode")
 	elif [ "$package" == "unar" ]; then
-		packageCheck=$(echo "$installed" | grep "$1/" | grep -v "thunar")
+		packageCheck=$(echo "$installed" | grep "$package/" | grep -v "thunar")
 	else
-		packageCheck=$(echo "$installed" | grep "$1/")
+		packageCheck=$(echo "$installed" | grep "$package/")
 	fi
 
 	if [ "$packageCheck" != "" ]; then
@@ -427,15 +454,15 @@ function BootstrapDebianVM {
 
 	CreateDirectories
 	ConfigureTmux
+	InstallNvm
 	InstallNerdFonts
 	EnableFlathubRepo
 	InstallDoomEmacs
+	InstallStudio3t
 	InstallDBeaverFlatpak
 	InstallPostmanFlatpak
-	DownloadNordTheme
 	InstallGitCredentialManager
-	InstallNvm
-	InstallStudio3t
+	DownloadNordTheme
 
 	# Install old libssl (for AWS VPN)
 	if ! AptPackageIsInstalled "libssl1.1"; then
@@ -511,12 +538,166 @@ function BootstrapDebianServer {
 
 #region FEDORA
 
+function DnfPackageIsInstalled {
+	package=$1
+
+	installed=$(dnf list --installed 2>/dev/null)
+
+	# Exclude pkgs known to have naming conflicts with the ones we actually want to check for
+	# Conflicts exist currently for VSCode
+	if [ "$package" == "code" ]; then
+		packageCheck=$(echo "$installed" | grep "$package.x86_64")
+	else
+		packageCheck=$(echo "$installed" | grep "$package")
+	fi
+
+	if [ "$packageCheck" != "" ]; then
+		return 0
+	fi
+
+	return 1
+}
+
+function DnfInstallMissingPackages {
+	packages=("$@")
+
+	for package in "${packages[@]}"; do
+		if ! DnfPackageIsInstalled "$package"; then
+			sudo dnf install -y "$package"
+
+			# Check again, error if not installed
+			if ! DnfPackageIsInstalled "$package"; then
+				echo "ERROR: Failed to install $package"
+				return 1
+			fi
+		fi
+	done
+
+	return 0
+}
+
 function BootstrapFedora {
 	echo "Bootstrapping Fedora..."
+	echo "NOTE: You may be prompted multiple times for input"
 
-	#max_parallel_downloads=10
-	#fastestmirror=True
+	# Configure dnf with fastest mirror and parallel downloads
+	dnfFastestMirrorCheck=$(grep "fastestmirror=True" </etc/dnf/dnf.conf)
+	if [ "$dnfFastestMirrorCheck" == "" ]; then
+		echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+	fi
 
+	dnfParallelDownloadsCheck=$(grep "max_parallel_downloads=10" </etc/dnf/dnf.conf)
+	if [ "$dnfParallelDownloadsCheck" == "" ]; then
+		echo "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+	fi
+
+	# Repo for Ubuntu fonts
+	coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
+	if [ "$coprCheck" == "" ]; then
+		sudo dnf copr enable -y atim/ubuntu-fonts
+		echo "...ubuntu-fonts copr repository enabled"
+	fi
+
+	# Repo for Ungoogled Chromium
+	coprCheck=$(sudo dnf copr list | grep "ungoogled-chromium")
+	if [ "$coprCheck" == "" ]; then
+		sudo dnf copr enable -y wojnilowicz/ungoogled-chromium
+		echo "...ungoogled-chromium copr repository enabled"
+	fi
+
+	# Repo for Visual Studio Code
+	vscodeCheck=$(dnf repolist | grep "Visual Studio Code")
+	if [ "$vscodeCheck" == "" ]; then
+		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &>/dev/null
+		echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo >/dev/null
+		echo "...VS Code repo enabled"
+	fi
+
+	packages=(
+		"git"
+		"vim-enhanced"
+		"neovim"
+		"python3-neovim"
+		"zsh"
+		"wget2"
+		"tmux"
+		"htop"
+		"unar"
+		"fastfetch"
+		"python3-dnf-plugin-rpmconf"
+		"ulauncher"
+		"default-fonts"
+		"default-fonts-core-emoji"
+		"fira-code-fonts"
+		"ubuntu-family-fonts"
+		"cabextract"
+		"xorg-x11-font-utils"
+		"fontconfig"
+		"flatpak"
+		"firefox"
+		"ungoogled-chromium"
+		"alacritty"
+		"code"
+		"dotnet-sdk-8.0"
+		"pavucontrol"
+		"emacs"
+		"ripgrep"
+		"fd-find"
+		"vlc"
+		"obs-studio"
+		"libreoffice"
+		"aisleriot"
+		"gnome-mines"
+		"gparted"
+		"sshpass"
+		"java-17-openjdk"
+		"qemu-kvm"
+		"libvirt"
+		"virt-install"
+		"virt-manager"
+		"virt-viewer"
+		"edk2-ovmf"
+		"swtpm"
+		"qemu-img"
+		"guestfs-tools"
+		"libosinfo"
+    "steam"
+    "wine"
+	)
+
+	#packages=(
+	#	"spice-vdagent"
+	#	"awscli"
+	#)
+
+	echo "...Checking for and installing missing packages"
+
+	if ! DnfInstallMissingPackages "${packages[@]}"; then
+		echo "Failed to install packages"
+		return 1
+	fi
+
+	# Microsoft fonts
+	if [ ! -d "/usr/share/fonts/msttcore" ]; then
+		sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
+		echo "...Installed MSFT fonts"
+	fi
+
+	CreateDirectories
+	ConfigureTmux
+	InstallNvm
+	InstallNerdFonts
+	EnableFlathubRepo
+	InstallDoomEmacs
+	InstallStudio3t
+	InstallDBeaverFlatpak
+	InstallPostmanFlatpak
+	InstallTeamsFlatpak # only one spot?
+	InstallDiscordFlatpak
+	InstallSpotifyFlatpak
+	InstallGitCredentialManager
+	DownloadNordTheme
+	ConfigureZsh
 }
 
 #endregion

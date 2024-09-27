@@ -12,23 +12,7 @@ fi
 
 printf "\n"
 
-if ! CreateDirectories; then
-	exit 1
-fi
-
 if ! InstallCoreUtilities; then
-	exit 1
-fi
-
-if ! ConfigureTmux; then
-	exit 1
-fi
-
-if ! InstallNvm; then
-	exit 1
-fi
-
-if ! InstallProprietaryGraphics; then
 	exit 1
 fi
 
@@ -41,10 +25,6 @@ if ! InstallFlatpak; then
 fi
 
 if ! InstallWebBrowsers; then
-	exit 1
-fi
-
-if ! ConfigureZsh; then
 	exit 1
 fi
 
