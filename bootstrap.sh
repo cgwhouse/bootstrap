@@ -954,6 +954,18 @@ function BootstrapGentoo {
 		return 1
 	fi
 
+	CreateDirectories
+	ConfigureTmux
+	InstallNvm
+	InstallNerdFonts
+	InstallDoomEmacs
+	InstallStudio3t
+	InstallGitCredentialManager
+	ConfigureVirtManager
+	DownloadNordTheme
+	DownloadCatppuccinTheme
+	ConfigureZsh
+
 	# Fancy Firefox check
 	firefoxCheck=$(eix -I --exact www-client/firefox | grep "No matches found")
 	if [ "$firefoxCheck" == "No matches found" ]; then
