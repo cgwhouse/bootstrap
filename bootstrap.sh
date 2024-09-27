@@ -229,7 +229,7 @@ function DownloadCatppuccinTheme {
 	fi
 
 	# Grub
-	if [ ! -d /usr/share/grub/themes/catppuccin-mocha-grub-theme ]; then
+	if [ ! -d "$HOME"/repos/theming/catppuccin-grub ]; then
 		mkdir "$HOME"/repos/theming/catppuccin-grub
 		git clone https://github.com/catppuccin/grub.git "$HOME"/repos/theming/catppuccin-grub
 		echo "...Cloned Catppuccin grub theme to themes directory"
@@ -330,12 +330,6 @@ function ConfigureVirtManager {
 	if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
 		sudo systemctl enable --now libvirtd.service
 		echo "...libvirtd service enabled"
-	fi
-
-	tunedCheck=$(sudo systemctl is-active tuned.service)
-	if [ "$tunedCheck" == "inactive" ]; then
-		sudo systemctl enable --now tuned.service
-		echo "...tuned service enabled"
 	fi
 
 	# Set autostart on virtual network
@@ -843,8 +837,32 @@ function BootstrapFedora {
 
 #region GENTOO
 
+function PortagePackageIsInstalled {
+	if [ "$2" == "inOverlay" ]; then
+		packageCheck=$(eix -IR "$1" | grep "No matches found")
+	else
+		packageCheck=$(eix -I "$1" | grep "No matches found")
+	fi
+
+	if [ "$packageCheck" != "" ]; then
+		return 1
+	fi
+
+	return 0
+}
+
 function BootstrapGentoo {
-	echo "Bootstrapping Gentoo..."
+	echo "Helping you bootstrap Gentoo..."
+
+	if ! IsPackageInstalled "app-shells/zsh"; then
+		echo "...Add the following global USE flag, then emerge zsh: zsh-completion"
+		return 1
+	fi
+
+	if ! IsPackageInstalled "net-im/discord"; then
+		echo "...emerge net-im/discord"
+		return 1
+	fi
 }
 
 #endregion

@@ -1,58 +1,5 @@
 #!/bin/bash
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-source "$SCRIPT_DIR"/libbootstrap.sh
-
-function IsPackageInstalled {
-	if [ "$2" == "inOverlay" ]; then
-		packageCheck=$(eix -IR "$1" | grep "No matches found")
-	else
-		packageCheck=$(eix -I "$1" | grep "No matches found")
-	fi
-
-	if [ "$packageCheck" != "" ]; then
-		return 1
-	fi
-
-	return 0
-}
-
-function InstallQtile {
-	WriteTaskName
-
-	if ! IsPackageInstalled "x11-wm/qtile"; then
-		packages=(
-			# Tiling WM
-			"x11-misc/picom"
-			"lxde-base/lxappearance"
-			"lxde-base/lxsession"
-			"x11-misc/nitrogen"
-			"media-sound/volumeicon"
-			"x11-misc/arandr"
-			# For qtile
-			"dev-python/pip"
-			"x11-wm/qtile"
-		)
-
-		for package in "${packages[@]}"; do
-			if ! IsPackageInstalled "$package"; then
-				echo "...emerge $package"
-				return 1
-			fi
-		done
-	fi
-
-}
-
-function InstallDiscord {
-	WriteTaskName
-
-	if ! IsPackageInstalled "net-im/discord"; then
-		echo "...emerge net-im/discord"
-		return 1
-	fi
-}
-
 function InstallZsh {
 	WriteTaskName
 
