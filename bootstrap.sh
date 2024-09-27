@@ -851,14 +851,149 @@ function PortagePackageIsInstalled {
 
 function BootstrapGentoo {
 	echo "Helping you bootstrap Gentoo..."
+	echo "Relevant USE flags:"
+	echo "    global: emacs zsh-completion"
+	echo "    chromium: proprietary-codecs widevine"
+	echo "    libreoffice: java"
+	echo "    See wiki for emacs, obs-studio"
 
-	if ! IsPackageInstalled "app-shells/zsh"; then
-		echo "...Add the following global USE flag, then emerge zsh: zsh-completion"
+	packages=(
+		"net-im/discord"
+		"app-shells/zsh"
+		"app-portage/gentoolkit"
+		"app-admin/eclean-kernel"
+		"app-misc/tmux"
+		"app-arch/unar"
+		"app-misc/fastfetch"
+		"sys-process/htop"
+		"media-sound/pavucontrol"
+		"media-fonts/fonts-meta"
+		"media-fonts/corefonts"
+		"media-fonts/fira-code"
+		"media-fonts/ubuntu-font-family"
+		"media-fonts/noto-emoji"
+		"sys-apps/flatpak"
+		"sys-apps/xdg-desktop-portal"
+		"sys-apps/xdg-desktop-portal-gtk"
+		"sys-apps/xdg-desktop-portal-gnome"
+		"virtual/dotnet-sdk"
+		"x11-terms/alacritty"
+		"app-editors/emacs"
+		"media-video/obs-studio"
+		"app-office/libreoffice"
+		"sys-apps/ripgrep"
+		"sys-apps/fd"
+		"app-editors/vscode"
+		"dev-util/android-studio"
+		"net-im/slack"
+		"net-im/zoom"
+		"media-video/vlc"
+		"net-p2p/transmission"
+		"games-board/gnome-mines"
+		"games-emulation/mgba"
+		"games-util/lutris"
+		"games-emulation/dolphin"
+		"sys-block/gparted"
+		"net-misc/sshpass"
+		"virtual/jdk"
+	)
+
+	for package in "${packages[@]}"; do
+		if ! PortagePackageIsInstalled "$package"; then
+			echo "...Emerge $package"
+			return 1
+		fi
+	done
+
+	overlayPackages=(
+		"games-util/steam-launcher"
+		"www-client/ungoogled-chromium"
+	)
+
+	for overlayPackage in "${overlayPackages[@]}"; do
+		if ! PortagePackageIsInstalled "$overlayPackage" inOverlay; then
+			echo "...Emerge $overlayPackage, only available via overlay"
+		fi
+	done
+
+	EnableFlathubRepo
+
+	flatpaks=(
+		"com.spotify.Client"
+		"com.github.IsmaelMartinez.teams_for_linux"
+		"dev.vencord.Vesktop"
+		"com.snes9x.Snes9x"
+		"org.duckstation.DuckStation"
+		"io.github.simple64.simple64"
+		"net.pcsx2.PCSX2"
+		"net.rpcs3.RPCS3"
+		"net.kuribo64.melonDS"
+		"io.dbeaver.DBeaverCommunity"
+		"com.getpostman.Postman"
+		"org.gnome.Aisleriot"
+	)
+
+	if ! FlatpakInstallMissingPackages "${flatpaks[@]}"; then
+		echo "Failed to install flatpaks"
 		return 1
 	fi
 
-	if ! IsPackageInstalled "net-im/discord"; then
-		echo "...emerge net-im/discord"
+	if [ ! -f "/usr/local/bin/aws" ]; then
+		curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+		unzip awscliv2.zip
+		sudo ./aws/install
+		rm -f awscliv2.zip
+		rm -rf aws
+		echo "...Installed AWS CLI"
+	fi
+
+	# AppImage check
+	packageCheck=$(eix -I --exact sys-fs/fuse --installed-slot 0 | grep "No matches found")
+	if [ "$packageCheck" == "No matches found" ]; then
+		echo "...emerge sys-fs/fuse:0 for AppImages"
+		return 1
+	fi
+
+	# Fancy Firefox check
+	firefoxCheck=$(eix -I --exact www-client/firefox | grep "No matches found")
+	if [ "$firefoxCheck" == "No matches found" ]; then
+		echo "...emerge www-client/firefox, may need to remove the bin version first"
+		return 1
+	fi
+
+	# KVM
+	if ! PortagePackageIsInstalled "app-emulation/virt-manager"; then
+		echo "...Visit the wiki for QEMU, libvirt, and then virt-manager"
+		echo "...Once USE flags and setup are complete, emerge app-emulation/virt-manager"
+		return 1
+	fi
+
+	# Wine deps
+	if ! PortagePackageIsInstalled "media-libs/vulkan-loader" || ! PortagePackageIsInstalled "dev-util/vulkan-tools" || ! PortagePackageIsInstalled "virtual/wine"; then
+		echo "...Reminder: the 32-bit ABI flag is 'abi_x86_32'"
+	fi
+
+	vulkanLoader32BitCheck=$(eix -I --installed-with-use abi_x86_32 media-libs/vulkan-loader)
+	if ! PortagePackageIsInstalled "media-libs/vulkan-loader" || [ "$vulkanLoader32BitCheck" == "No matches found" ]; then
+		echo "...emerge media-libs/vulkan-loader, ensure the 32-bit ABI flag"
+		echo "...We need the 32-bit ABI flag for x11-drivers/nvidia-drivers as well"
+		return 1
+	fi
+
+	vulkanTools32BitCheck=$(eix -I --installed-with-use abi_x86_32 dev-util/vulkan-tools)
+	if ! PortagePackageIsInstalled "dev-util/vulkan-tools" || [ "$vulkanTools32BitCheck" == "No matches found" ]; then
+		echo "...emerge dev-util/vulkan-tools, ensure the 32-bit ABI flag"
+		return 1
+	fi
+
+	if ! PortagePackageIsInstalled "app-emulation/dxvk"; then
+		echo "...emerge app-emulation/dxvk, visit the wiki page"
+		return 1
+	fi
+
+	if ! PortagePackageIsInstalled "virtual/wine"; then
+		echo "...emerge virtual/wine, ensure the 32-bit ABI flag and visit the wiki page"
+		echo "...Check out autogen_wine_deps.py if things aren't working"
 		return 1
 	fi
 }
