@@ -181,49 +181,124 @@ function DownloadNordTheme {
 	fi
 }
 
-function InstallDBeaverFlatpak {
-	dbeaverCheck=$(flatpak list | grep dbeaver)
-	if [ "$dbeaverCheck" == "" ]; then
-		echo "...Installing DBeaver"
-		flatpak install -y flathub io.dbeaver.DBeaverCommunity
-		echo "...DBeaver installed"
+function DownloadCatppuccinTheme {
+	WriteTaskName
+
+	# GTK + icons
+	accentColors=(
+		"blue"
+		"flamingo"
+		"green"
+		"lavender"
+		"maroon"
+		"mauve"
+		"peach"
+		"pink"
+		"red"
+		"rosewater"
+		"sapphire"
+		"sky"
+		"teal"
+		"yellow"
+	)
+
+	for accentColor in "${accentColors[@]}"; do
+
+		if [ ! -d "$HOME"/.themes/catppuccin-mocha-"$accentColor"-standard+default ]; then
+			wget https://github.com/catppuccin/gtk/releases/latest/download/catppuccin-mocha-"$accentColor"-standard+default.zip
+			unar -d catppuccin-mocha-"$accentColor"-standard+default.zip
+			mv catppuccin-mocha-"$accentColor"-standard+default/catppuccin-mocha-"$accentColor"-standard+default "$HOME"/.themes
+			rm -rf catppuccin-mocha-"$accentColor"-standard+default
+			rm -f catppuccin-mocha-"$accentColor"-standard+default.zip
+			echo "...Installed Catppuccin GTK Mocha $accentColor theme"
+		fi
+
+	done
+
+	if [ ! -d "$HOME"/.local/share/icons/Tela-dark ]; then
+		mkdir "$HOME"/repos/theming/Tela-icon-theme
+		git clone https://github.com/vinceliuice/Tela-icon-theme.git "$HOME"/repos/theming/Tela-icon-theme
+		"$HOME"/repos/theming/Tela-icon-theme/install.sh -a -c -d "$HOME"/.local/share/icons
+		echo "...Installed Tela icon themes"
+	fi
+
+	# Ulauncher
+	if ! compgen -G "$HOME/.config/ulauncher/user-themes/Catppuccin-Mocha*" >/dev/null; then
+		python3 <(curl https://raw.githubusercontent.com/catppuccin/ulauncher/main/install.py -fsSL) -f all -a all &>/dev/null
+		echo "...Installed Ulauncher Catppuccin themes"
+	fi
+
+	# Grub
+	if [ ! -d /usr/share/grub/themes/catppuccin-mocha-grub-theme ]; then
+		mkdir "$HOME"/repos/theming/catppuccin-grub
+		git clone https://github.com/catppuccin/grub.git "$HOME"/repos/theming/catppuccin-grub
+		echo "...Cloned Catppuccin grub theme to themes directory"
+	fi
+
+	# Wallpapers
+	if [ ! -d "$HOME"/Pictures/wallpapers/catppuccin ]; then
+		echo "...Installing Catppuccin wallpaper pack"
+		mkdir "$HOME"/Pictures/wallpapers/catppuccin
+		mkdir "$HOME"/repos/theming/catppuccin-wallpapers
+		git clone https://github.com/Gingeh/wallpapers.git "$HOME"/repos/theming/catppuccin-wallpapers
+		cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.png "$HOME"/Pictures/wallpapers/catppuccin
+		cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.jpg "$HOME"/Pictures/wallpapers/catppuccin
+		echo "...Catppuccin wallpaper pack installed"
+	fi
+
+	# Tmux
+	if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" "$HOME"/.tmux.conf.local; then
+		echo "NOTE: Set Catppuccin tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'catppuccin/tmux'"
 	fi
 }
 
-function InstallPostmanFlatpak {
-	postmanCheck=$(flatpak list | grep Postman)
-	if [ "$postmanCheck" == "" ]; then
-		echo "...Installing Postman"
-		flatpak install -y flathub com.getpostman.Postman
-		echo "...Postman installed"
+function FlatpakPackageIsInstalled {
+	package=$1
+
+	packageCheck=$(flatpak list | grep "$package")
+	if [ "$packageCheck" != "" ]; then
+		return 0
 	fi
+
+	return 1
 }
 
-function InstallTeamsFlatpak {
-	teamsCheck=$(flatpak list | grep teams)
-	if [ "$teamsCheck" == "" ]; then
-		echo "...Installing Teams"
-		flatpak install -y flathub com.github.IsmaelMartinez.teams_for_linux
-		echo "...Teams installed"
-	fi
+function FlatpakInstallMissingPackages {
+	packages=("$@")
+
+	for package in "${packages[@]}"; do
+		if ! FlatpakPackageIsInstalled "$package"; then
+			echo "DEBUG: would have installed $package"
+			#flatpak install --user -y flathub "$package"
+
+			# Check again, error if not installed
+			#if ! FlatpakPackageIsInstalled "$package"; then
+			#	echo "ERROR: Failed to install $package"
+			#	return 1
+			#fi
+		fi
+	done
+
+	return 0
 }
 
-function InstallDiscordFlatpak {
-	discordCheck=$(flatpak list | grep Discord)
-	if [ "$discordCheck" == "" ]; then
-		echo "...Installing Discord"
-		flatpak install -y flathub com.discordapp.Discord
-		echo "...Discord installed"
-	fi
-}
+function InstallFlatpaks {
 
-function InstallSpotifyFlatpak {
-	spotifyCheck=$(flatpak list | grep spotify)
-	if [ "$spotifyCheck" == "" ]; then
-		echo "...Installing Spotify"
-		flatpak install -y flathub com.spotify.Client
-		echo "...Spotify installed"
-	fi
+	flatpaks=(
+		"com.discordapp.Discord"
+		"com.spotify.Client"
+		"com.slack.Slack"
+		"com.github.IsmaelMartinez.teams_for_linux"
+		"us.zoom.Zoom"
+		"dev.vencord.Vesktop"
+		"com.snes9x.Snes9x"
+		"org.duckstation.DuckStation"
+		"io.github.simple64.simple64"
+		"net.pcsx2.PCSX2"
+		"net.rpcs3.RPCS3"
+		"net.kuribo64.melonDS"
+	)
+
 }
 
 function InstallGitCredentialManager {
@@ -244,6 +319,38 @@ function InstallNvm {
 	if [ ! -d "$HOME"/.nvm ]; then
 		wget -O- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 		echo "...nvm installed"
+	fi
+}
+
+function ConfigureVirtManager {
+	# Ensure libvirtd and tuned services are enabled
+	# This service will not stay running if in a VM, so only do this part if no VM detected
+	vmCheck=$(grep hypervisor </proc/cpuinfo)
+
+	libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
+	if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
+		sudo systemctl enable --now libvirtd.service
+		echo "...libvirtd service enabled"
+	fi
+
+	tunedCheck=$(sudo systemctl is-active tuned.service)
+	if [ "$tunedCheck" == "inactive" ]; then
+		sudo systemctl enable --now tuned.service
+		echo "...tuned service enabled"
+	fi
+
+	# Set autostart on virtual network
+	virshNetworkCheck=$(sudo virsh net-list --all --autostart | grep default)
+	if [ "$virshNetworkCheck" == "" ]; then
+		sudo virsh net-autostart default
+		echo "...Virtual network set to autostart"
+	fi
+
+	# Add regular user to libvirt group
+	groupCheck=$(groups "$USER" | grep libvirt)
+	if [ "$groupCheck" == "" ]; then
+		sudo usermod -aG libvirt "$USER"
+		echo "...User added to libvirt group"
 	fi
 }
 
@@ -438,6 +545,16 @@ function BootstrapDebianVM {
 		return 1
 	fi
 
+	flatpaks=(
+		"io.dbeaver.DBeaverCommunity"
+		"com.getpostman.Postman"
+	)
+
+	if ! FlatpakInstallMissingPackages "${flatpaks[@]}"; then
+		echo "Failed to install flatpaks"
+		return 1
+	fi
+
 	# Do systemd-resolved separately, because reboot required
 	# for internet to work again after install
 	if ! AptPackageIsInstalled "systemd-resolved"; then
@@ -459,8 +576,6 @@ function BootstrapDebianVM {
 	EnableFlathubRepo
 	InstallDoomEmacs
 	InstallStudio3t
-	InstallDBeaverFlatpak
-	InstallPostmanFlatpak
 	InstallGitCredentialManager
 	DownloadNordTheme
 
@@ -563,13 +678,14 @@ function DnfInstallMissingPackages {
 
 	for package in "${packages[@]}"; do
 		if ! DnfPackageIsInstalled "$package"; then
-			sudo dnf install -y "$package"
+			#sudo dnf install -y "$package"
+			echo "DEBUG: would have installed $package"
 
 			# Check again, error if not installed
-			if ! DnfPackageIsInstalled "$package"; then
-				echo "ERROR: Failed to install $package"
-				return 1
-			fi
+			#if ! DnfPackageIsInstalled "$package"; then
+			#	echo "ERROR: Failed to install $package"
+			#	return 1
+			#fi
 		fi
 	done
 
@@ -583,37 +699,43 @@ function BootstrapFedora {
 	# Configure dnf with fastest mirror and parallel downloads
 	dnfFastestMirrorCheck=$(grep "fastestmirror=True" </etc/dnf/dnf.conf)
 	if [ "$dnfFastestMirrorCheck" == "" ]; then
-		echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+		echo "DEBUG: would have done fastest mirror"
+		#echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
 	fi
 
 	dnfParallelDownloadsCheck=$(grep "max_parallel_downloads=10" </etc/dnf/dnf.conf)
 	if [ "$dnfParallelDownloadsCheck" == "" ]; then
-		echo "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+		echo "DEBUG: would have done parallel downloads"
+		#echo "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
 	fi
 
 	# Repo for Ubuntu fonts
 	coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
 	if [ "$coprCheck" == "" ]; then
-		sudo dnf copr enable -y atim/ubuntu-fonts
-		echo "...ubuntu-fonts copr repository enabled"
+		echo "DEBUG: would have enabled ubuntu fonts repo"
+		#sudo dnf copr enable -y atim/ubuntu-fonts
+		#echo "...ubuntu-fonts copr repository enabled"
 	fi
 
 	# Repo for Ungoogled Chromium
 	coprCheck=$(sudo dnf copr list | grep "ungoogled-chromium")
 	if [ "$coprCheck" == "" ]; then
-		sudo dnf copr enable -y wojnilowicz/ungoogled-chromium
-		echo "...ungoogled-chromium copr repository enabled"
+		echo "DEBUG: would have enabled chromium repo"
+		#sudo dnf copr enable -y wojnilowicz/ungoogled-chromium
+		#echo "...ungoogled-chromium copr repository enabled"
 	fi
 
 	# Repo for Visual Studio Code
 	vscodeCheck=$(dnf repolist | grep "Visual Studio Code")
 	if [ "$vscodeCheck" == "" ]; then
-		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &>/dev/null
-		echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo >/dev/null
-		echo "...VS Code repo enabled"
+		echo "DEBUG: would have enabled vscode repo"
+		#sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &>/dev/null
+		#echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo >/dev/null
+		#echo "...VS Code repo enabled"
 	fi
 
 	packages=(
+		# Core
 		"git"
 		"vim-enhanced"
 		"neovim"
@@ -626,6 +748,7 @@ function BootstrapFedora {
 		"fastfetch"
 		"python3-dnf-plugin-rpmconf"
 		"ulauncher"
+		# Fonts
 		"default-fonts"
 		"default-fonts-core-emoji"
 		"fira-code-fonts"
@@ -633,6 +756,7 @@ function BootstrapFedora {
 		"cabextract"
 		"xorg-x11-font-utils"
 		"fontconfig"
+		# Dev
 		"flatpak"
 		"firefox"
 		"ungoogled-chromium"
@@ -650,7 +774,9 @@ function BootstrapFedora {
 		"gnome-mines"
 		"gparted"
 		"sshpass"
+		"awscli2"
 		"java-17-openjdk"
+		# VM
 		"qemu-kvm"
 		"libvirt"
 		"virt-install"
@@ -661,14 +787,14 @@ function BootstrapFedora {
 		"qemu-img"
 		"guestfs-tools"
 		"libosinfo"
-    "steam"
-    "wine"
+		# Fun
+		"steam"
+		"wine"
+		"transmission"
+		"lutris"
+		"dolphin-emu"
+		"qflipper"
 	)
-
-	#packages=(
-	#	"spice-vdagent"
-	#	"awscli"
-	#)
 
 	echo "...Checking for and installing missing packages"
 
@@ -677,27 +803,48 @@ function BootstrapFedora {
 		return 1
 	fi
 
-	# Microsoft fonts
-	if [ ! -d "/usr/share/fonts/msttcore" ]; then
-		sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
-		echo "...Installed MSFT fonts"
+	flatpaks=(
+		"com.discordapp.Discord"
+		"com.spotify.Client"
+		"com.slack.Slack"
+		"com.github.IsmaelMartinez.teams_for_linux"
+		"us.zoom.Zoom"
+		"dev.vencord.Vesktop"
+		"com.snes9x.Snes9x"
+		"org.duckstation.DuckStation"
+		"io.github.simple64.simple64"
+		"net.pcsx2.PCSX2"
+		"net.rpcs3.RPCS3"
+		"net.kuribo64.melonDS"
+		"flathub io.mgba.mGBA"
+		"io.dbeaver.DBeaverCommunity"
+		"com.getpostman.Postman"
+	)
+
+	if ! FlatpakInstallMissingPackages "${flatpaks[@]}"; then
+		echo "Failed to install flatpaks"
+		return 1
 	fi
 
-	CreateDirectories
-	ConfigureTmux
-	InstallNvm
-	InstallNerdFonts
-	EnableFlathubRepo
-	InstallDoomEmacs
-	InstallStudio3t
-	InstallDBeaverFlatpak
-	InstallPostmanFlatpak
-	InstallTeamsFlatpak # only one spot?
-	InstallDiscordFlatpak
-	InstallSpotifyFlatpak
-	InstallGitCredentialManager
-	DownloadNordTheme
-	ConfigureZsh
+	# Microsoft fonts
+	if [ ! -d "/usr/share/fonts/msttcore" ]; then
+		echo "DEBUG: would have done msft fonts"
+		#sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
+		#echo "...Installed MSFT fonts"
+	fi
+
+	#CreateDirectories
+	#ConfigureTmux
+	#InstallNvm
+	#InstallNerdFonts
+	#EnableFlathubRepo
+	#InstallDoomEmacs
+	#InstallStudio3t
+	#InstallGitCredentialManager
+	#ConfigureVirtManager
+	#DownloadNordTheme
+	#DownloadCatppuccinTheme
+	#ConfigureZsh
 }
 
 #endregion

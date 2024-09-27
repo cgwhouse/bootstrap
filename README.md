@@ -8,22 +8,22 @@ bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/b
 
 ## Pre-Bootstrap Checklists
 
-### Debian
-
-1. Install `curl`
-
 ### Fedora
 
-1. Update system with `sudo dnf distro-sync --refresh && sudo dnf autoremove` and reboot
+1. Update system with
+   `sudo dnf distro-sync --refresh && sudo dnf autoremove` and reboot
 2. Enable and configure RPM Fusion repos:
 
    ```bash
-   sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+   sudo dnf install \
+   https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+   https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
    sudo dnf config-manager --enable fedora-cisco-openh264
    ```
 
-3. Enable proprietary codecs, then apply [Firefox config changes](https://docs.fedoraproject.org/en-US/quick-docs/openh264/#_firefox_config_changes):
+3. If applicable, deal with [NVIDIA graphics](https://rpmfusion.org/Howto/NVIDIA)
+4. Enable proprietary codecs, then apply [Firefox config changes](https://docs.fedoraproject.org/en-US/quick-docs/openh264/#_firefox_config_changes):
 
    ```bash
    sudo dnf group install Multimedia
@@ -52,9 +52,7 @@ bash <(curl -s https://raw.githubusercontent.com/cgwhouse/bootstrap/refs/heads/b
 2. After completing the Handbook, do the following in order using Gentoo Wiki:
    - desktop environment (`vaapi vdpau -gnome-online-accounts -kde -plasma -telemetry`)
    - audio (`pipewire`)
-   - web browser
-3. After installing and spot-checking the above items, clone this repo
-4. Run gentoo.sh
+   - Firefox bin
 
 ## Post-Bootstrap Checklist
 
@@ -63,3 +61,6 @@ this is the new CONFIG.md
 
 - Re-run script if needed to pick up any remaining tasks
 - After getting clean output, reboot
+- Alacritty config to `$HOME/.config/alacritty/alacritty.toml`
+- Ulauncher on startup
+- Look at `appimages` directory + browser bookmarks to get any manual / additional stuff
