@@ -27,8 +27,9 @@ bash <(curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/cg
 
    ```bash
    sudo dnf group install Multimedia
-   #sudo dnf install gstreamer1-plugin-openh264 mozilla-openh264
    sudo dnf swap ffmpeg-free ffmpeg --allowerasing
+
+   # These seem not to do anything, but at time of writing were still on RPMFusion wiki:
    sudo dnf update @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
    sudo dnf update @sound-and-video
 
@@ -53,4 +54,3 @@ bash <(curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/cg
    - desktop environment (`vaapi vdpau -gnome-online-accounts -kde -plasma -telemetry`)
    - audio (`pipewire`)
    - Firefox bin
-
