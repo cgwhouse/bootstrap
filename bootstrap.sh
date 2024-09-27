@@ -660,8 +660,10 @@ function DnfPackageIsInstalled {
 
 	# Exclude pkgs known to have naming conflicts with the ones we actually want to check for
 	# Conflicts exist currently for VSCode
-	if [ "$package" == "code" ]; then
+	if [ "$package" == "code" ] || [ "$package" == "emacs" ]; then
 		packageCheck=$(echo "$installed" | grep "$package.x86_64")
+	elif [ "$package" == "default-fonts" ]; then
+		packageCheck=$(echo "$installed" | grep "$package.noarch")
 	else
 		packageCheck=$(echo "$installed" | grep "$package")
 	fi
@@ -736,13 +738,10 @@ function BootstrapFedora {
 
 	packages=(
 		# Core
-		"git"
 		"vim-enhanced"
 		"neovim"
 		"python3-neovim"
 		"zsh"
-		"wget2"
-		"tmux"
 		"htop"
 		"unar"
 		"fastfetch"
@@ -750,15 +749,12 @@ function BootstrapFedora {
 		"ulauncher"
 		# Fonts
 		"default-fonts"
-		"default-fonts-core-emoji"
 		"fira-code-fonts"
 		"ubuntu-family-fonts"
 		"cabextract"
 		"xorg-x11-font-utils"
 		"fontconfig"
 		# Dev
-		"flatpak"
-		"firefox"
 		"ungoogled-chromium"
 		"alacritty"
 		"code"
