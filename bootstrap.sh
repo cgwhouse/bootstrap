@@ -268,14 +268,13 @@ function FlatpakInstallMissingPackages {
 
 	for package in "${packages[@]}"; do
 		if ! FlatpakPackageIsInstalled "$package"; then
-			echo "DEBUG: would have installed $package"
-			#flatpak install --user -y flathub "$package"
+			flatpak install --user -y flathub "$package"
 
 			# Check again, error if not installed
-			#if ! FlatpakPackageIsInstalled "$package"; then
-			#	echo "ERROR: Failed to install $package"
-			#	return 1
-			#fi
+			if ! FlatpakPackageIsInstalled "$package"; then
+				echo "ERROR: Failed to install $package"
+				return 1
+			fi
 		fi
 	done
 
@@ -545,6 +544,8 @@ function BootstrapDebianVM {
 		return 1
 	fi
 
+	EnableFlathubRepo
+
 	flatpaks=(
 		"io.dbeaver.DBeaverCommunity"
 		"com.getpostman.Postman"
@@ -573,7 +574,6 @@ function BootstrapDebianVM {
 	ConfigureTmux
 	InstallNvm
 	InstallNerdFonts
-	EnableFlathubRepo
 	InstallDoomEmacs
 	InstallStudio3t
 	InstallGitCredentialManager
@@ -680,14 +680,13 @@ function DnfInstallMissingPackages {
 
 	for package in "${packages[@]}"; do
 		if ! DnfPackageIsInstalled "$package"; then
-			#sudo dnf install -y "$package"
-			echo "DEBUG: would have installed $package"
+			sudo dnf install -y "$package"
 
 			# Check again, error if not installed
-			#if ! DnfPackageIsInstalled "$package"; then
-			#	echo "ERROR: Failed to install $package"
-			#	return 1
-			#fi
+			if ! DnfPackageIsInstalled "$package"; then
+				echo "ERROR: Failed to install $package"
+				return 1
+			fi
 		fi
 	done
 
@@ -701,39 +700,36 @@ function BootstrapFedora {
 	# Configure dnf with fastest mirror and parallel downloads
 	dnfFastestMirrorCheck=$(grep "fastestmirror=True" </etc/dnf/dnf.conf)
 	if [ "$dnfFastestMirrorCheck" == "" ]; then
-		echo "DEBUG: would have done fastest mirror"
-		#echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+		echo "fastestmirror=True" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+		echo "...set fastestmirror=True in dnf.conf"
 	fi
 
 	dnfParallelDownloadsCheck=$(grep "max_parallel_downloads=10" </etc/dnf/dnf.conf)
 	if [ "$dnfParallelDownloadsCheck" == "" ]; then
-		echo "DEBUG: would have done parallel downloads"
-		#echo "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+		echo "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+		echo "...set max_parallel_downloads=10 in dnf.conf"
 	fi
 
 	# Repo for Ubuntu fonts
-	coprCheck=$(sudo dnf copr list | grep "ubuntu-fonts")
+	coprCheck=$(dnf copr list | grep "ubuntu-fonts")
 	if [ "$coprCheck" == "" ]; then
-		echo "DEBUG: would have enabled ubuntu fonts repo"
-		#sudo dnf copr enable -y atim/ubuntu-fonts
-		#echo "...ubuntu-fonts copr repository enabled"
+		sudo dnf copr enable -y atim/ubuntu-fonts
+		echo "...ubuntu-fonts copr repository enabled"
 	fi
 
 	# Repo for Ungoogled Chromium
-	coprCheck=$(sudo dnf copr list | grep "ungoogled-chromium")
+	coprCheck=$(dnf copr list | grep "ungoogled-chromium")
 	if [ "$coprCheck" == "" ]; then
-		echo "DEBUG: would have enabled chromium repo"
-		#sudo dnf copr enable -y wojnilowicz/ungoogled-chromium
-		#echo "...ungoogled-chromium copr repository enabled"
+		sudo dnf copr enable -y wojnilowicz/ungoogled-chromium
+		echo "...ungoogled-chromium copr repository enabled"
 	fi
 
 	# Repo for Visual Studio Code
 	vscodeCheck=$(dnf repolist | grep "Visual Studio Code")
 	if [ "$vscodeCheck" == "" ]; then
-		echo "DEBUG: would have enabled vscode repo"
-		#sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &>/dev/null
-		#echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo >/dev/null
-		#echo "...VS Code repo enabled"
+		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc &>/dev/null
+		echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo >/dev/null
+		echo "...VS Code repo enabled"
 	fi
 
 	packages=(
@@ -799,6 +795,8 @@ function BootstrapFedora {
 		return 1
 	fi
 
+	EnableFlathubRepo
+
 	flatpaks=(
 		"com.discordapp.Discord"
 		"com.spotify.Client"
@@ -824,23 +822,21 @@ function BootstrapFedora {
 
 	# Microsoft fonts
 	if [ ! -d "/usr/share/fonts/msttcore" ]; then
-		echo "DEBUG: would have done msft fonts"
-		#sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
-		#echo "...Installed MSFT fonts"
+		sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
+		echo "...Installed MSFT fonts"
 	fi
 
-	#CreateDirectories
-	#ConfigureTmux
-	#InstallNvm
-	#InstallNerdFonts
-	#EnableFlathubRepo
-	#InstallDoomEmacs
-	#InstallStudio3t
-	#InstallGitCredentialManager
-	#ConfigureVirtManager
-	#DownloadNordTheme
-	#DownloadCatppuccinTheme
-	#ConfigureZsh
+	CreateDirectories
+	ConfigureTmux
+	InstallNvm
+	InstallNerdFonts
+	InstallDoomEmacs
+	InstallStudio3t
+	InstallGitCredentialManager
+	ConfigureVirtManager
+	DownloadNordTheme
+	DownloadCatppuccinTheme
+	ConfigureZsh
 }
 
 #endregion
@@ -854,7 +850,7 @@ function BootstrapGentoo {
 #endregion
 
 function Main {
-	printf "\nWelcome to boostrap2!\n\n"
+	printf "\nWelcome to bootstrap2!\n\n"
 	printf "Select a workflow:\n\n"
 
 	select workflow in "Debian (Server)" "Debian (VM)" "Fedora" "Gentoo" "Exit"; do
