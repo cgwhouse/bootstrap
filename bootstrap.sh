@@ -182,8 +182,6 @@ function DownloadNordTheme {
 }
 
 function DownloadCatppuccinTheme {
-	WriteTaskName
-
 	# GTK + icons
 	accentColors=(
 		"blue"
