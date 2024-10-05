@@ -879,7 +879,7 @@ function BootstrapGentoo {
 		"virtual/dotnet-sdk"
 		"x11-terms/alacritty"
 		"app-editors/emacs"
-		"media-video/obs-studio"
+		#"media-video/obs-studio"
 		"app-office/libreoffice"
 		"sys-apps/ripgrep"
 		"sys-apps/fd"
@@ -931,6 +931,7 @@ function BootstrapGentoo {
 		"io.dbeaver.DBeaverCommunity"
 		"com.getpostman.Postman"
 		"org.gnome.Aisleriot"
+                "com.obsproject.Studio"
 	)
 
 	if ! FlatpakInstallMissingPackages "${flatpaks[@]}"; then
