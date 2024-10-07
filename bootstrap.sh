@@ -962,7 +962,6 @@ function BootstrapGentoo {
 	InstallDoomEmacs
 	InstallStudio3t
 	InstallGitCredentialManager
-	ConfigureVirtManager
 	DownloadNordTheme
 	DownloadCatppuccinTheme
 	ConfigureZsh
@@ -980,6 +979,8 @@ function BootstrapGentoo {
 		echo "...Once USE flags and setup are complete, emerge app-emulation/virt-manager"
 		return 1
 	fi
+	
+ 	ConfigureVirtManager
 
 	# Wine deps
 	if ! PortagePackageIsInstalled "media-libs/vulkan-loader" || ! PortagePackageIsInstalled "dev-util/vulkan-tools" || ! PortagePackageIsInstalled "virtual/wine"; then
