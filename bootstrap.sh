@@ -307,8 +307,13 @@ function InstallGitCredentialManager {
 	fi
 
 	if ! IsCommandAvailable "git-credential-manager --help"; then
-		curl -L https://aka.ms/gcm/linux-install-source.sh | bash
-		git-credential-manager configure
+		if [ "$1" == "gentoo" ]; then
+			dotnet tool install -g git-credential-manager
+			"$HOME"/.dotnet/tools/git-credential-manager configure
+		else
+			curl -L https://aka.ms/gcm/linux-install-source.sh | bash
+			git-credential-manager configure
+		fi
 	fi
 }
 
@@ -324,10 +329,15 @@ function ConfigureVirtManager {
 	# This service will not stay running if in a VM, so only do this part if no VM detected
 	vmCheck=$(grep hypervisor </proc/cpuinfo)
 
-	libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
-	if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
-		sudo systemctl enable --now libvirtd.service
-		echo "...libvirtd service enabled"
+	# TODO:
+	# The monolith libvirtd service is being deprecated in favor of modular services,
+	# should probably check for and enable those instead of this one
+	if [ "$1" != "gentoo" ]; then
+		libvirtdCheck=$(sudo systemctl is-active libvirtd.service)
+		if [ "$vmCheck" == "" ] && [ "$libvirtdCheck" == "inactive" ]; then
+			sudo systemctl enable --now libvirtd.service
+			echo "...Monolithic libvirtd service enabled"
+		fi
 	fi
 
 	# Set autostart on virtual network
@@ -568,7 +578,7 @@ function BootstrapDebianVM {
 	InstallNerdFonts
 	InstallDoomEmacs
 	InstallStudio3t
-	InstallGitCredentialManager
+	InstallGitCredentialManager "debian"
 	DownloadNordTheme
 
 	# Install old libssl (for AWS VPN)
@@ -824,8 +834,8 @@ function BootstrapFedora {
 	InstallNerdFonts
 	InstallDoomEmacs
 	InstallStudio3t
-	InstallGitCredentialManager
-	ConfigureVirtManager
+	InstallGitCredentialManager "fedora"
+	ConfigureVirtManager "fedora"
 	DownloadNordTheme
 	DownloadCatppuccinTheme
 	ConfigureZsh
@@ -851,11 +861,13 @@ function PortagePackageIsInstalled {
 
 function BootstrapGentoo {
 	echo "Helping you bootstrap Gentoo..."
+	echo "    Reminder: the 32-bit ABI flag is 'abi_x86_32'"
 	echo "Relevant USE flags:"
 	echo "    global: emacs zsh-completion"
 	echo "    chromium: proprietary-codecs widevine"
 	echo "    libreoffice: java"
-	echo "    See wiki for emacs, obs-studio"
+	echo "See wiki for: emacs, obs-studio, virt-manager, wine, dxvk"
+	echo "32 bit: vulkan-loader, nvidia-drivers, vulkan-tools, wine"
 
 	packages=(
 		"net-im/discord"
@@ -879,7 +891,7 @@ function BootstrapGentoo {
 		"virtual/dotnet-sdk"
 		"x11-terms/alacritty"
 		"app-editors/emacs"
-		#"media-video/obs-studio"
+		"media-video/obs-studio"
 		"app-office/libreoffice"
 		"sys-apps/ripgrep"
 		"sys-apps/fd"
@@ -896,6 +908,11 @@ function BootstrapGentoo {
 		"sys-block/gparted"
 		"net-misc/sshpass"
 		"virtual/jdk"
+		"app-emulation/virt-manager"
+		"media-libs/vulkan-loader"
+		"dev-util/vulkan-tools"
+		"virtual/wine"
+		"app-emulation/dxvk"
 	)
 
 	for package in "${packages[@]}"; do
@@ -913,6 +930,7 @@ function BootstrapGentoo {
 	for overlayPackage in "${overlayPackages[@]}"; do
 		if ! PortagePackageIsInstalled "$overlayPackage" inOverlay; then
 			echo "...Emerge $overlayPackage, only available via overlay"
+			return 1
 		fi
 	done
 
@@ -931,7 +949,6 @@ function BootstrapGentoo {
 		"io.dbeaver.DBeaverCommunity"
 		"com.getpostman.Postman"
 		"org.gnome.Aisleriot"
-                "com.obsproject.Studio"
 	)
 
 	if ! FlatpakInstallMissingPackages "${flatpaks[@]}"; then
@@ -961,7 +978,8 @@ function BootstrapGentoo {
 	InstallNerdFonts
 	InstallDoomEmacs
 	InstallStudio3t
-	InstallGitCredentialManager
+	InstallGitCredentialManager "gentoo"
+	ConfigureVirtManager "gentoo"
 	DownloadNordTheme
 	DownloadCatppuccinTheme
 	ConfigureZsh
@@ -973,41 +991,17 @@ function BootstrapGentoo {
 		return 1
 	fi
 
-	# KVM
-	if ! PortagePackageIsInstalled "app-emulation/virt-manager"; then
-		echo "...Visit the wiki for QEMU, libvirt, and then virt-manager"
-		echo "...Once USE flags and setup are complete, emerge app-emulation/virt-manager"
-		return 1
-	fi
-	
- 	ConfigureVirtManager
-
-	# Wine deps
-	if ! PortagePackageIsInstalled "media-libs/vulkan-loader" || ! PortagePackageIsInstalled "dev-util/vulkan-tools" || ! PortagePackageIsInstalled "virtual/wine"; then
-		echo "...Reminder: the 32-bit ABI flag is 'abi_x86_32'"
-	fi
-
+	# Double check some 32-bit Wine things
 	vulkanLoader32BitCheck=$(eix -I --installed-with-use abi_x86_32 media-libs/vulkan-loader)
-	if ! PortagePackageIsInstalled "media-libs/vulkan-loader" || [ "$vulkanLoader32BitCheck" == "No matches found" ]; then
-		echo "...emerge media-libs/vulkan-loader, ensure the 32-bit ABI flag"
+	if [ "$vulkanLoader32BitCheck" == "No matches found" ]; then
+		echo "...emerge 32-bit media-libs/vulkan-loader"
 		echo "...We need the 32-bit ABI flag for x11-drivers/nvidia-drivers as well"
 		return 1
 	fi
 
 	vulkanTools32BitCheck=$(eix -I --installed-with-use abi_x86_32 dev-util/vulkan-tools)
-	if ! PortagePackageIsInstalled "dev-util/vulkan-tools" || [ "$vulkanTools32BitCheck" == "No matches found" ]; then
-		echo "...emerge dev-util/vulkan-tools, ensure the 32-bit ABI flag"
-		return 1
-	fi
-
-	if ! PortagePackageIsInstalled "app-emulation/dxvk"; then
-		echo "...emerge app-emulation/dxvk, visit the wiki page"
-		return 1
-	fi
-
-	if ! PortagePackageIsInstalled "virtual/wine"; then
-		echo "...emerge virtual/wine, ensure the 32-bit ABI flag and visit the wiki page"
-		echo "...Check out autogen_wine_deps.py if things aren't working"
+	if [ "$vulkanTools32BitCheck" == "No matches found" ]; then
+		echo "...emerge 32-bit dev-util/vulkan-tools"
 		return 1
 	fi
 }
