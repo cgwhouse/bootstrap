@@ -42,25 +42,6 @@ function CreateDirectories {
 	done
 }
 
-function ConfigureTmux {
-	ohMyTmuxPath="$HOME/.tmux"
-	if [ ! -d "$ohMyTmuxPath" ]; then
-		echo "...Installing Oh My Tmux"
-
-		git clone https://github.com/gpakosz/.tmux.git "$ohMyTmuxPath"
-		ln -sf "$ohMyTmuxPath"/.tmux.conf "$HOME"/.tmux.conf
-		cp "$ohMyTmuxPath"/.tmux.conf.local "$HOME"/
-
-		echo "...Successfully installed Oh My Tmux"
-	fi
-
-	# Ensure Tmux is fully configured, exit if not
-	# Check for commented out mouse mode as the check, the default config has this
-	if grep -Fxq "#set -g mouse on" "$HOME"/.tmux.conf.local; then
-		echo "...WARNING: Oh My Tmux still needs to be configured"
-	fi
-}
-
 function ConfigureZsh {
 	if [ ! -d "$HOME/.oh-my-zsh" ]; then
 		echo "...Installing Oh My Zsh, you will be dropped into a new zsh session at the end"
@@ -174,11 +155,6 @@ function DownloadNordTheme {
 		cp -r "$HOME"/repos/theming/nordic-wallpapers/wallpapers/*.jpg "$HOME"/Pictures/wallpapers/nordic
 		echo "...Nordic wallpaper pack installed"
 	fi
-
-	# Tmux
-	if ! grep -Fxq "set -g @plugin 'arcticicestudio/nord-tmux'" "$HOME"/.tmux.conf.local; then
-		echo "...NOTE: Set Nord tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'arcticicestudio/nord-tmux'"
-	fi
 }
 
 function DownloadCatppuccinTheme {
@@ -242,11 +218,6 @@ function DownloadCatppuccinTheme {
 		cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.png "$HOME"/Pictures/wallpapers/catppuccin
 		cp -r "$HOME"/repos/theming/catppuccin-wallpapers/*/*.jpg "$HOME"/Pictures/wallpapers/catppuccin
 		echo "...Catppuccin wallpaper pack installed"
-	fi
-
-	# Tmux
-	if ! grep -Fxq "set -g @plugin 'catppuccin/tmux'" "$HOME"/.tmux.conf.local; then
-		echo "NOTE: Set Catppuccin tmux theme by adding the following to .tmux.conf.local: set -g @plugin 'catppuccin/tmux'"
 	fi
 }
 
@@ -573,7 +544,6 @@ function BootstrapDebianVM {
 	fi
 
 	CreateDirectories
-	ConfigureTmux
 	InstallNvm
 	InstallNerdFonts
 	InstallDoomEmacs
@@ -646,7 +616,6 @@ function BootstrapDebianServer {
 	fi
 
 	CreateDirectories
-	ConfigureTmux
 	InstallNvm
 	ConfigureZsh
 }
@@ -829,7 +798,6 @@ function BootstrapFedora {
 	fi
 
 	CreateDirectories
-	ConfigureTmux
 	InstallNvm
 	InstallNerdFonts
 	InstallDoomEmacs
@@ -973,7 +941,6 @@ function BootstrapGentoo {
 	fi
 
 	CreateDirectories
-	ConfigureTmux
 	InstallNvm
 	InstallNerdFonts
 	InstallDoomEmacs
