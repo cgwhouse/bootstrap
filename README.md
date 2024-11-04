@@ -19,7 +19,9 @@ bash <(curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/cg
    https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
-   sudo dnf config-manager --enable fedora-cisco-openh264
+   sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1
+
+   sudo dnf update @core
    ```
 
 3. If applicable, deal with [NVIDIA graphics](https://rpmfusion.org/Howto/NVIDIA)
@@ -29,9 +31,7 @@ bash <(curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/cg
    sudo dnf group install Multimedia
    sudo dnf swap ffmpeg-free ffmpeg --allowerasing
 
-   # These seem not to do anything, but at time of writing were still on RPMFusion wiki:
    sudo dnf update @multimedia --setopt="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
-   sudo dnf update @sound-and-video
 
    # Intel
    sudo dnf install intel-media-driver
